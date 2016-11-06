@@ -9,5 +9,8 @@ setup(
     install_requires=[
         'pyserial==3.0.1',
         'pytz==2016.3'
-    ]
+    ],
+    entry_points={
+        'console_scripts': ['dsmr_console=dsmr_parser.__main__:console']
+    },
 )

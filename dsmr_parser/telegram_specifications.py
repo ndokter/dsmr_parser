@@ -13,6 +13,24 @@ This module contains DSMR telegram specifications. Each specifications describes
 how the telegram lines are parsed.
 """
 
+V2_2 = {
+    EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
+    ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+    ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+    ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+    ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+    ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
+    CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
+    CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
+    ACTUAL_TRESHOLD_ELECTRICITY: CosemParser(ValueParser(Decimal)),
+    ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)),
+    TEXT_MESSAGE_CODE: CosemParser(ValueParser(int)),
+    TEXT_MESSAGE: CosemParser(ValueParser(str)),
+    EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
+    DEVICE_TYPE: CosemParser(ValueParser(str)),
+    VALVE_POSITION_GAS: CosemParser(ValueParser(str)),
+}
+
 V4 = {
     P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
     P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
