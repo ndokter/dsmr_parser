@@ -1,6 +1,6 @@
 import serial
 
-from dsmr_parser.parsers import TelegramParser, V3TelegramParser
+from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2
 
 SERIAL_SETTINGS_V2_2 = {
     'baudrate': 9600,
@@ -38,7 +38,7 @@ class SerialReader(object):
         self.serial_settings['port'] = device
 
         if serial_settings is SERIAL_SETTINGS_V2_2:
-            telegram_parser = V3TelegramParser
+            telegram_parser = TelegramParserV2_2
         else:
             telegram_parser = TelegramParser
         self.telegram_parser = telegram_parser(telegram_specification)
