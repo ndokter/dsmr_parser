@@ -19,6 +19,21 @@ class MBusObject(DSMRObject):
         return self.values[1]['unit']
 
 
+class MBusObjectV2_2(DSMRObject):
+
+    @property
+    def datetime(self):
+        return self.values[0]['value']
+
+    @property
+    def value(self):
+        return self.values[5]['value']
+
+    @property
+    def unit(self):
+        return self.values[4]['unit']
+
+
 class CosemObject(DSMRObject):
 
     @property
