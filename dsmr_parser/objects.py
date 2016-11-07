@@ -31,7 +31,7 @@ class MBusObjectV2_2(DSMRObject):
 
     @property
     def unit(self):
-        return self.values[4]['unit']
+        return self.values[4]['value']
 
 
 class CosemObject(DSMRObject):

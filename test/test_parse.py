@@ -35,4 +35,6 @@ def test_parse_v2_2():
     result = parser.parse(TELEGRAM_V2_2)
 
     assert float(result[CURRENT_ELECTRICITY_USAGE].value) == 1.01
+    assert result[CURRENT_ELECTRICITY_USAGE].unit == 'kW'
     assert float(result[GAS_METER_READING].value) == 1.001
+    assert result[GAS_METER_READING].unit == 'm3'
