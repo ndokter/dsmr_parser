@@ -7,8 +7,8 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=[
-        'pyserial==3.0.1',
-        'pytz==2016.3'
+        'pyserial>=3.2.1',
+        'pytz'
     ],
     entry_points={
         'console_scripts': ['dsmr_console=dsmr_parser.__main__:console']

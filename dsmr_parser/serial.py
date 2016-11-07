@@ -62,4 +62,3 @@ class SerialReader(object):
                 if is_end_of_telegram(line):
                     yield self.telegram_parser.parse(telegram)
                     telegram = []
-

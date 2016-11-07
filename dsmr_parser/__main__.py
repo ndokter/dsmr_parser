@@ -1,7 +1,7 @@
 import argparse
 from dsmr_parser.serial import SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4, SerialReader
 from dsmr_parser import telegram_specifications
-from dsmr_parser.obis_references import P1_MESSAGE_TIMESTAMP
+
 
 def console():
     """Output DSMR data to console."""
@@ -13,8 +13,6 @@ def console():
                         help='DSMR version (2.2, 4)')
 
     args = parser.parse_args()
-
-    version = 'V' + args.version.replace('.', '_')
 
     settings = {
         '2.2': (SERIAL_SETTINGS_V2_2, telegram_specifications.V2_2),
@@ -32,4 +30,3 @@ def console():
             if obj:
                 print(obj.value, obj.unit)
         print()
-
