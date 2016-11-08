@@ -7,7 +7,7 @@ setup(
     version='0.1',
     packages=find_packages(),
     install_requires=[
-        'pyserial>=3.2.1',
+        'pyserial>=3,<4',
         'pytz'
     ],
     entry_points={
