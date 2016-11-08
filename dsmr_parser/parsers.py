@@ -1,9 +1,9 @@
 import logging
 import re
 
-from .objects import MBusObject, CosemObject
+from .objects import MBusObject, MBusObjectV2_2, CosemObject
 from .exceptions import ParseError
-
+from .obis_references import GAS_METER_READING
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class TelegramParser(object):
         telegram = {}
 
         for line_value in line_values:
-            obis_reference, dsmr_object = self.parse_line(line_value)
+            obis_reference, dsmr_object = self.parse_line(line_value.strip())
 
             telegram[obis_reference] = dsmr_object
 
@@ -45,6 +45,26 @@ class TelegramParser(object):
             return None, None
 
         return obis_reference, parser.parse(line_value)
+
+
+class TelegramParserV2_2(TelegramParser):
+    def parse(self, line_values):
+        """Join lines for gas meter."""
+
+        def join_lines(line_values):
+            join_next = re.compile(GAS_METER_READING)
+
+            join = None
+            for line_value in line_values:
+                if join:
+                    yield join.strip() + line_value
+                    join = None
+                elif join_next.match(line_value):
+                    join = line_value
+                else:
+                    yield line_value
+
+        return super().parse(join_lines(line_values))
 
 
 class DSMRObjectParser(object):
@@ -85,7 +105,11 @@ class MBusParser(DSMRObjectParser):
     """
 
     def parse(self, line):
-        return MBusObject(self._parse(line))
+        values = self._parse(line)
+        if len(values) == 2:
+            return MBusObject(values)
+        else:
+            return MBusObjectV2_2(values)
 
 
 class CosemParser(DSMRObjectParser):

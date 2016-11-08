@@ -1,6 +1,16 @@
 import serial
 
-from dsmr_parser.parsers import TelegramParser
+from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2
+
+SERIAL_SETTINGS_V2_2 = {
+    'baudrate': 9600,
+    'bytesize': serial.SEVENBITS,
+    'parity': serial.PARITY_NONE,
+    'stopbits': serial.STOPBITS_ONE,
+    'xonxoff': 0,
+    'rtscts': 0,
+    'timeout': 20
+}
 
 SERIAL_SETTINGS_V4 = {
     'baudrate': 115200,
@@ -26,7 +36,12 @@ class SerialReader(object):
     def __init__(self, device, serial_settings, telegram_specification):
         self.serial_settings = serial_settings
         self.serial_settings['port'] = device
-        self.telegram_parser = TelegramParser(telegram_specification)
+
+        if serial_settings is SERIAL_SETTINGS_V2_2:
+            telegram_parser = TelegramParserV2_2
+        else:
+            telegram_parser = TelegramParser
+        self.telegram_parser = telegram_parser(telegram_specification)
 
     def read(self):
         """
@@ -52,4 +67,3 @@ class SerialReader(object):
                 if is_end_of_telegram(line):
                     yield self.telegram_parser.parse(telegram)
                     telegram = []
-
