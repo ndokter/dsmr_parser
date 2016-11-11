@@ -10,6 +10,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'pyserial>=3,<4',
+        'pyserial-asyncio<1'
         'pytz'
     ],
     entry_points={
