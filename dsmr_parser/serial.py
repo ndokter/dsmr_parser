@@ -1,5 +1,6 @@
 import serial
-
+import asyncio
+import serial_asyncio
 from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2
 
 SERIAL_SETTINGS_V2_2 = {
@@ -33,9 +34,11 @@ def is_end_of_telegram(line):
 
 class SerialReader(object):
 
+    PORT_KEY = 'port'
+
     def __init__(self, device, serial_settings, telegram_specification):
         self.serial_settings = serial_settings
-        self.serial_settings['port'] = device
+        self.serial_settings[self.PORT_KEY] = device
 
         if serial_settings is SERIAL_SETTINGS_V2_2:
             telegram_parser = TelegramParserV2_2
@@ -67,3 +70,44 @@ class SerialReader(object):
                 if is_end_of_telegram(line):
                     yield self.telegram_parser.parse(telegram)
                     telegram = []
+
+
+class AsyncSerialReader(SerialReader):
+    """Serial reader using asyncio pyserial."""
+
+    PORT_KEY = 'url'
+
+    @asyncio.coroutine
+    def read(self, queue):
+        """
+        Read complete DSMR telegram's from the serial interface and parse it
+        into CosemObject's and MbusObject's.
+
+        Instead of being a generator, values are pushed to provided queue for
+        asynchronous processing.
+
+        :rtype Generator/Async
+        """
+        # create Serial StreamReader
+        conn = serial_asyncio.open_serial_connection(**self.serial_settings)
+        reader, _ = yield from conn
+
+        telegram = []
+
+        while True:
+            # read line if available or give control back to loop until
+            # new data has arrived
+            line = yield from reader.readline()
+            line = line.decode('ascii')
+
+            # Telegrams need to be complete because the values belong to a
+            # particular reading and can also be related to eachother.
+            if not telegram and not is_start_of_telegram(line):
+                continue
+
+            telegram.append(line)
+
+            if is_end_of_telegram(line):
+                # push new parsed telegram onto queue
+                queue.put_nowait(self.telegram_parser.parse(telegram))
+                telegram = []
