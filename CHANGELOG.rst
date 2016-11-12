@@ -1,12 +1,12 @@
 Change Log
 ----------
-**0.3**
+**0.3** (2016-11-12)
 
-- Added asyncio reader for non-blocking reads.
+- Added asyncio reader for non-blocking reads. (thanks to https://github.com/aequitas)
 
 **0.2** (2016-11-08)
 
-- User https://github.com/aequitas added support for DMSR version 2.2
+- Added support for DMSR version 2.2 (thanks to https://github.com/aequitas)
 
 **0.1** (2016-08-22)
 
