@@ -71,6 +71,7 @@ class SerialReader(object):
                     yield self.telegram_parser.parse(telegram)
                     telegram = []
 
+
 class AsyncSerialReader(SerialReader):
     """Serial reader using asyncio pyserial."""
 
@@ -110,4 +111,3 @@ class AsyncSerialReader(SerialReader):
                 # push new parsed telegram onto queue
                 queue.put_nowait(self.telegram_parser.parse(telegram))
                 telegram = []
-
