@@ -5,7 +5,7 @@ from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2
 SERIAL_SETTINGS_V2_2 = {
     'baudrate': 9600,
     'bytesize': serial.SEVENBITS,
-    'parity': serial.PARITY_NONE,
+    'parity': serial.PARITY_EVEN,
     'stopbits': serial.STOPBITS_ONE,
     'xonxoff': 0,
     'rtscts': 0,
