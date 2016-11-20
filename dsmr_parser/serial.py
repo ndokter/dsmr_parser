@@ -13,7 +13,27 @@ SERIAL_SETTINGS_V2_2 = {
     'timeout': 20
 }
 
+SERIAL_SETTINGS_V2_2_EVEN = {
+    'baudrate': 9600,
+    'bytesize': serial.SEVENBITS,
+    'parity': serial.PARITY_EVEN,
+    'stopbits': serial.STOPBITS_ONE,
+    'xonxoff': 0,
+    'rtscts': 0,
+    'timeout': 20
+}
+
 SERIAL_SETTINGS_V4 = {
+    'baudrate': 115200,
+    'bytesize': serial.SEVENBITS,
+    'parity': serial.PARITY_NONE,
+    'stopbits': serial.STOPBITS_ONE,
+    'xonxoff': 0,
+    'rtscts': 0,
+    'timeout': 20
+}
+
+SERIAL_SETTINGS_V4_EVEN = {
     'baudrate': 115200,
     'bytesize': serial.SEVENBITS,
     'parity': serial.PARITY_EVEN,
@@ -22,6 +42,7 @@ SERIAL_SETTINGS_V4 = {
     'rtscts': 0,
     'timeout': 20
 }
+
 
 
 def is_start_of_telegram(line):

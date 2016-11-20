@@ -1,8 +1,8 @@
-"""Test telegram parsing."""
+"""Test parsing of a DSMR v2.2 telegram."""
 
 from dsmr_parser.parsers import TelegramParserV2_2
 from dsmr_parser import telegram_specifications
-from dsmr_parser.obis_references import CURRENT_ELECTRICITY_USAGE, GAS_METER_READING
+from dsmr_parser import obis_references as obis
 
 TELEGRAM_V2_2 = [
     "/ISk5\2MT382-1004",
@@ -28,13 +28,14 @@ TELEGRAM_V2_2 = [
 ]
 
 
-def test_parse_v2_2():
+def test_parse():
     """Test if telegram parsing results in correct results."""
 
     parser = TelegramParserV2_2(telegram_specifications.V2_2)
     result = parser.parse(TELEGRAM_V2_2)
 
-    assert float(result[CURRENT_ELECTRICITY_USAGE].value) == 1.01
-    assert result[CURRENT_ELECTRICITY_USAGE].unit == 'kW'
-    assert float(result[GAS_METER_READING].value) == 1.001
-    assert result[GAS_METER_READING].unit == 'm3'
+    assert float(result[obis.CURRENT_ELECTRICITY_USAGE].value) == 1.01
+    assert result[obis.CURRENT_ELECTRICITY_USAGE].unit == 'kW'
+
+    assert float(result[obis.GAS_METER_READING].value) == 1.001
+    assert result[obis.GAS_METER_READING].unit == 'm3'

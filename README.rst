@@ -11,7 +11,7 @@ also includes a serial client to directly read and parse smart meter data.
 Features
 --------
 
-DSMR Parser currently supports DSMR versions 2.2 and 4.x. It has been tested with Python 3.5 and 3.4.
+DSMR Parser currently supports DSMR versions 2.2 and 4.x. It has been tested with Python 3.4 and 3.5.
 
 
 Examples
@@ -50,6 +50,9 @@ Using the serial reader to connect to your smart meter and parse it's telegrams:
 
         # See dsmr_reader.obis_references for all readable telegram values.
 
+The dsmr_parser.serial module contains multiple settings that should work in
+most cases. For example: if SERIAL_SETTINGS_V4 doesn't work, then try
+SERIAL_SETTINGS_V4_EVEN too.
 
 Installation
 ------------
@@ -64,6 +67,5 @@ To install DSMR Parser:
 TODO
 ----
 
-- add unit tests
 - verify telegram checksum
 - improve ease of use

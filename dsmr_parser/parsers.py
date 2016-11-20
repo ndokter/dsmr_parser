@@ -36,7 +36,7 @@ class TelegramParser(object):
         return telegram
 
     def parse_line(self, line_value):
-        logger.debug('Parsing line\'%s\'', line_value)
+        logger.debug('Parsing line \'%s\'', line_value)
 
         obis_reference, parser = self._find_line_parser(line_value)
 
