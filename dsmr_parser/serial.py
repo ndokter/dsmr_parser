@@ -1,7 +1,14 @@
-import serial
 import asyncio
+import logging
+
+import serial
+
 import serial_asyncio
+from dsmr_parser.exceptions import ParseError
 from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2
+
+logger = logging.getLogger(__name__)
+
 
 SERIAL_SETTINGS_V2_2 = {
     'baudrate': 9600,
@@ -42,7 +49,6 @@ SERIAL_SETTINGS_V4_EVEN = {
     'rtscts': 0,
     'timeout': 20
 }
-
 
 
 def is_start_of_telegram(line):
@@ -129,6 +135,11 @@ class AsyncSerialReader(SerialReader):
             telegram.append(line)
 
             if is_end_of_telegram(line):
-                # push new parsed telegram onto queue
-                queue.put_nowait(self.telegram_parser.parse(telegram))
+                try:
+                    parsed_telegram = self.telegram_parser.parse(telegram)
+                    # push new parsed telegram onto queue
+                    queue.put_nowait(parsed_telegram)
+                except ParseError:
+                    logger.exception("failed to parse telegram")
+
                 telegram = []

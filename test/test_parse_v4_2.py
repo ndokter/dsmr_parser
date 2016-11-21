@@ -1,13 +1,13 @@
 """Test parsing of a DSMR v4.2 telegram."""
 import datetime
-
 from decimal import Decimal
+
 import pytz
 
+from dsmr_parser import obis_references as obis
+from dsmr_parser import telegram_specifications
 from dsmr_parser.objects import CosemObject, MBusObject
 from dsmr_parser.parsers import TelegramParser
-from dsmr_parser import telegram_specifications
-from dsmr_parser import obis_references as obis
 
 TELEGRAM_V4_2 = [
     '1-3:0.2.8(42)',
@@ -22,7 +22,8 @@ TELEGRAM_V4_2 = [
     '1-0:2.7.0(00.000*kW)',
     '0-0:96.7.21(00015)',
     '0-0:96.7.9(00007)',
-    '1-0:99.97.0(3)(0-0:96.7.19)(000103180420W)(0000237126*s)(000101000001W)(2147483647*s)(000101000001W)(2147483647*s)',
+    ('1-0:99.97.0(3)(0-0:96.7.19)(000103180420W)(0000237126*s)'
+     '(000101000001W)(2147483647*s)(000101000001W)(2147483647*s)'),
     '1-0:32.32.0(00000)',
     '1-0:52.32.0(00000)',
     '1-0:72.32.0(00000)',
