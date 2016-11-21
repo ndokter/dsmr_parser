@@ -2,8 +2,8 @@ Change Log
 ----------
 
 **0.4** (2016-11-21)
-- DSMR v2.2 serial settings now uses parity serial.EVEN by default (`issue #4 <https://github.com/ndokter/dsmr_parser/pull/5>`_)
-- improved asyncio reader and improve it's error handling (`pull request #5 <https://github.com/ndokter/dsmr_parser/pull/5>`_)
+- DSMR v2.2 serial settings now uses parity serial.EVEN by default (`pull request #5 <https://github.com/ndokter/dsmr_parser/pull/5>`_)
+- improved asyncio reader and improve it's error handling (`pull request #8 <https://github.com/ndokter/dsmr_parser/pull/8>`_)
 
 **0.3** (2016-11-12)
 
