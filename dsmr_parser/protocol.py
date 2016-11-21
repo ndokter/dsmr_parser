@@ -10,7 +10,7 @@ from . import telegram_specifications
 from .exceptions import ParseError
 from .parsers import TelegramParser, TelegramParserV2_2
 from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
-                     is_end_of_telegram)
+                     is_end_of_telegram, is_start_of_telegram)
 
 
 def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
@@ -70,6 +70,12 @@ class DSMRProtocol(asyncio.Protocol):
         while "\r\n" in self.buffer:
             line, self.buffer = self.buffer.split("\r\n", 1)
             self.log.debug('got line: %s', line)
+
+            # Telegrams need to be complete because the values belong to a
+            # particular reading and can also be related to eachother.
+            if not self.telegram and not is_start_of_telegram(line):
+                continue
+
             self.telegram.append(line)
             if is_end_of_telegram(line):
                 try:
@@ -77,6 +83,7 @@ class DSMRProtocol(asyncio.Protocol):
                     self.handle_telegram(parsed_telegram)
                 except ParseError:
                     self.log.exception("failed to parse telegram")
+                self.telegram = []
 
     def connection_lost(self, exc):
         """Stop when connection is lost."""
