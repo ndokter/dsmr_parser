@@ -22,7 +22,7 @@ Using the serial reader to connect to your smart meter and parse it's telegrams:
 .. code-block:: python
 
     from dsmr_parser import telegram_specifications
-    from dsmr_parser.obis_references import P1_MESSAGE_TIMESTAMP
+    from dsmr_parser import obis_references
     from dsmr_parser.serial import SerialReader, SERIAL_SETTINGS_V4
 
     serial_reader = SerialReader(
@@ -34,25 +34,22 @@ Using the serial reader to connect to your smart meter and parse it's telegrams:
     for telegram in serial_reader.read():
 
         # The telegram message timestamp.
-        message_datetime = telegram[P1_MESSAGE_TIMESTAMP]
+        message_datetime = telegram[obis_references.P1_MESSAGE_TIMESTAMP]
 
         # Using the active tariff to determine the electricity being used and
         # delivered for the right tariff.
-        tariff = telegram[ELECTRICITY_ACTIVE_TARIFF]
+        tariff = telegram[obis_references.ELECTRICITY_ACTIVE_TARIFF]
         tariff = int(tariff.value)
 
         electricity_used_total \
-            = telegram[ELECTRICITY_USED_TARIFF_ALL[tariff - 1]]
+            = telegram[obis_references.ELECTRICITY_USED_TARIFF_ALL[tariff - 1]]
         electricity_delivered_total = \
-            telegram[ELECTRICITY_DELIVERED_TARIFF_ALL[tariff - 1]]
+            telegram[obis_referencesELECTRICITY_DELIVERED_TARIFF_ALL[tariff - 1]]
 
-        gas_reading = telegram[HOURLY_GAS_METER_READING]
+        gas_reading = telegram[obis_references.HOURLY_GAS_METER_READING]
 
         # See dsmr_reader.obis_references for all readable telegram values.
 
-The dsmr_parser.serial module contains multiple settings that should work in
-most cases. For example: if SERIAL_SETTINGS_V4 doesn't work, then try
-SERIAL_SETTINGS_V4_EVEN too.
 
 Installation
 ------------
@@ -63,6 +60,13 @@ To install DSMR Parser:
 
     $ pip install dsmr-parser
 
+Known issues
+------------
+
+If the serial settings SERIAL_SETTINGS_V2_2 or SERIAL_SETTINGS_V4 don't work.
+Make sure to try and replace the parity settings to EVEN or NONE.
+It's possible that alternative settings will be added in the future if these
+settings don't work for the majority of meters.
 
 TODO
 ----
