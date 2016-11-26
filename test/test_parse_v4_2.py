@@ -47,6 +47,7 @@ TELEGRAM_V4_2 = [
     '!5D83',
 ]
 
+
 class TelegramParserV4_2Test(unittest.TestCase):
     """ Test parsing of a DSMR v4.2 telegram. """
 
