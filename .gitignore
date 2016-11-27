@@ -5,3 +5,4 @@
 *.egg-info
 /.project
 /.pydevproject
+/.coverage
