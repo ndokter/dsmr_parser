@@ -3,3 +3,5 @@
 .tox
 .cache
 *.egg-info
+/.project
+/.pydevproject
