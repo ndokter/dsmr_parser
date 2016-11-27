@@ -1,10 +1,17 @@
 language: python
+
 python:
   - 2.7
   - 3.4
   - 3.5
-install: pip install tox-travis
+  
+install: pip install tox-travis codecov
+
 script: tox
+
+after_success:
+  - codecov
+
 matrix:
   allow_failures:
     - python: 2.7
