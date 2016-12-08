@@ -19,8 +19,8 @@ from .serial import (
 )
 
 
-def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
-    """Creates a DSMR asyncio protocol coroutine."""
+def creater_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
+    """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
         specifications = telegram_specifications.V2_2
@@ -31,13 +31,27 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
         telegram_parser = TelegramParserV4
         serial_settings = SERIAL_SETTINGS_V4
 
-    serial_settings['url'] = port
-
     protocol = partial(DSMRProtocol, loop, telegram_parser(specifications),
                        telegram_callback=telegram_callback)
 
-    conn = create_serial_connection(loop, protocol, **serial_settings)
+    return protocol, serial_settings
 
+
+def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
+    """Creates a DSMR asyncio protocol coroutine using serial port."""
+    protocol, serial_settings = creater_dsmr_protocol(
+        dsmr_version, telegram_callback, loop=None)
+    serial_settings['url'] = port
+
+    conn = create_serial_connection(loop, protocol, **serial_settings)
+    return conn
+
+
+def create_tcp_dsmr_reader(host, port, dsmr_version, telegram_callback, loop=None):
+    """Creates a DSMR asyncio protocol coroutine using TCP connection."""
+    protocol, _ = creater_dsmr_protocol(
+        dsmr_version, telegram_callback, loop=None)
+    conn = loop.create_connection(protocol, host, port)
     return conn
 
 
