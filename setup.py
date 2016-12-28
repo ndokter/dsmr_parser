@@ -6,12 +6,13 @@ setup(
     author='Nigel Dokter',
     author_email='nigeldokter@gmail.com',
     url='https://github.com/ndokter/dsmr_parser',
-    version='0.4',
+    version='0.5',
     packages=find_packages(),
     install_requires=[
         'pyserial>=3,<4',
         'pyserial-asyncio<1',
-        'pytz'
+        'pytz',
+        'PyCRC>=1.2,<2'
     ],
     entry_points={
         'console_scripts': ['dsmr_console=dsmr_parser.__main__:console']
