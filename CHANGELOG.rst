@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.5** (2016-12-29)
+
+- CRC checksum verification for DSMR v4 telegrams (`issue #10 <https://github.com/ndokter/dsmr_parser/issues/10>`_)
+
 **0.4** (2016-11-21)
 
 - DSMR v2.2 serial settings now uses parity serial.EVEN by default (`pull request #5 <https://github.com/ndokter/dsmr_parser/pull/5>`_)
@@ -8,7 +12,7 @@ Change Log
 
 **0.3** (2016-11-12)
 
-- asyncio reader for non-blocking reads. (`pull request #3 <https://github.com/ndokter/dsmr_parser/pull/3>`_)
+- asyncio reader for non-blocking reads (`pull request #3 <https://github.com/ndokter/dsmr_parser/pull/3>`_)
 
 **0.2** (2016-11-08)
 

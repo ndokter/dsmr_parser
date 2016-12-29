@@ -4,8 +4,9 @@ import pytz
 
 
 def timestamp(value):
-
     naive_datetime = datetime.datetime.strptime(value[:-1], '%y%m%d%H%M%S')
+
+    # TODO comment on this exception
     if len(value) == 13:
         is_dst = value[12] == 'S'  # assume format 160322150000W
     else:

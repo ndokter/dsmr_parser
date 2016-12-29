@@ -70,9 +70,3 @@ If the serial settings SERIAL_SETTINGS_V2_2 or SERIAL_SETTINGS_V4 don't work.
 Make sure to try and replace the parity settings to EVEN or NONE.
 It's possible that alternative settings will be added in the future if these
 settings don't work for the majority of meters.
-
-TODO
-----
-
-- verify telegram checksum
-- improve ease of use
