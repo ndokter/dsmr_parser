@@ -8,9 +8,15 @@ from serial_asyncio import create_serial_connection
 
 from . import telegram_specifications
 from .exceptions import ParseError
-from .parsers import TelegramParser, TelegramParserV2_2
-from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
-                     is_end_of_telegram, is_start_of_telegram)
+from .parsers import (
+    TelegramParserV2_2,
+    TelegramParserV4
+)
+from .serial import (
+    SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
+    is_end_of_telegram,
+    is_start_of_telegram
+)
 
 
 def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
@@ -22,7 +28,7 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
         serial_settings = SERIAL_SETTINGS_V2_2
     elif dsmr_version == '4':
         specifications = telegram_specifications.V4
-        telegram_parser = TelegramParser
+        telegram_parser = TelegramParserV4
         serial_settings = SERIAL_SETTINGS_V4
 
     serial_settings['url'] = port

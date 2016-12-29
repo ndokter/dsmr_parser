@@ -91,7 +91,7 @@ class TelegramParserV4(TelegramParser):
     def parse(self, line_values):
         self.validate_telegram_checksum(line_values)
 
-        return super(self, TelegramParserV4).parse(line_values)
+        return super().parse(line_values)
 
 
 class TelegramParserV2_2(TelegramParser):
