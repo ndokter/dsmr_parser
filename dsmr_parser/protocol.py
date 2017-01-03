@@ -8,15 +8,9 @@ from serial_asyncio import create_serial_connection
 
 from . import telegram_specifications
 from .exceptions import ParseError
-from .parsers import (
-    TelegramParserV2_2,
-    TelegramParserV4
-)
-from .serial import (
-    SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
-    is_end_of_telegram,
-    is_start_of_telegram
-)
+from .parsers import TelegramParserV2_2, TelegramParserV4
+from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
+                     is_end_of_telegram, is_start_of_telegram)
 
 
 def creater_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
@@ -47,7 +41,8 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
     return conn
 
 
-def create_tcp_dsmr_reader(host, port, dsmr_version, telegram_callback, loop=None):
+def create_tcp_dsmr_reader(host, port, dsmr_version,
+                           telegram_callback, loop=None):
     """Creates a DSMR asyncio protocol coroutine using TCP connection."""
     protocol, _ = creater_dsmr_protocol(
         dsmr_version, telegram_callback, loop=None)
@@ -72,6 +67,8 @@ class DSMRProtocol(asyncio.Protocol):
         self.telegram = []
         # buffer to keep incomplete incoming data
         self.buffer = ''
+        # keep a lock until the connection is closed
+        self._closed = asyncio.Event()
 
     def connection_made(self, transport):
         """Just logging for now."""
@@ -107,7 +104,11 @@ class DSMRProtocol(asyncio.Protocol):
 
     def connection_lost(self, exc):
         """Stop when connection is lost."""
-        self.log.error('disconnected')
+        if exc:
+            self.log.exception('disconnected due to exception')
+        else:
+            self.log.info('disconnected because of close/abort.')
+        self._closed.set()
 
     def handle_telegram(self, telegram):
         """Send off parsed telegram to handling callback."""
@@ -115,3 +116,8 @@ class DSMRProtocol(asyncio.Protocol):
 
         if self.telegram_callback:
             self.telegram_callback(telegram)
+
+    @asyncio.coroutine
+    def wait_closed(self):
+        """Wait until connection is closed."""
+        yield from self._closed.wait()
