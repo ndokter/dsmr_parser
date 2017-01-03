@@ -13,7 +13,7 @@ from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
                      is_end_of_telegram, is_start_of_telegram)
 
 
-def creater_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
+def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
     """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
@@ -33,7 +33,7 @@ def creater_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
 
 def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
     """Creates a DSMR asyncio protocol coroutine using serial port."""
-    protocol, serial_settings = creater_dsmr_protocol(
+    protocol, serial_settings = create_dsmr_protocol(
         dsmr_version, telegram_callback, loop=None)
     serial_settings['url'] = port
 
@@ -44,7 +44,7 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
 def create_tcp_dsmr_reader(host, port, dsmr_version,
                            telegram_callback, loop=None):
     """Creates a DSMR asyncio protocol coroutine using TCP connection."""
-    protocol, _ = creater_dsmr_protocol(
+    protocol, _ = create_dsmr_protocol(
         dsmr_version, telegram_callback, loop=None)
     conn = loop.create_connection(protocol, host, port)
     return conn
