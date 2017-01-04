@@ -61,19 +61,22 @@ class TelegramParserV4(TelegramParser):
         :raises InvalidChecksumError:
         """
 
-        full_telegram = '\r\n'.join(line_values)
+        full_telegram = ''.join(line_values)
 
         # Extract the bytes that count towards the checksum.
-        contents = re.search(r'(\/.+\!)([0-9A-Z]{4})', full_telegram, re.DOTALL)
+        checksum_contents = re.search(r'\/.+\!', full_telegram, re.DOTALL)
 
-        if not contents:
+        # Extract the hexadecimal checksum value itself.
+        checksum_hex = re.search(r'((?<=\!)[0-9A-Z]{4}(?=\r\n))+', full_telegram)
+
+        if not checksum_contents or not checksum_hex:
             raise ParseError(
                 'Failed to perform CRC validation because the telegram is '
                 'incomplete. The checksum and/or content values are missing.'
             )
 
-        calculated_crc = CRC16().calculate(contents.group(1))
-        expected_crc = contents.group(2)
+        calculated_crc = CRC16().calculate(checksum_contents.group(0))
+        expected_crc = checksum_hex.group(0)
         expected_crc = int(expected_crc, base=16)
 
         if calculated_crc != expected_crc:
