@@ -8,19 +8,13 @@ from serial_asyncio import create_serial_connection
 
 from . import telegram_specifications
 from .exceptions import ParseError
-from .parsers import (
-    TelegramParserV2_2,
-    TelegramParserV4
-)
-from .serial import (
-    SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
-    is_end_of_telegram,
-    is_start_of_telegram
-)
+from .parsers import TelegramParserV2_2, TelegramParserV4
+from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
+                     is_end_of_telegram, is_start_of_telegram)
 
 
-def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
-    """Creates a DSMR asyncio protocol coroutine."""
+def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
+    """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
         specifications = telegram_specifications.V2_2
@@ -31,13 +25,28 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
         telegram_parser = TelegramParserV4
         serial_settings = SERIAL_SETTINGS_V4
 
-    serial_settings['url'] = port
-
     protocol = partial(DSMRProtocol, loop, telegram_parser(specifications),
                        telegram_callback=telegram_callback)
 
-    conn = create_serial_connection(loop, protocol, **serial_settings)
+    return protocol, serial_settings
 
+
+def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
+    """Creates a DSMR asyncio protocol coroutine using serial port."""
+    protocol, serial_settings = create_dsmr_protocol(
+        dsmr_version, telegram_callback, loop=None)
+    serial_settings['url'] = port
+
+    conn = create_serial_connection(loop, protocol, **serial_settings)
+    return conn
+
+
+def create_tcp_dsmr_reader(host, port, dsmr_version,
+                           telegram_callback, loop=None):
+    """Creates a DSMR asyncio protocol coroutine using TCP connection."""
+    protocol, _ = create_dsmr_protocol(
+        dsmr_version, telegram_callback, loop=None)
+    conn = loop.create_connection(protocol, host, port)
     return conn
 
 
@@ -58,6 +67,8 @@ class DSMRProtocol(asyncio.Protocol):
         self.telegram = []
         # buffer to keep incomplete incoming data
         self.buffer = ''
+        # keep a lock until the connection is closed
+        self._closed = asyncio.Event()
 
     def connection_made(self, transport):
         """Just logging for now."""
@@ -93,7 +104,11 @@ class DSMRProtocol(asyncio.Protocol):
 
     def connection_lost(self, exc):
         """Stop when connection is lost."""
-        self.log.error('disconnected')
+        if exc:
+            self.log.exception('disconnected due to exception')
+        else:
+            self.log.info('disconnected because of close/abort.')
+        self._closed.set()
 
     def handle_telegram(self, telegram):
         """Send off parsed telegram to handling callback."""
@@ -101,3 +116,8 @@ class DSMRProtocol(asyncio.Protocol):
 
         if self.telegram_callback:
             self.telegram_callback(telegram)
+
+    @asyncio.coroutine
+    def wait_closed(self):
+        """Wait until connection is closed."""
+        yield from self._closed.wait()
