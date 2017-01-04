@@ -84,9 +84,11 @@ class DSMRProtocol(asyncio.Protocol):
 
     def handle_lines(self):
         """Assemble incoming data into single lines."""
-        while "\r\n" in self.buffer:
-            line, self.buffer = self.buffer.split("\r\n", 1)
+        crlf = "\r\n"
+        while crlf in self.buffer:
+            line, self.buffer = self.buffer.split(crlf, 1)
             self.log.debug('got line: %s', line)
+            line += crlf  # add the trailing crlf again
 
             # Telegrams need to be complete because the values belong to a
             # particular reading and can also be related to eachother.
