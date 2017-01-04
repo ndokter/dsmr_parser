@@ -77,7 +77,7 @@ class DSMRProtocol(asyncio.Protocol):
         while crlf in self.buffer:
             line, self.buffer = self.buffer.split(crlf, 1)
             self.log.debug('got line: %s', line)
-            line += crlf # add the trailing crlf again
+            line += crlf  # add the trailing crlf again
 
             # Telegrams need to be complete because the values belong to a
             # particular reading and can also be related to eachother.
