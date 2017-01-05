@@ -33,14 +33,16 @@ SERIAL_SETTINGS_V4 = {
 
 def is_start_of_telegram(line):
     """
-    :type line: line
+    :param bytes line: series of bytes representing a line.
+        Example: b'/KFM5KAIFA-METER\r\n'
     """
     return line.startswith('/')
 
 
 def is_end_of_telegram(line):
     """
-    :type line: line
+    :param bytes line: series of bytes representing a line.
+        Example: b'!7B05\r\n'
     """
     return line.startswith('!')
 
@@ -66,30 +68,28 @@ class SerialReader(object):
         Read complete DSMR telegram's from the serial interface and parse it
         into CosemObject's and MbusObject's
 
-        :rtype dict
+        :rtype: generator
         """
         with serial.Serial(**self.serial_settings) as serial_handle:
-            telegram = []
+            telegram = ''
 
             while True:
                 line = serial_handle.readline()
-                line = line.decode('ascii')  # TODO move this to the parser?
+                line.decode('ascii')
 
-                # Telegrams need to be complete because the values belong to a
-                # particular reading and can also be related to eachother.
+                # Build up buffer from the start of the telegram.
                 if not telegram and not is_start_of_telegram(line):
                     continue
 
-                telegram.append(line)
+                telegram += line
 
                 if is_end_of_telegram(line):
-
                     try:
                         yield self.telegram_parser.parse(telegram)
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
 
-                    telegram = []
+                    telegram = ''
 
 
 class AsyncSerialReader(SerialReader):
@@ -106,33 +106,33 @@ class AsyncSerialReader(SerialReader):
         Instead of being a generator, values are pushed to provided queue for
         asynchronous processing.
 
-        :rtype Generator/Async
+        :rtype: None
         """
         # create Serial StreamReader
         conn = serial_asyncio.open_serial_connection(**self.serial_settings)
         reader, _ = yield from conn
 
-        telegram = []
+        telegram = ''
 
         while True:
-            # read line if available or give control back to loop until
-            # new data has arrived
+            # Read line if available or give control back to loop until new
+            # data has arrived.
             line = yield from reader.readline()
             line = line.decode('ascii')
 
-            # Telegrams need to be complete because the values belong to a
-            # particular reading and can also be related to eachother.
+            # Build up buffer from the start of the telegram.
             if not telegram and not is_start_of_telegram(line):
                 continue
 
-            telegram.append(line)
+            telegram += line
 
             if is_end_of_telegram(line):
                 try:
-                    parsed_telegram = self.telegram_parser.parse(telegram)
-                    # push new parsed telegram onto queue
-                    queue.put_nowait(parsed_telegram)
+                    # Push new parsed telegram onto queue.
+                    queue.put_nowait(
+                        self.telegram_parser.parse(telegram)
+                    )
                 except ParseError as e:
                     logger.warning('Failed to parse telegram: %s', e)
 
-                telegram = []
+                telegram = ''

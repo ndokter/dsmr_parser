@@ -24,6 +24,9 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
         specifications = telegram_specifications.V4
         telegram_parser = TelegramParserV4
         serial_settings = SERIAL_SETTINGS_V4
+    else:
+        raise NotImplementedError("No telegram parser found for version: %s",
+                                  dsmr_version)
 
     protocol = partial(DSMRProtocol, loop, telegram_parser(specifications),
                        telegram_callback=telegram_callback)
@@ -64,7 +67,7 @@ class DSMRProtocol(asyncio.Protocol):
         # callback to call on complete telegram
         self.telegram_callback = telegram_callback
         # buffer to keep incoming telegram lines
-        self.telegram = []
+        self.telegram = ''
         # buffer to keep incomplete incoming data
         self.buffer = ''
         # keep a lock until the connection is closed
@@ -77,7 +80,7 @@ class DSMRProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         """Add incoming data to buffer."""
-        data = data.decode()
+        data = data.decode('ascii')
         self.log.debug('received data: %s', data.strip())
         self.buffer += data
         self.handle_lines()
@@ -95,13 +98,16 @@ class DSMRProtocol(asyncio.Protocol):
             if not self.telegram and not is_start_of_telegram(line):
                 continue
 
-            self.telegram.append(line)
+            self.telegram += line
+
             if is_end_of_telegram(line):
                 try:
                     parsed_telegram = self.telegram_parser.parse(self.telegram)
+                except ParseError as e:
+                    self.log.error('Failed to parse telegram: %s', e)
+                else:
                     self.handle_telegram(parsed_telegram)
-                except ParseError:
-                    self.log.exception("failed to parse telegram")
+
                 self.telegram = []
 
     def connection_lost(self, exc):
