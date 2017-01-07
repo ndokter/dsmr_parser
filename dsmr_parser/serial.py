@@ -63,7 +63,7 @@ class SerialReader(object):
             telegram_parser = TelegramParser
 
         self.telegram_parser = telegram_parser(telegram_specification)
-        self.telegram_buffer = TelegramBuffer(self.handle_telegram)
+        self.telegram_buffer = TelegramBuffer()
 
     def read(self):
         """
@@ -75,13 +75,14 @@ class SerialReader(object):
         with serial.Serial(**self.serial_settings) as serial_handle:
             while True:
                 data = serial_handle.readline()
-                self.telegram_buffer.append(data.decode('ascii'))
+                self.telegram_buffer.put(data.decode('ascii'))
 
-    def handle_telegram(self, telegram):
-        try:
-            yield self.telegram_parser.parse(telegram)
-        except ParseError as e:
-            logger.error('Failed to parse telegram: %s', e)
+                for telegram in self.telegram_buffer.get_all():
+                    try:
+                        yield self.telegram_parser.parse(telegram)
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
+
 
 
 class AsyncSerialReader(SerialReader):
@@ -108,16 +109,16 @@ class AsyncSerialReader(SerialReader):
             # Read line if available or give control back to loop until new
             # data has arrived.
             data = yield from reader.readline()
-            self.telegram_buffer.append(data.decode('ascii'))
+            self.telegram_buffer.put(data.decode('ascii'))
 
-            # TODO
-            # try:
-            #     # Push new parsed telegram onto queue.
-            #     queue.put_nowait(
-            #         self.telegram_parser.parse(telegram)
-            #     )
-            # except ParseError as e:
-            #     logger.warning('Failed to parse telegram: %s', e)
+            for telegram in self.telegram_buffer.get_all():
+                try:
+                    # Push new parsed telegram onto queue.
+                    queue.put_nowait(
+                        self.telegram_parser.parse(telegram)
+                    )
+                except ParseError as e:
+                    logger.warning('Failed to parse telegram: %s', e)
 
 
 class TelegramBuffer(object):
@@ -126,20 +127,24 @@ class TelegramBuffer(object):
     when complete.
     """
 
-    def __init__(self, callback):
+    def __init__(self):
         self._buffer = ''
-        self._callback = callback
 
-    def append(self, data):
+    def get_all(self):
+        """
+        Remove complete telegrams from buffer and yield them
+        :rtype generator:
+        """
+        for telegram in self._find_telegrams():
+            self._remove(telegram)
+            yield telegram
+
+    def put(self, data):
         """
         Add telegram data to buffer.
         :param str data: chars, lines or full telegram strings of telegram data
         """
         self._buffer += data
-
-        for telegram in self._find_telegrams():
-            self._callback(telegram)
-            self._remove(telegram)
 
     def _remove(self, telegram):
         """

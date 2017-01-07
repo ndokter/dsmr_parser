@@ -8,40 +8,51 @@ from test.example_telegrams import TELEGRAM_V2_2, TELEGRAM_V4_2
 class TelegramBufferTest(TestCase):
 
     def setUp(self):
-        self.callback = mock.MagicMock()
-        self.telegram_buffer = TelegramBuffer(self.callback)
+        self.telegram_buffer = TelegramBuffer()
 
     def test_v22_telegram(self):
-        self.telegram_buffer.append(TELEGRAM_V2_2)
+        self.telegram_buffer.put(TELEGRAM_V2_2)
 
-        self.callback.assert_called_once_with(TELEGRAM_V2_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V2_2)
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_v42_telegram(self):
-        self.telegram_buffer.append(TELEGRAM_V4_2)
+        self.telegram_buffer.put(TELEGRAM_V4_2)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_multiple_mixed_telegrams(self):
-        self.telegram_buffer.append(
+        self.telegram_buffer.put(
             ''.join((TELEGRAM_V2_2, TELEGRAM_V4_2, TELEGRAM_V2_2))
         )
 
-        self.callback.assert_has_calls([
-            call(TELEGRAM_V2_2),
-            call(TELEGRAM_V4_2),
-            call(TELEGRAM_V2_2),
-        ])
+        telegrams = list(self.telegram_buffer.get_all())
+
+        self.assertListEqual(
+            telegrams,
+            [
+                TELEGRAM_V2_2,
+                TELEGRAM_V4_2,
+                TELEGRAM_V2_2
+            ]
+        )
+
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_v42_telegram_preceded_with_unclosed_telegram(self):
         # There are unclosed telegrams at the start of the buffer.
         incomplete_telegram = TELEGRAM_V4_2[:-1]
 
-        self.telegram_buffer.append(incomplete_telegram + TELEGRAM_V4_2)
+        self.telegram_buffer.put(incomplete_telegram + TELEGRAM_V4_2)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_v42_telegram_preceded_with_unopened_telegram(self):
@@ -49,37 +60,47 @@ class TelegramBufferTest(TestCase):
         # the buffer was being filled while the telegram was outputted halfway.
         incomplete_telegram = TELEGRAM_V4_2[1:]
 
-        self.telegram_buffer.append(incomplete_telegram + TELEGRAM_V4_2)
+        self.telegram_buffer.put(incomplete_telegram + TELEGRAM_V4_2)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_v42_telegram_trailed_by_unclosed_telegram(self):
         incomplete_telegram = TELEGRAM_V4_2[:-1]
 
-        self.telegram_buffer.append(TELEGRAM_V4_2 + incomplete_telegram)
+        self.telegram_buffer.put(TELEGRAM_V4_2 + incomplete_telegram)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, incomplete_telegram)
 
     def test_v42_telegram_trailed_by_unopened_telegram(self):
         incomplete_telegram = TELEGRAM_V4_2[1:]
 
-        self.telegram_buffer.append(TELEGRAM_V4_2 + incomplete_telegram)
+        self.telegram_buffer.put(TELEGRAM_V4_2 + incomplete_telegram)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, incomplete_telegram)
 
     def test_v42_telegram_adding_line_by_line(self):
         for line in TELEGRAM_V4_2.splitlines(keepends=True):
-            self.telegram_buffer.append(line)
+            self.telegram_buffer.put(line)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_v42_telegram_adding_char_by_char(self):
         for char in TELEGRAM_V4_2:
-            self.telegram_buffer.append(char)
+            self.telegram_buffer.put(char)
 
-        self.callback.assert_called_once_with(TELEGRAM_V4_2)
+        telegram = next(self.telegram_buffer.get_all())
+
+        self.assertEqual(telegram, TELEGRAM_V4_2)
         self.assertEqual(self.telegram_buffer._buffer, '')

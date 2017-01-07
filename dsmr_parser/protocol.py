@@ -67,7 +67,7 @@ class DSMRProtocol(asyncio.Protocol):
         # callback to call on complete telegram
         self.telegram_callback = telegram_callback
         # buffer to keep incomplete incoming data
-        self.telegram_buffer = TelegramBuffer(self.handle_telegram)
+        self.telegram_buffer = TelegramBuffer()
         # keep a lock until the connection is closed
         self._closed = asyncio.Event()
 
@@ -80,7 +80,8 @@ class DSMRProtocol(asyncio.Protocol):
         """Add incoming data to buffer."""
         data = data.decode('ascii')
         self.log.debug('received data: %s', data)
-        self.telegram_buffer.append(data)
+        self.telegram_buffer.put(data)
+        map(self.handle_telegram, self.telegram_buffer.get_all())
 
     def connection_lost(self, exc):
         """Stop when connection is lost."""
@@ -94,8 +95,12 @@ class DSMRProtocol(asyncio.Protocol):
         """Send off parsed telegram to handling callback."""
         self.log.debug('got telegram: %s', telegram)
 
-        if self.telegram_callback:
-            self.telegram_callback(telegram)
+        try:
+            parsed_telegram = self.telegram_parser.parse(telegram)
+        except ParseError:
+            self.log.exception("failed to parse telegram")
+        else:
+            self.telegram_callback(parsed_telegram)
 
     @asyncio.coroutine
     def wait_closed(self):
