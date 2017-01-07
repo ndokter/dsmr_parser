@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 import serial
 import serial_asyncio
 
@@ -136,3 +137,50 @@ class AsyncSerialReader(SerialReader):
                     logger.warning('Failed to parse telegram: %s', e)
 
                 telegram = ''
+
+
+class TelegramBuffer(object):
+
+    def __init__(self, callback):
+        self._callback = callback
+        self._buffer = ''
+
+    def append(self, data):
+        """
+        Add telegram data to buffer. The callback is called with a full telegram
+        when data is complete.
+        :param str data: chars or lines of telegram data
+        :return:
+        """
+        self._buffer += data
+
+        for telegram in self.find_telegrams(self._buffer):
+            self._callback(telegram)
+            self._remove(telegram)
+
+    def _remove(self, telegram):
+        """
+        Remove telegram from buffer and incomplete data preceding it. This
+        is easier than validating the data before adding it to the buffer.
+        :param str telegram:
+        :return:
+        """
+        # Remove data leading up to the telegram and the telegram itself.
+        index = self._buffer.index(telegram) + len(telegram)
+
+        self._buffer = self._buffer[index:]
+
+    @staticmethod
+    def find_telegrams(buffer):
+        """
+        Find complete telegrams from buffer from  start ('/') till ending
+        checksum ('!AB12\r\n').
+        :rtype: list
+        """
+        # - Match all characters after start of telegram except for the start
+        # itself again '^\/]+', which eliminates incomplete preceding telegrams.
+        # - Do non greedy match using '?' so start is matched up to the first
+        # checksum that's found.
+        # - The checksum is optional '{0,4}' because not all telegram versions
+        # support it.
+        return re.findall(r'\/[^\/]+?\![A-F0-9]{0,4}\r\n', buffer, re.DOTALL)
