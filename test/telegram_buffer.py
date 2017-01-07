@@ -71,7 +71,6 @@ class TelegramBufferTest(TestCase):
         self.assertEqual(self.telegram_buffer._buffer, incomplete_telegram)
 
     def test_v42_telegram_adding_line_by_line(self):
-
         for line in TELEGRAM_V4_2.splitlines(keepends=True):
             self.telegram_buffer.append(line)
 
@@ -79,7 +78,6 @@ class TelegramBufferTest(TestCase):
         self.assertEqual(self.telegram_buffer._buffer, '')
 
     def test_v42_telegram_adding_char_by_char(self):
-
         for char in TELEGRAM_V4_2:
             self.telegram_buffer.append(char)
 

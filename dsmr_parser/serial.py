@@ -63,6 +63,7 @@ class SerialReader(object):
             telegram_parser = TelegramParser
 
         self.telegram_parser = telegram_parser(telegram_specification)
+        self.telegram_buffer = TelegramBuffer(self.handle_telegram)
 
     def read(self):
         """
@@ -72,25 +73,15 @@ class SerialReader(object):
         :rtype: generator
         """
         with serial.Serial(**self.serial_settings) as serial_handle:
-            telegram = ''
-
             while True:
-                line = serial_handle.readline()
-                line.decode('ascii')
+                data = serial_handle.readline()
+                self.telegram_buffer.append(data.decode('ascii'))
 
-                # Build up buffer from the start of the telegram.
-                if not telegram and not is_start_of_telegram(line):
-                    continue
-
-                telegram += line
-
-                if is_end_of_telegram(line):
-                    try:
-                        yield self.telegram_parser.parse(telegram)
-                    except ParseError as e:
-                        logger.error('Failed to parse telegram: %s', e)
-
-                    telegram = ''
+    def handle_telegram(self, telegram):
+        try:
+            yield self.telegram_parser.parse(telegram)
+        except ParseError as e:
+            logger.error('Failed to parse telegram: %s', e)
 
 
 class AsyncSerialReader(SerialReader):
@@ -113,48 +104,40 @@ class AsyncSerialReader(SerialReader):
         conn = serial_asyncio.open_serial_connection(**self.serial_settings)
         reader, _ = yield from conn
 
-        telegram = ''
-
         while True:
             # Read line if available or give control back to loop until new
             # data has arrived.
-            line = yield from reader.readline()
-            line = line.decode('ascii')
+            data = yield from reader.readline()
+            self.telegram_buffer.append(data.decode('ascii'))
 
-            # Build up buffer from the start of the telegram.
-            if not telegram and not is_start_of_telegram(line):
-                continue
-
-            telegram += line
-
-            if is_end_of_telegram(line):
-                try:
-                    # Push new parsed telegram onto queue.
-                    queue.put_nowait(
-                        self.telegram_parser.parse(telegram)
-                    )
-                except ParseError as e:
-                    logger.warning('Failed to parse telegram: %s', e)
-
-                telegram = ''
+            # TODO
+            # try:
+            #     # Push new parsed telegram onto queue.
+            #     queue.put_nowait(
+            #         self.telegram_parser.parse(telegram)
+            #     )
+            # except ParseError as e:
+            #     logger.warning('Failed to parse telegram: %s', e)
 
 
 class TelegramBuffer(object):
+    """
+    Used as a buffer for a stream or telegram data. Returns telegram from buffer
+    when complete.
+    """
 
     def __init__(self, callback):
-        self._callback = callback
         self._buffer = ''
+        self._callback = callback
 
     def append(self, data):
         """
-        Add telegram data to buffer. The callback is called with a full telegram
-        when data is complete.
-        :param str data: chars or lines of telegram data
-        :return:
+        Add telegram data to buffer.
+        :param str data: chars, lines or full telegram strings of telegram data
         """
         self._buffer += data
 
-        for telegram in self.find_telegrams(self._buffer):
+        for telegram in self._find_telegrams():
             self._callback(telegram)
             self._remove(telegram)
 
@@ -170,8 +153,7 @@ class TelegramBuffer(object):
 
         self._buffer = self._buffer[index:]
 
-    @staticmethod
-    def find_telegrams(buffer):
+    def _find_telegrams(self):
         """
         Find complete telegrams from buffer from  start ('/') till ending
         checksum ('!AB12\r\n').
@@ -183,4 +165,8 @@ class TelegramBuffer(object):
         # checksum that's found.
         # - The checksum is optional '{0,4}' because not all telegram versions
         # support it.
-        return re.findall(r'\/[^\/]+?\![A-F0-9]{0,4}\r\n', buffer, re.DOTALL)
+        return re.findall(
+            r'\/[^\/]+?\![A-F0-9]{0,4}\r\n',
+            self._buffer,
+            re.DOTALL
+        )
