@@ -1,11 +1,10 @@
-from unittest import mock, TestCase
-from unittest.mock import call
+import unittest
 
 from dsmr_parser.serial import TelegramBuffer
 from test.example_telegrams import TELEGRAM_V2_2, TELEGRAM_V4_2
 
 
-class TelegramBufferTest(TestCase):
+class TelegramBufferTest(unittest.TestCase):
 
     def setUp(self):
         self.telegram_buffer = TelegramBuffer()
