@@ -4,7 +4,7 @@ import unittest
 
 import pytz
 
-from .example_telegrams import TELEGRAM_V4_2
+from test.example_telegrams import TELEGRAM_V4_2
 from dsmr_parser import obis_references as obis
 from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError

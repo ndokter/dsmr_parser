@@ -32,22 +32,6 @@ SERIAL_SETTINGS_V4 = {
 }
 
 
-def is_start_of_telegram(line):
-    """
-    :param bytes line: series of bytes representing a line.
-        Example: b'/KFM5KAIFA-METER\r\n'
-    """
-    return line.startswith('/')
-
-
-def is_end_of_telegram(line):
-    """
-    :param bytes line: series of bytes representing a line.
-        Example: b'!7B05\r\n'
-    """
-    return line.startswith('!')
-
-
 class SerialReader(object):
     PORT_KEY = 'port'
 
@@ -123,8 +107,8 @@ class AsyncSerialReader(SerialReader):
 
 class TelegramBuffer(object):
     """
-    Used as a buffer for a stream or telegram data. Returns telegram from buffer
-    when complete.
+    Used as a buffer for a stream of telegram data. Constructs full telegram
+    strings from the buffered data and returns it.
     """
 
     def __init__(self):
@@ -132,7 +116,7 @@ class TelegramBuffer(object):
 
     def get_all(self):
         """
-        Remove complete telegrams from buffer and yield them
+        Remove complete telegrams from buffer and yield them.
         :rtype generator:
         """
         for telegram in self._find_telegrams():
@@ -160,7 +144,7 @@ class TelegramBuffer(object):
 
     def _find_telegrams(self):
         """
-        Find complete telegrams from buffer from  start ('/') till ending
+        Find complete telegrams in buffer from  start ('/') till ending
         checksum ('!AB12\r\n').
         :rtype: list
         """

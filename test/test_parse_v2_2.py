@@ -1,6 +1,6 @@
 import unittest
 
-from .example_telegrams import TELEGRAM_V2_2
+from test.example_telegrams import TELEGRAM_V2_2
 from dsmr_parser.parsers import TelegramParserV2_2
 from dsmr_parser import telegram_specifications
 from dsmr_parser import obis_references as obis

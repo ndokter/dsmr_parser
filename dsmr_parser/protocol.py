@@ -9,8 +9,7 @@ from serial_asyncio import create_serial_connection
 from . import telegram_specifications
 from .exceptions import ParseError
 from .parsers import TelegramParserV2_2, TelegramParserV4
-from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
-                     is_end_of_telegram, is_start_of_telegram, TelegramBuffer)
+from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,TelegramBuffer)
 
 
 def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
@@ -81,7 +80,9 @@ class DSMRProtocol(asyncio.Protocol):
         data = data.decode('ascii')
         self.log.debug('received data: %s', data)
         self.telegram_buffer.put(data)
-        map(self.handle_telegram, self.telegram_buffer.get_all())
+
+        for telegram in self.telegram_buffer.get_all():
+            self.handle_telegram(telegram)
 
     def connection_lost(self, exc):
         """Stop when connection is lost."""
