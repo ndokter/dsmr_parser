@@ -68,7 +68,6 @@ class SerialReader(object):
                         logger.error('Failed to parse telegram: %s', e)
 
 
-
 class AsyncSerialReader(SerialReader):
     """Serial reader using asyncio pyserial."""
 
