@@ -3,7 +3,7 @@ import asyncio
 import logging
 from functools import partial
 
-from .protocol import create_dsmr_reader, create_tcp_dsmr_reader
+from dsmr_parser.protocol import create_dsmr_reader, create_tcp_dsmr_reader
 
 
 def console():

@@ -3,9 +3,9 @@ import re
 
 from PyCRC.CRC16 import CRC16
 
-from .objects import MBusObject, MBusObjectV2_2, CosemObject
-from .exceptions import ParseError, InvalidChecksumError
-from .obis_references import GAS_METER_READING
+from dsmr_parser.objects import MBusObject, MBusObjectV2_2, CosemObject
+from dsmr_parser.exceptions import ParseError, InvalidChecksumError
+from dsmr_parser.obis_references import GAS_METER_READING
 
 logger = logging.getLogger(__name__)
 

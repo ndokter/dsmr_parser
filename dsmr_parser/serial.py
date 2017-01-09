@@ -59,7 +59,7 @@ class SerialReader(object):
         with serial.Serial(**self.serial_settings) as serial_handle:
             while True:
                 data = serial_handle.readline()
-                self.telegram_buffer.put(data.decode('ascii'))
+                self.telegram_buffer.append(data.decode('ascii'))
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
@@ -92,7 +92,7 @@ class AsyncSerialReader(SerialReader):
             # Read line if available or give control back to loop until new
             # data has arrived.
             data = yield from reader.readline()
-            self.telegram_buffer.put(data.decode('ascii'))
+            self.telegram_buffer.append(data.decode('ascii'))
 
             for telegram in self.telegram_buffer.get_all():
                 try:
@@ -122,7 +122,7 @@ class TelegramBuffer(object):
             self._remove(telegram)
             yield telegram
 
-    def put(self, data):
+    def append(self, data):
         """
         Add telegram data to buffer.
         :param str data: chars, lines or full telegram strings of telegram data

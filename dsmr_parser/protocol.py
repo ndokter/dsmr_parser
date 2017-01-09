@@ -6,10 +6,11 @@ from functools import partial
 
 from serial_asyncio import create_serial_connection
 
-from . import telegram_specifications
-from .exceptions import ParseError
-from .parsers import TelegramParserV2_2, TelegramParserV4
-from .serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4, TelegramBuffer)
+from dsmr_parser import telegram_specifications
+from dsmr_parser.exceptions import ParseError
+from dsmr_parser.parsers import TelegramParserV2_2, TelegramParserV4
+from dsmr_parser.serial import (SERIAL_SETTINGS_V2_2, SERIAL_SETTINGS_V4,
+                                TelegramBuffer)
 
 
 def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
@@ -79,7 +80,7 @@ class DSMRProtocol(asyncio.Protocol):
         """Add incoming data to buffer."""
         data = data.decode('ascii')
         self.log.debug('received data: %s', data)
-        self.telegram_buffer.put(data)
+        self.telegram_buffer.append(data)
 
         for telegram in self.telegram_buffer.get_all():
             self.handle_telegram(telegram)
