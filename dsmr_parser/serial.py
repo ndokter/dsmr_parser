@@ -4,9 +4,8 @@ import re
 import serial
 import serial_asyncio
 
-from dsmr_parser.exceptions import ParseError
-from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2, \
-    TelegramParserV4
+from .exceptions import ParseError
+from .parsers import TelegramParser, TelegramParserV2_2, TelegramParserV4
 
 logger = logging.getLogger(__name__)
 
