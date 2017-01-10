@@ -5,7 +5,7 @@ import unittest
 from dsmr_parser import obis_references as obis
 from dsmr_parser import telegram_specifications
 from dsmr_parser.parsers import TelegramParserV2_2
-from dsmr_parser.protocol import DSMRProtocol
+from dsmr_parser.clients.protocol import DSMRProtocol
 
 
 TELEGRAM_V2_2 = (

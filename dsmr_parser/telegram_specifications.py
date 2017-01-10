@@ -1,8 +1,8 @@
 from decimal import Decimal
 
-from . import obis_references as obis
-from .parsers import CosemParser, ValueParser, MBusParser
-from .value_types import timestamp
+from dsmr_parser import obis_references as obis
+from dsmr_parser.parsers import CosemParser, ValueParser, MBusParser
+from dsmr_parser.value_types import timestamp
 
 
 """

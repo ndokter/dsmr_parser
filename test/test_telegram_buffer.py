@@ -1,6 +1,6 @@
 import unittest
 
-from dsmr_parser.serial import TelegramBuffer
+from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from test.example_telegrams import TELEGRAM_V2_2, TELEGRAM_V4_2
 
 
