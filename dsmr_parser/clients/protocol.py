@@ -1,8 +1,8 @@
 """Asyncio protocol implementation for handling telegrams."""
 
+from functools import partial
 import asyncio
 import logging
-from functools import partial
 
 from serial_asyncio import create_serial_connection
 

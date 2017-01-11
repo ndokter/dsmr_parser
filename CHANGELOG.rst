@@ -1,6 +1,16 @@
 Change Log
 ----------
 
+**0.7** (2017-01-14)
+
+- Internal refactoring related to the way clients feed their data into the parse module. Clients can now supply the telegram data in single characters, lines (which was common) or complete telegram strings.
+
+**IMPORTANT: this release has the following backwards incompatible changes:**
+
+- Client related imports from dsmr_parser.serial and dsmr_parser.protocol have been moved to dsmr_parser.clients (import these from the clients/__init__.py module)
+- The .parse() method of TelegramParser, TelegramParserV2_2, TelegramParserV4 now accepts a string containing the entire telegram (including \r\n characters) and not a list
+
+
 **0.6** (2017-01-04)
 
 - Fixed bug in CRC checksum verification for the asyncio client (`pull request #15 <https://github.com/ndokter/dsmr_parser/pull/15>`_)

@@ -26,7 +26,7 @@ Using the serial reader to connect to your smart meter and parse it's telegrams:
 
     from dsmr_parser import telegram_specifications
     from dsmr_parser import obis_references
-    from dsmr_parser.serial import SerialReader, SERIAL_SETTINGS_V4
+    from dsmr_parser.clients import SerialReader, SERIAL_SETTINGS_V4
 
     serial_reader = SerialReader(
         device='/dev/ttyUSB0',

@@ -84,6 +84,3 @@ class AsyncSerialReader(SerialReader):
                     )
                 except ParseError as e:
                     logger.warning('Failed to parse telegram: %s', e)
-
-
-
