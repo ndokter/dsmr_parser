@@ -3,7 +3,7 @@ Change Log
 
 **0.7** (2017-01-14)
 
-- Internal refactoring related to the way clients feed their data into the parse module. Clients can now supply the telegram data in single characters, lines (which was common) or complete telegram strings.
+- Internal refactoring related to the way clients feed their data into the parse module. Clients can now supply the telegram data in single characters, lines (which was common) or complete telegram strings. (`pull request #17 <https://github.com/ndokter/dsmr_parser/pull/17>`_)
 
 **IMPORTANT: this release has the following backwards incompatible changes:**
 
