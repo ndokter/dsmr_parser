@@ -4,7 +4,7 @@ import unittest
 
 from dsmr_parser import obis_references as obis
 from dsmr_parser import telegram_specifications
-from dsmr_parser.parsers import TelegramParserV2_2
+from dsmr_parser.parsers import TelegramParser
 from dsmr_parser.clients.protocol import DSMRProtocol
 
 
@@ -35,10 +35,7 @@ TELEGRAM_V2_2 = (
 class ProtocolTest(unittest.TestCase):
 
     def setUp(self):
-        parser = TelegramParserV2_2
-        specification = telegram_specifications.V2_2
-
-        telegram_parser = parser(specification)
+        telegram_parser = TelegramParser(telegram_specifications.V2_2)
         self.protocol = DSMRProtocol(None, telegram_parser,
                                      telegram_callback=Mock())
 

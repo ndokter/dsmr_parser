@@ -4,12 +4,12 @@ import unittest
 
 import pytz
 
-from test.example_telegrams import TELEGRAM_V4_2
 from dsmr_parser import obis_references as obis
 from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
 from dsmr_parser.objects import CosemObject, MBusObject
-from dsmr_parser.parsers import TelegramParser, TelegramParserV4
+from dsmr_parser.parsers import TelegramParser
+from test.example_telegrams import TELEGRAM_V4_2
 
 
 class TelegramParserV4_2Test(unittest.TestCase):
@@ -17,7 +17,7 @@ class TelegramParserV4_2Test(unittest.TestCase):
 
     def test_valid(self):
         # No exception is raised.
-        TelegramParserV4.validate_telegram_checksum(TELEGRAM_V4_2)
+        TelegramParser.validate_checksum(TELEGRAM_V4_2)
 
     def test_invalid(self):
         # Remove the electricty used data value. This causes the checksum to
@@ -28,14 +28,14 @@ class TelegramParserV4_2Test(unittest.TestCase):
         )
 
         with self.assertRaises(InvalidChecksumError):
-            TelegramParserV4.validate_telegram_checksum(corrupted_telegram)
+            TelegramParser.validate_checksum(corrupted_telegram)
 
     def test_missing_checksum(self):
         # Remove the checksum value causing a ParseError.
         corrupted_telegram = TELEGRAM_V4_2.replace('!6796\r\n', '')
 
         with self.assertRaises(ParseError):
-            TelegramParserV4.validate_telegram_checksum(corrupted_telegram)
+            TelegramParser.validate_checksum(corrupted_telegram)
 
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.V4)

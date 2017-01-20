@@ -5,10 +5,7 @@ import serial_asyncio
 
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError
-from dsmr_parser.parsers import TelegramParser, TelegramParserV2_2, \
-    TelegramParserV4
-from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
-    SERIAL_SETTINGS_V4
+from dsmr_parser.parsers import TelegramParser
 
 
 logger = logging.getLogger(__name__)
@@ -21,14 +18,7 @@ class SerialReader(object):
         self.serial_settings = serial_settings
         self.serial_settings[self.PORT_KEY] = device
 
-        if serial_settings is SERIAL_SETTINGS_V2_2:
-            telegram_parser = TelegramParserV2_2
-        elif serial_settings is SERIAL_SETTINGS_V4:
-            telegram_parser = TelegramParserV4
-        else:
-            telegram_parser = TelegramParser
-
-        self.telegram_parser = telegram_parser(telegram_specification)
+        self.telegram_parser = TelegramParser(telegram_specification)
         self.telegram_buffer = TelegramBuffer()
 
     def read(self):
