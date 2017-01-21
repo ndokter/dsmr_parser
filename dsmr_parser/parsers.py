@@ -91,6 +91,9 @@ class TelegramParser(object):
 
 
 class DSMRObjectParser(object):
+    """
+    Parses an object (can also be see as a 'line') from a telegram.
+    """
 
     def __init__(self, *value_formats):
         self.value_formats = value_formats
@@ -181,6 +184,15 @@ class ProfileGenericParser(DSMRObjectParser):
 
 
 class ValueParser(object):
+    """
+    Parses a single value from DSMRObject's.
+
+    Example with coerce_type being int:
+        (002*A) becomes {'value': 1, 'unit': 'A'}
+
+    Example with coerce_type being str:
+        (42) becomes {'value': '42', 'unit': None}
+    """
 
     def __init__(self, coerce_type):
         self.coerce_type = coerce_type

@@ -43,5 +43,4 @@ class CosemObject(DSMRObject):
 
 
 class ProfileGeneric(DSMRObject):
-    pass
-    # TODO implement
+    pass  # TODO implement
