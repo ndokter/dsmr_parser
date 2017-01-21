@@ -15,28 +15,6 @@ from test.example_telegrams import TELEGRAM_V4_2
 class TelegramParserV4_2Test(unittest.TestCase):
     """ Test parsing of a DSMR v4.2 telegram. """
 
-    def test_valid(self):
-        # No exception is raised.
-        TelegramParser.validate_checksum(TELEGRAM_V4_2)
-
-    def test_invalid(self):
-        # Remove the electricty used data value. This causes the checksum to
-        # not match anymore.
-        corrupted_telegram = TELEGRAM_V4_2.replace(
-            '1-0:1.8.1(001581.123*kWh)\r\n',
-            ''
-        )
-
-        with self.assertRaises(InvalidChecksumError):
-            TelegramParser.validate_checksum(corrupted_telegram)
-
-    def test_missing_checksum(self):
-        # Remove the checksum value causing a ParseError.
-        corrupted_telegram = TELEGRAM_V4_2.replace('!6796\r\n', '')
-
-        with self.assertRaises(ParseError):
-            TelegramParser.validate_checksum(corrupted_telegram)
-
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.V4)
         result = parser.parse(TELEGRAM_V4_2)
@@ -219,3 +197,25 @@ class TelegramParserV4_2Test(unittest.TestCase):
 
         # VALVE_POSITION_GAS (0-x:24.4.0)
         # TODO to be implemented
+
+    def test_checksum_valid(self):
+        # No exception is raised.
+        TelegramParser.validate_checksum(TELEGRAM_V4_2)
+
+    def test_checksum_invalid(self):
+        # Remove the electricty used data value. This causes the checksum to
+        # not match anymore.
+        corrupted_telegram = TELEGRAM_V4_2.replace(
+            '1-0:1.8.1(001581.123*kWh)\r\n',
+            ''
+        )
+
+        with self.assertRaises(InvalidChecksumError):
+            TelegramParser.validate_checksum(corrupted_telegram)
+
+    def test_checksum_missing(self):
+        # Remove the checksum value causing a ParseError.
+        corrupted_telegram = TELEGRAM_V4_2.replace('!6796\r\n', '')
+
+        with self.assertRaises(ParseError):
+            TelegramParser.validate_checksum(corrupted_telegram)

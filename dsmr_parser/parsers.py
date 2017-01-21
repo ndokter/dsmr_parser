@@ -3,7 +3,7 @@ import re
 
 from PyCRC.CRC16 import CRC16
 
-from dsmr_parser.objects import MBusObject, MBusObjectV2_2, CosemObject
+from dsmr_parser.objects import MBusObject, CosemObject
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 
 logger = logging.getLogger(__name__)
@@ -11,14 +11,15 @@ logger = logging.getLogger(__name__)
 
 class TelegramParser(object):
 
-    def __init__(self, telegram_specification,
-                 enable_checksum_validation=False):
+    def __init__(self, telegram_specification, apply_checksum_validation=True):
         """
         :param telegram_specification: determines how the telegram is parsed
+        :param apply_checksum_validation: validate checksum if applicable for
+            telegram DSMR version (v4 and up).
         :type telegram_specification: dict
         """
         self.telegram_specification = telegram_specification
-        self.enable_checksum_validation = enable_checksum_validation
+        self.apply_checksum_validation = apply_checksum_validation
 
     def parse(self, telegram_data):
         """
@@ -32,19 +33,22 @@ class TelegramParser(object):
         :returns: Shortened example:
             {
                 ..
-                r'0-0:96\.1\.1': <CosemObject>,  # EQUIPMENT_IDENTIFIER
-                r'1-0:1\.8\.1': <CosemObject>,   # ELECTRICITY_USED_TARIFF_1
-                r'0-\d:24\.3\.0': <MBusObject>,  # GAS_METER_READING
+                r'\d-\d:96\.1\.1.+?\r\n': <CosemObject>,  # EQUIPMENT_IDENTIFIER
+                r'\d-\d:1\.8\.1.+?\r\n': <CosemObject>,   # ELECTRICITY_USED_TARIFF_1
+                r'\d-\d:24\.3\.0.+?\r\n.+?\r\n': <MBusObject>,  # GAS_METER_READING
                 ..
             }
+        :raises ParseError:
+        :raises InvalidChecksumError:
         """
 
-        if self.enable_checksum_validation:
+        if self.apply_checksum_validation \
+                and self.telegram_specification['checksum_support']:
             self.validate_checksum(telegram_data)
 
         telegram = {}
 
-        for signature, parser in self.telegram_specification.items():
+        for signature, parser in self.telegram_specification['objects'].items():
             match = re.search(signature, telegram_data, re.DOTALL)
 
             if match:
@@ -124,11 +128,7 @@ class MBusParser(DSMRObjectParser):
     """
 
     def parse(self, line):
-        values = self._parse(line)
-        if len(values) == 2:
-            return MBusObject(values)
-        else:
-            return MBusObjectV2_2(values)
+        return MBusObject(self._parse(line))
 
 
 class CosemParser(DSMRObjectParser):
