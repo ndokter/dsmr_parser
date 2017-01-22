@@ -15,7 +15,7 @@ how the telegram lines are parsed.
 
 V2_2 = {
     'checksum_support': False,
-    'object_signatures': {
+    'objects': {
         obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
         obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
         obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),

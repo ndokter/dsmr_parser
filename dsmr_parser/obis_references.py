@@ -36,7 +36,7 @@ INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE = r'\d-\d:62\.7\.0.+?\r\n'
 EQUIPMENT_IDENTIFIER_GAS = r'\d-\d:96\.1\.0.+?\r\n'
 # TODO
 HOURLY_GAS_METER_READING = r'\d-\d:24\.2\.1.+?\r\n'
-GAS_METER_READING = r'(\d-\d:24\.3\.0.+?\r\n.+?\r\n)'
+GAS_METER_READING = r'\d-\d:24\.3\.0.+?\r\n.+?\r\n'
 ACTUAL_TRESHOLD_ELECTRICITY = r'\d-\d:17\.0\.0.+?\r\n'
 ACTUAL_SWITCH_POSITION = r'\d-\d:96\.3\.10.+?\r\n'
 VALVE_POSITION_GAS = r'\d-\d:24\.4\.0.+?\r\n'
