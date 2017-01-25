@@ -181,7 +181,6 @@ class TelegramParserV5Test(unittest.TestCase):
         assert result[obis.HOURLY_GAS_METER_READING].unit == 'm3'
         assert isinstance(result[obis.HOURLY_GAS_METER_READING].value, Decimal)
         assert result[obis.HOURLY_GAS_METER_READING].value == Decimal('0.107')
-        
 
     def test_checksum_valid(self):
         # No exception is raised.
