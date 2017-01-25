@@ -1,8 +1,7 @@
-import unittest
-
 from decimal import Decimal
 
 import datetime
+import unittest
 
 import pytz
 
