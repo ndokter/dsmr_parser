@@ -1,7 +1,7 @@
 Change Log
 ----------
 
-**0.8** (2017-01-29)
+**0.8** (2017-01-26)
 
 - added support for DSMR v3
 - added support for DSMR v5
