@@ -1,4 +1,7 @@
 class DSMRObject(object):
+    """
+    Represents all data from a single telegram line.
+    """
 
     def __init__(self, values):
         self.values = values

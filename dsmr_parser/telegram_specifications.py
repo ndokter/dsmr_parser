@@ -42,34 +42,7 @@ V2_2 = {
     }
 }
 
-V3 = {
-    'checksum_support': False,
-    'objects': {
-        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.ACTUAL_TRESHOLD_ELECTRICITY: CosemParser(ValueParser(Decimal)),
-        obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)),
-        obis.TEXT_MESSAGE_CODE: CosemParser(ValueParser(int)),
-        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
-        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
-        obis.DEVICE_TYPE: CosemParser(ValueParser(str)),
-        obis.VALVE_POSITION_GAS: CosemParser(ValueParser(str)),
-        obis.GAS_METER_READING: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(int),
-            ValueParser(int),
-            ValueParser(int),
-            ValueParser(str),
-            ValueParser(Decimal),
-        ),
-    }
-}
+V3 = V2_2
 
 V4 = {
     'checksum_support': True,
@@ -145,3 +118,5 @@ V5 = {
         )
     }
 }
+
+ALL = (V2_2, V3, V4, V5)

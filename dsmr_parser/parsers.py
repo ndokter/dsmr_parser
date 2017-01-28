@@ -27,8 +27,8 @@ class TelegramParser(object):
 
         The telegram str type makes python 2.x integration easier.
 
-        :param str telegram: full telegram from start ('/') to checksum
-            ('!ABCD') including line endings inbetween the telegram's lines
+        :param str telegram_data: full telegram from start ('/') to checksum
+            ('!ABCD') including line endings in between the telegram's lines
         :rtype: dict
         :returns: Shortened example:
             {
@@ -51,8 +51,12 @@ class TelegramParser(object):
         for signature, parser in self.telegram_specification['objects'].items():
             match = re.search(signature, telegram_data, re.DOTALL)
 
-            if match:
-                telegram[signature] = parser.parse(match.group(0))
+            # All telegram specification lines/signatures are expected to be
+            # present.
+            if not match:
+                raise ParseError('Telegram specification does not match '
+                                 'telegram data')
+            telegram[signature] = parser.parse(match.group(0))
 
         return telegram
 
@@ -88,6 +92,31 @@ class TelegramParser(object):
                     expected_crc
                 )
             )
+
+
+def match_telegram_specification(telegram_data):
+    """
+    Find telegram specification that matches the telegram data by trying all
+    specifications.
+
+    Could be further optimized to check the actual 0.2.8 OBIS reference which
+    is available for DSMR version 4 and up.
+
+    :param str telegram_data: full telegram from start ('/') to checksum
+            ('!ABCD') including line endings in between the telegram's lines
+    :return: telegram specification
+    :rtype: dict
+    """
+    # Prevent circular import
+    from dsmr_parser import telegram_specifications
+
+    for specification in telegram_specifications.ALL:
+        try:
+            TelegramParser(specification).parse(telegram_data)
+        except ParseError:
+            pass
+        else:
+            return specification
 
 
 class DSMRObjectParser(object):
