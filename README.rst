@@ -53,6 +53,7 @@ into a dictionary.
 
      from dsmr_parser import telegram_specifications
      from dsmr_parser.parsers import TelegramParser
+
      telegram_str = (
          '/ISk5\2MT382-1000\r\n'
          '\r\n'
@@ -77,11 +78,11 @@ into a dictionary.
          '0-1:24.4.0(1)\r\n'
          '!\r\n'
      )
+
      parser = TelegramParser(telegram_specifications.V3)
     
      telegram = parser.parse(telegram_str)
      print(telegram)  # see 'Telegram object' docs below
-
 
 Telegram object
 ---------------
