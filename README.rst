@@ -22,7 +22,7 @@ Client module usage
 
 **Serial client**
 
-The most simple client is the serial client. It should be run in a separate
+Read the serial port and work with the parsed telegrams. It should be run in a separate
 process because the code is blocking (not asynchronous):
 
 .. code-block:: python
@@ -97,7 +97,7 @@ contains 'kW', 'A', 'kWh' or 'm3'.
 
 .. code-block:: python
 
-    # Contents of parsed DSMR v3 telegram
+    # Contents of a parsed DSMR v3 telegram
     {'\\d-\\d:17\\.0\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39eb8>,
      '\\d-\\d:1\\.7\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10f916390>,
      '\\d-\\d:1\\.8\\.1.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39e10>,
@@ -115,7 +115,7 @@ contains 'kW', 'A', 'kWh' or 'm3'.
      '\\d-\\d:96\\.1\\.1.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39f98>,
      '\\d-\\d:96\\.3\\.10.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39dd8>}
 
-Example to get values:
+Example to get some of the values:
 
 .. code-block:: python
 
@@ -135,6 +135,7 @@ Example to get values:
      gas_reading = telegram[obis_references.HOURLY_GAS_METER_READING]
 
     # See dsmr_reader.obis_references for all readable telegram values.
+    # Note that the avilable values differ per DSMR version.
 
 
 Installation
