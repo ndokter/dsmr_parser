@@ -54,6 +54,7 @@ into a dictionary.
      from dsmr_parser import telegram_specifications
      from dsmr_parser.parsers import TelegramParser
 
+     # String is formatted in separate lines for readability.
      telegram_str = (
          '/ISk5\2MT382-1000\r\n'
          '\r\n'
