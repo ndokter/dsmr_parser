@@ -7,7 +7,6 @@ from test import example_telegrams
 
 class MatchTelegramSpecificationTest(unittest.TestCase):
 
-
     def test_v2_2(self):
         assert match_telegram_specification(example_telegrams.TELEGRAM_V2_2) \
            == telegram_specifications.V2_2
