@@ -4,3 +4,7 @@ class ParseError(Exception):
 
 class InvalidChecksumError(ParseError):
     pass
+
+
+class TelegramSpecificationMatchError(ParseError):
+    pass

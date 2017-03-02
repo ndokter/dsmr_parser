@@ -12,6 +12,15 @@ from test.example_telegrams import TELEGRAM_V3
 class TelegramParserV3Test(unittest.TestCase):
     """ Test parsing of a DSMR v3 telegram. """
 
+    def test_telegram_specification_matching(self):
+        parser = TelegramParser()
+        parser.parse(TELEGRAM_V3)
+
+        self.assertEqual(
+            parser.telegram_specification,
+            telegram_specifications.V3
+        )
+
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.V3)
         result = parser.parse(TELEGRAM_V3)
