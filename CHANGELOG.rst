@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.9** (2017-03-02)
+
+- allow the telegram specification to optionally be autodetected
+
 **0.8** (2017-01-26)
 
 - added support for DSMR v3
