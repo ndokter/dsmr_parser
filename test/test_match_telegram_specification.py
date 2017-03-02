@@ -1,12 +1,12 @@
 import unittest
 
+from dsmr_parser.exceptions import TelegramSpecificationMatchError
 from dsmr_parser.parsers import match_telegram_specification
 from dsmr_parser import telegram_specifications
 from test import example_telegrams
 
 
 class MatchTelegramSpecificationTest(unittest.TestCase):
-
 
     def test_v2_2(self):
         assert match_telegram_specification(example_telegrams.TELEGRAM_V2_2) \
@@ -23,3 +23,7 @@ class MatchTelegramSpecificationTest(unittest.TestCase):
     def test_v5(self):
         assert match_telegram_specification(example_telegrams.TELEGRAM_V5) \
            == telegram_specifications.V5
+
+    def test_malformed_telegram(self):
+        with self.assertRaises(TelegramSpecificationMatchError):
+            match_telegram_specification(example_telegrams.TELEGRAM_V5[:-4])

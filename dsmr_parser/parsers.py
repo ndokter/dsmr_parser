@@ -4,16 +4,18 @@ import re
 from PyCRC.CRC16 import CRC16
 
 from dsmr_parser.objects import MBusObject, CosemObject
-from dsmr_parser.exceptions import ParseError, InvalidChecksumError
+from dsmr_parser.exceptions import ParseError, InvalidChecksumError, \
+    TelegramSpecificationMatchError
 
 logger = logging.getLogger(__name__)
 
 
 class TelegramParser(object):
 
-    def __init__(self, telegram_specification, apply_checksum_validation=True):
+    def __init__(self, telegram_specification=None, apply_checksum_validation=True):
         """
-        :param telegram_specification: determines how the telegram is parsed
+        :param telegram_specification: determines how the telegram is parsed.
+            Will attempt to autodetect if omitted.
         :param apply_checksum_validation: validate checksum if applicable for
             telegram DSMR version (v4 and up).
         :type telegram_specification: dict
@@ -39,8 +41,10 @@ class TelegramParser(object):
                 ..
             }
         :raises ParseError:
-        :raises InvalidChecksumError:
         """
+        if not self.telegram_specification:
+            self.telegram_specification = \
+                match_telegram_specification(telegram_data)
 
         if self.apply_checksum_validation \
                 and self.telegram_specification['checksum_support']:
@@ -117,6 +121,11 @@ def match_telegram_specification(telegram_data):
             pass
         else:
             return specification
+
+    raise TelegramSpecificationMatchError(
+        'Could automatically match telegram specification. Make sure the data'
+        'is not corrupt. Alternatively manually specify one.'
+    )
 
 
 class DSMRObjectParser(object):
