@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.9** (2017-05-12)
+
+- added DSMR v5 serial settings
+
 **0.8** (2017-01-26)
 
 - added support for DSMR v3
