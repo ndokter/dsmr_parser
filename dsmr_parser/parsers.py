@@ -92,31 +92,6 @@ class TelegramParser(object):
             )
 
 
-def match_telegram_specification(telegram_data):
-    """
-    Find telegram specification that matches the telegram data by trying all
-    specifications.
-
-    Could be further optimized to check the actual 0.2.8 OBIS reference which
-    is available for DSMR version 4 and up.
-
-    :param str telegram_data: full telegram from start ('/') to checksum
-            ('!ABCD') including line endings in between the telegram's lines
-    :return: telegram specification
-    :rtype: dict
-    """
-    # Prevent circular import
-    from dsmr_parser import telegram_specifications
-
-    for specification in telegram_specifications.ALL:
-        try:
-            TelegramParser(specification).parse(telegram_data)
-        except ParseError:
-            pass
-        else:
-            return specification
-
-
 class DSMRObjectParser(object):
     """
     Parses an object (can also be see as a 'line') from a telegram.
@@ -174,10 +149,11 @@ class CosemParser(DSMRObjectParser):
     1  23  45
 
     1) OBIS Reduced ID-code
-    2) Separator “(“, ASCII 28h
+    2) Separator "(", ASCII 28h
     3) COSEM object attribute value
-    4) Unit of measurement values (Unit of capture objects attribute) – only if applicable
-    5) Separator “)”, ASCII 29h
+    4) Unit of measurement values (Unit of capture objects attribute) - only if
+       applicable
+    5) Separator ")", ASCII 29h
     """
 
     def parse(self, line):

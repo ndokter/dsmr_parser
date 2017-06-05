@@ -1,6 +1,12 @@
 Change Log
 ----------
 
+**0.10** (2017-06-05)
+
+- bugix: don't force full telegram signatures (`pull request #25 <https://github.com/ndokter/dsmr_parser/pull/25>`_)
+- removed unused code for automatic telegram detection as this needs reworking after the fix mentioned above
+- InvalidChecksumError's are logged as warning instead of error
+
 **0.9** (2017-05-12)
 
 - added DSMR v5 serial settings
