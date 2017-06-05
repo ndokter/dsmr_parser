@@ -51,12 +51,10 @@ class TelegramParser(object):
         for signature, parser in self.telegram_specification['objects'].items():
             match = re.search(signature, telegram_data, re.DOTALL)
 
-            # All telegram specification lines/signatures are expected to be
-            # present.
-            if not match:
-                raise ParseError('Telegram specification does not match '
-                                 'telegram data')
-            telegram[signature] = parser.parse(match.group(0))
+            # Some signatures are optional and may not be present,
+            # so only parse lines that match
+            if match:
+                telegram[signature] = parser.parse(match.group(0))
 
         return telegram
 
