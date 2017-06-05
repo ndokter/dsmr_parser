@@ -8,7 +8,7 @@ from serial_asyncio import create_serial_connection
 
 from dsmr_parser import telegram_specifications
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
-from dsmr_parser.exceptions import ParseError
+from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.parsers import TelegramParser
 from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
     SERIAL_SETTINGS_V4
