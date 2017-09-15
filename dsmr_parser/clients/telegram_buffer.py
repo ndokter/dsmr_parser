@@ -51,7 +51,7 @@ class TelegramBuffer(object):
         # - The checksum is optional '{0,4}' because not all telegram versions
         # support it.
         return re.findall(
-            r'\/[^\/]+?\![A-F0-9]{0,4}\r\n',
+            r'\/[^\/]+?\![A-F0-9]{0,4}\0?\r\n',
             self._buffer,
             re.DOTALL
         )
