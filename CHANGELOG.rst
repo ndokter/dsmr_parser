@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.11** (2017-09-18)
+
+- NULL value fix in checksum (`pull request #26 <https://github.com/ndokter/dsmr_parser/pull/26>`_)
+
 **0.10** (2017-06-05)
 
 - bugix: don't force full telegram signatures (`pull request #25 <https://github.com/ndokter/dsmr_parser/pull/25>`_)
