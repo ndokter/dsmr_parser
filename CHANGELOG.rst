@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.12** (2018-07-12)
+
+- removed pytz dependency because of TZ caching in serverless application
+
 **0.11** (2017-09-18)
 
 - NULL value fix in checksum (`pull request #26 <https://github.com/ndokter/dsmr_parser/pull/26>`_)
