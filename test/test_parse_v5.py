@@ -87,6 +87,12 @@ class TelegramParserV5Test(unittest.TestCase):
         assert isinstance(result[obis.LONG_POWER_FAILURE_COUNT].value, int)
         assert result[obis.LONG_POWER_FAILURE_COUNT].value == 0
 
+        # SHORT_POWER_FAILURE_COUNT (1-0:96.7.21)
+        assert isinstance(result[obis.SHORT_POWER_FAILURE_COUNT], CosemObject)
+        assert result[obis.SHORT_POWER_FAILURE_COUNT].unit is None
+        assert isinstance(result[obis.SHORT_POWER_FAILURE_COUNT].value, int)
+        assert result[obis.SHORT_POWER_FAILURE_COUNT].value == 13
+
         # VOLTAGE_SAG_L1_COUNT (1-0:32.32.0)
         assert isinstance(result[obis.VOLTAGE_SAG_L1_COUNT], CosemObject)
         assert result[obis.VOLTAGE_SAG_L1_COUNT].unit is None
@@ -122,6 +128,42 @@ class TelegramParserV5Test(unittest.TestCase):
         assert result[obis.VOLTAGE_SWELL_L3_COUNT].unit is None
         assert isinstance(result[obis.VOLTAGE_SWELL_L3_COUNT].value, int)
         assert result[obis.VOLTAGE_SWELL_L3_COUNT].value == 0
+
+        # INSTANTANEOUS_VOLTAGE_L1 (1-0:32.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_VOLTAGE_L1], CosemObject)
+        assert result[obis.INSTANTANEOUS_VOLTAGE_L1].unit == 'V'
+        assert isinstance(result[obis.INSTANTANEOUS_VOLTAGE_L1].value, Decimal)
+        assert result[obis.INSTANTANEOUS_VOLTAGE_L1].value == Decimal('230.0')
+
+        # INSTANTANEOUS_VOLTAGE_L2 (1-0:52.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_VOLTAGE_L2], CosemObject)
+        assert result[obis.INSTANTANEOUS_VOLTAGE_L2].unit == 'V'
+        assert isinstance(result[obis.INSTANTANEOUS_VOLTAGE_L2].value, Decimal)
+        assert result[obis.INSTANTANEOUS_VOLTAGE_L2].value == Decimal('230.0')
+
+        # INSTANTANEOUS_VOLTAGE_L3 (1-0:72.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_VOLTAGE_L3], CosemObject)
+        assert result[obis.INSTANTANEOUS_VOLTAGE_L3].unit == 'V'
+        assert isinstance(result[obis.INSTANTANEOUS_VOLTAGE_L3].value, Decimal)
+        assert result[obis.INSTANTANEOUS_VOLTAGE_L3].value == Decimal('229.0')
+
+        # INSTANTANEOUS_CURRENT_L1 (1-0:31.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L1], CosemObject)
+        assert result[obis.INSTANTANEOUS_CURRENT_L1].unit == 'A'
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L1].value, Decimal)
+        assert result[obis.INSTANTANEOUS_CURRENT_L1].value == Decimal('0.48')
+
+        # INSTANTANEOUS_CURRENT_L2 (1-0:51.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L2], CosemObject)
+        assert result[obis.INSTANTANEOUS_CURRENT_L2].unit == 'A'
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L2].value, Decimal)
+        assert result[obis.INSTANTANEOUS_CURRENT_L2].value == Decimal('0.44')
+
+        # INSTANTANEOUS_CURRENT_L3 (1-0:71.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L3], CosemObject)
+        assert result[obis.INSTANTANEOUS_CURRENT_L3].unit == 'A'
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L3].value, Decimal)
+        assert result[obis.INSTANTANEOUS_CURRENT_L3].value == Decimal('0.86')
 
         # TEXT_MESSAGE (0-0:96.13.0)
         assert isinstance(result[obis.TEXT_MESSAGE], CosemObject)
