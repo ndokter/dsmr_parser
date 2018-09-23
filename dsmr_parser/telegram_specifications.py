@@ -88,6 +88,7 @@ V5 = {
         obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
         obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
         obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
+        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
         obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
         obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
         obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),

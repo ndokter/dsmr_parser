@@ -8,6 +8,7 @@ objects are introduced.
 """
 P1_MESSAGE_HEADER = r'\d-\d:0\.2\.8.+?\r\n'
 P1_MESSAGE_TIMESTAMP = r'\d-\d:1\.0\.0.+?\r\n'
+ELECTRICITY_IMPORTED_TOTAL = r'\d-\d:1\.8\.0.+?\r\n'
 ELECTRICITY_USED_TARIFF_1 = r'\d-\d:1\.8\.1.+?\r\n'
 ELECTRICITY_USED_TARIFF_2 = r'\d-\d:1\.8\.2.+?\r\n'
 ELECTRICITY_DELIVERED_TARIFF_1 = r'\d-\d:2\.8\.1.+?\r\n'
