@@ -2,6 +2,7 @@ Change Log
 ----------
 
 **0.12** (2018-09-23)
+
 - Add serial settings for DSMR v5.0 (`pull request #31 <https://github.com/ndokter/dsmr_parser/pull/31>`_).
 - Lux-creos-obis-1.8.0 (`pull request #32 <https://github.com/ndokter/dsmr_parser/pull/32>`_). 
 
