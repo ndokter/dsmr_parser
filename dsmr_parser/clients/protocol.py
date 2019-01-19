@@ -11,7 +11,7 @@ from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.parsers import TelegramParser
 from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
-    SERIAL_SETTINGS_V4
+    SERIAL_SETTINGS_V4, SERIAL_SETTINGS_V5
 
 
 def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
@@ -25,7 +25,7 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
         serial_settings = SERIAL_SETTINGS_V4
     elif dsmr_version == '5':
         specification = telegram_specifications.V5
-        serial_settings = SERIAL_SETTINGS_V4
+        serial_settings = SERIAL_SETTINGS_V5
     else:
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
