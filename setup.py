@@ -4,9 +4,9 @@ setup(
     name='dsmr-parser',
     description='Library to parse Dutch Smart Meter Requirements (DSMR)',
     author='Nigel Dokter',
-    author_email='nigeldokter@gmail.com',
+    author_email='nigel@nldr.net',
     url='https://github.com/ndokter/dsmr_parser',
-    version='0.12',
+    version='0.13',
     packages=find_packages(),
     install_requires=[
         'pyserial>=3,<4',

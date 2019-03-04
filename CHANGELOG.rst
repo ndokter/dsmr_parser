@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.13** (2019-03-04)
+
+- Fix DSMR v5.0 serial settings which were not used (`pull request #33 <https://github.com/ndokter/dsmr_parser/pull/33>`_).
+
 **0.12** (2018-09-23)
 
 - Add serial settings for DSMR v5.0 (`pull request #31 <https://github.com/ndokter/dsmr_parser/pull/31>`_).
