@@ -6,3 +6,5 @@
 /.project
 /.pydevproject
 /.coverage
+build/
+dist/
