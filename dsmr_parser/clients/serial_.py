@@ -32,7 +32,7 @@ class SerialReader(object):
         """
         with serial.Serial(**self.serial_settings) as serial_handle:
             while True:
-                data = serial_handle.readline()
+                data = serial_handle.read(max(1, min(1024, serial_handle.in_waiting)))
                 self.telegram_buffer.append(data.decode('ascii'))
 
                 for telegram in self.telegram_buffer.get_all():
