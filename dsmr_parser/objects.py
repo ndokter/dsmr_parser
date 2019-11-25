@@ -47,7 +47,6 @@ class Telegram(object):
     def __str__(self):
         output = ""
         for attr,value in self:
-            output += " " if not output == "" else ""
             output += "{}: \t {} \t[{}]\n".format(attr,str(value.value),str(value.unit))
         return output
 
