@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.14** (2019-10-08)
+
+- Changed serial reading to reduce CPU usage (`pull request #37 <https://github.com/ndokter/dsmr_parser/pull/37>`_).
+
 **0.13** (2019-03-04)
 
 - Fix DSMR v5.0 serial settings which were not used (`pull request #33 <https://github.com/ndokter/dsmr_parser/pull/33>`_).
