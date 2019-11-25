@@ -21,6 +21,7 @@ class SerialReader(object):
 
         self.telegram_parser = TelegramParser(telegram_specification)
         self.telegram_buffer = TelegramBuffer()
+        self.telegram_specification = telegram_specification
 
     def read(self):
         """
