@@ -55,7 +55,7 @@ class SerialReader(object):
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
-                        yield Telegram(telegram, telegram_parser, telegram_specification)
+                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
                     except InvalidChecksumError as e:
                         logger.warning(str(e))
                     except ParseError as e:
