@@ -205,10 +205,12 @@ Accessing the telegrams information as  attributes directly:
 
     telegram
     Out[3]: <dsmr_parser.objects.Telegram at 0x7f5e995d9898>
+    telegram.CURRENT_ELECTRICITY_USAGE
+    Out[4]: <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
     telegram.CURRENT_ELECTRICITY_USAGE.value
-    Out[4]: Decimal('2.027')
+    Out[5]: Decimal('2.027')
     telegram.CURRENT_ELECTRICITY_USAGE.unit
-    Out[5]: 'kW'
+    Out[6]: 'kW'
 
 The telegram object has an iterator, can be used to find all the information elements in the current telegram:
 
