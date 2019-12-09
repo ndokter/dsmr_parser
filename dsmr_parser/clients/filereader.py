@@ -8,6 +8,44 @@ from dsmr_parser.parsers import TelegramParser
 logger = logging.getLogger(__name__)
 
 class FileReader(object):
+    """
+     Filereader to read and parse raw telegram strings from a file and instantiate Telegram objects
+     for each read telegram.
+     Usage:
+        from dsmr_parser import telegram_specifications
+        from dsmr_parser.clients.filereader import FileReader
+
+        if __name__== "__main__":
+
+            infile = '/data/smartmeter/readings.txt'
+
+            file_reader = FileReader(
+                file = infile,
+                telegram_specification = telegram_specifications.V4
+                )
+
+            for telegram in file_reader.read_as_object():
+                print(telegram)
+
+     The file can be created like:
+        from dsmr_parser import telegram_specifications
+        from dsmr_parser.clients import SerialReader, SERIAL_SETTINGS_V5
+
+        if __name__== "__main__":
+
+            outfile = '/data/smartmeter/readings.txt'
+
+            serial_reader = SerialReader(
+                device='/dev/ttyUSB0',
+                serial_settings=SERIAL_SETTINGS_V5,
+                telegram_specification=telegram_specifications.V4
+            )
+
+            for telegram in serial_reader.read_as_object():
+                f=open(outfile,"ab+")
+                f.write(telegram._telegram_data.encode())
+                f.close()
+     """
 
     def __init__(self, file, telegram_specification):
         self._file = file
