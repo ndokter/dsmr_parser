@@ -1,9 +1,9 @@
-from dsmr_parser import telegram_specifications
+import logging
+
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
-from dsmr_parser.objects import CosemObject, MBusObject, Telegram
+from dsmr_parser.objects import Telegram
 from dsmr_parser.parsers import TelegramParser
-import os
 
 logger = logging.getLogger(__name__)
 
