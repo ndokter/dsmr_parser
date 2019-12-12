@@ -49,11 +49,12 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
 def create_tcp_dsmr_reader(host, port, dsmr_version,
                            telegram_callback, loop=None):
     """Creates a DSMR asyncio protocol coroutine using TCP connection."""
+    if not loop:
+        loop = asyncio.get_event_loop()
     protocol, _ = create_dsmr_protocol(
-        dsmr_version, telegram_callback, loop=None)
+        dsmr_version, telegram_callback, loop=loop)
     conn = loop.create_connection(protocol, host, port)
     return conn
-
 
 class DSMRProtocol(asyncio.Protocol):
     """Assemble and handle incoming data into complete DSM telegrams."""
