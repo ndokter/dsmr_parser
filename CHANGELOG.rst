@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.15** (2019-12-12)
+
+- Fixed asyncio loop issue (`pull request #37 <https://github.com/ndokter/dsmr_parser/pull/36>`_).
+
 **0.14** (2019-10-08)
 
 - Changed serial reading to reduce CPU usage (`pull request #37 <https://github.com/ndokter/dsmr_parser/pull/37>`_).
