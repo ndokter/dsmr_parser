@@ -71,3 +71,47 @@ class FileReader(object):
                         logger.warning(str(e))
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
+
+class FileInputReader(object):
+    """
+     Filereader to read and parse raw telegram strings from stdin or files specified at the commandline
+     and instantiate Telegram objects for each read telegram.
+     Usage:
+        from dsmr_parser import telegram_specifications
+        from dsmr_parser.clients.filereader import FileInputReader
+
+        if __name__== "__main__":
+
+            fileinput_reader = FileReader(
+                file = infile,
+                telegram_specification = telegram_specifications.V4
+                )
+
+            for telegram in fileinput_reader.read_as_object():
+                print(telegram)
+     """
+
+    def __init__(self, telegram_specification):
+        self.telegram_parser = TelegramParser(telegram_specification)
+        self.telegram_buffer = TelegramBuffer()
+        self.telegram_specification = telegram_specification
+
+    def read_as_object(self):
+        """
+        Read complete DSMR telegram's from stdin of filearguments specified on teh command line
+        and return a Telegram object.
+        :rtype: generator
+        """
+        with fileinput.input(mode='rb') as file_handle:
+            while True:
+                data = file_handle.readline()
+                str = data.decode()
+                self.telegram_buffer.append(str)
+
+                for telegram in self.telegram_buffer.get_all():
+                    try:
+                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                    except InvalidChecksumError as e:
+                        logger.warning(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
