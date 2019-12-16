@@ -77,7 +77,7 @@ class FileInputReader(object):
     """
      Filereader to read and parse raw telegram strings from stdin or files specified at the commandline
      and instantiate Telegram objects for each read telegram.
-     Usage:
+     Usage python script "syphon_smartmeter_readings_stdin.py":
         from dsmr_parser import telegram_specifications
         from dsmr_parser.clients.filereader import FileInputReader
 
@@ -90,6 +90,10 @@ class FileInputReader(object):
 
             for telegram in fileinput_reader.read_as_object():
                 print(telegram)
+
+    Command line:
+        tail -f /data/smartmeter/readings.txt | python3 syphon_smartmeter_readings_stdin.py
+
      """
 
     def __init__(self, telegram_specification):
