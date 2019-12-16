@@ -1,4 +1,5 @@
 import logging
+import fileinput
 
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
