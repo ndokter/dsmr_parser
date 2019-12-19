@@ -1,4 +1,5 @@
 from decimal import Decimal
+from copy import deepcopy
 
 from dsmr_parser import obis_references as obis
 from dsmr_parser.parsers import CosemParser, ValueParser, MBusParser
@@ -128,3 +129,18 @@ V5 = {
 }
 
 ALL = (V2_2, V3, V4, V5)
+
+
+BELGIUM_FLUVIUS = deepcopy(V5)
+BELGIUM_FLUVIUS['objects'].update({
+    obis.BELGIUM_HOURLY_GAS_METER_READING: MBusParser(
+        ValueParser(timestamp),
+        ValueParser(Decimal)
+    )
+})
+
+LUXEMBOURG_SMARTY = deepcopy(V5)
+LUXEMBOURG_SMARTY['objects'].update({
+    obis.LUXEMBOURG_ELECTRICITY_USED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
+    obis.LUXEMBOURG_ELECTRICITY_DELIVERED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
+})

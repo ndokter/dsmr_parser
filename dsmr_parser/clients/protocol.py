@@ -26,6 +26,9 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None):
     elif dsmr_version == '5':
         specification = telegram_specifications.V5
         serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == '5B':
+        specification = telegram_specifications.BELGIUM_FLUVIUS
+        serial_settings = SERIAL_SETTINGS_V5
     else:
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
