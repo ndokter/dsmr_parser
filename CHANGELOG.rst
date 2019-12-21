@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.17** (2019-12-21)
+
+- Add a true telegram object (`pull request #40 <https://github.com/ndokter/dsmr_parser/pull/40>`_).
+
 **0.16** (2019-12-21)
 
 - Add support for Belgian and Smarty meters (`pull request #44 <https://github.com/ndokter/dsmr_parser/pull/44>`_).
