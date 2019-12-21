@@ -6,6 +6,7 @@ import serial_asyncio
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.parsers import TelegramParser
+from dsmr_parser.objects import Telegram
 
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,7 @@ class SerialReader(object):
 
         self.telegram_parser = TelegramParser(telegram_specification)
         self.telegram_buffer = TelegramBuffer()
+        self.telegram_specification = telegram_specification
 
     def read(self):
         """
@@ -36,6 +38,25 @@ class SerialReader(object):
                 for telegram in self.telegram_buffer.get_all():
                     try:
                         yield self.telegram_parser.parse(telegram)
+                    except InvalidChecksumError as e:
+                        logger.warning(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
+
+    def read_as_object(self):
+        """
+        Read complete DSMR telegram's from the serial interface and return a Telegram object.
+
+        :rtype: generator
+        """
+        with serial.Serial(**self.serial_settings) as serial_handle:
+            while True:
+                data = serial_handle.readline()
+                self.telegram_buffer.append(data.decode('ascii'))
+
+                for telegram in self.telegram_buffer.get_all():
+                    try:
+                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
                     except InvalidChecksumError as e:
                         logger.warning(str(e))
                     except ParseError as e:

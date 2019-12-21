@@ -85,8 +85,8 @@ into a dictionary.
      telegram = parser.parse(telegram_str)
      print(telegram)  # see 'Telegram object' docs below
 
-Telegram object
----------------
+Telegram dictionary
+-------------------
 
 A dictionary of which the key indicates the field type. These regex values
 correspond to one of dsmr_parser.obis_reference constants.
@@ -137,6 +137,115 @@ Example to get some of the values:
 
     # See dsmr_reader.obis_references for all readable telegram values.
     # Note that the avilable values differ per DSMR version.
+
+Telegram as an Object
+---------------------
+An object version of the telegram is available as well.
+
+
+.. code-block:: python
+
+    # DSMR v4.2 p1 using dsmr_parser and telegram objects
+
+    from dsmr_parser import telegram_specifications
+    from dsmr_parser.clients import SerialReader, SERIAL_SETTINGS_V5
+    from dsmr_parser.objects import CosemObject, MBusObject, Telegram
+    from dsmr_parser.parsers import TelegramParser
+    import os
+
+    serial_reader = SerialReader(
+        device='/dev/ttyUSB0',
+        serial_settings=SERIAL_SETTINGS_V5,
+        telegram_specification=telegram_specifications.V4
+    )
+
+    # telegram = next(serial_reader.read_as_object())
+    # print(telegram)
+
+    for telegram in serial_reader.read_as_object():
+        os.system('clear')
+        print(telegram)
+
+Example of output of print of the telegram object:
+
+.. code-block:: console
+
+    P1_MESSAGE_HEADER: 	 42 	[None]
+    P1_MESSAGE_TIMESTAMP: 	 2016-11-13 19:57:57+00:00 	[None]
+    EQUIPMENT_IDENTIFIER: 	 3960221976967177082151037881335713 	[None]
+    ELECTRICITY_USED_TARIFF_1: 	 1581.123 	[kWh]
+    ELECTRICITY_USED_TARIFF_2: 	 1435.706 	[kWh]
+    ELECTRICITY_DELIVERED_TARIFF_1: 	 0.000 	[kWh]
+    ELECTRICITY_DELIVERED_TARIFF_2: 	 0.000 	[kWh]
+    ELECTRICITY_ACTIVE_TARIFF: 	 0002 	[None]
+    CURRENT_ELECTRICITY_USAGE: 	 2.027 	[kW]
+    CURRENT_ELECTRICITY_DELIVERY: 	 0.000 	[kW]
+    LONG_POWER_FAILURE_COUNT: 	 7 	[None]
+    VOLTAGE_SAG_L1_COUNT: 	 0 	[None]
+    VOLTAGE_SAG_L2_COUNT: 	 0 	[None]
+    VOLTAGE_SAG_L3_COUNT: 	 0 	[None]
+    VOLTAGE_SWELL_L1_COUNT: 	 0 	[None]
+    VOLTAGE_SWELL_L2_COUNT: 	 0 	[None]
+    VOLTAGE_SWELL_L3_COUNT: 	 0 	[None]
+    TEXT_MESSAGE_CODE: 	 None 	[None]
+    TEXT_MESSAGE: 	 None 	[None]
+    DEVICE_TYPE: 	 3 	[None]
+    INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: 	 0.170 	[kW]
+    INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: 	 1.247 	[kW]
+    INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: 	 0.209 	[kW]
+    INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: 	 0.000 	[kW]
+    INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: 	 0.000 	[kW]
+    INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000 	[kW]
+    EQUIPMENT_IDENTIFIER_GAS: 	 4819243993373755377509728609491464 	[None]
+    HOURLY_GAS_METER_READING: 	 981.443 	[m3]
+
+Accessing the telegrams information as  attributes directly:
+
+.. code-block:: python
+
+    telegram
+    Out[3]: <dsmr_parser.objects.Telegram at 0x7f5e995d9898>
+    telegram.CURRENT_ELECTRICITY_USAGE
+    Out[4]: <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
+    telegram.CURRENT_ELECTRICITY_USAGE.value
+    Out[5]: Decimal('2.027')
+    telegram.CURRENT_ELECTRICITY_USAGE.unit
+    Out[6]: 'kW'
+
+The telegram object has an iterator, can be used to find all the information elements in the current telegram:
+
+.. code-block:: python
+
+    [attr for attr, value in telegram]
+    Out[11]:
+    ['P1_MESSAGE_HEADER',
+     'P1_MESSAGE_TIMESTAMP',
+     'EQUIPMENT_IDENTIFIER',
+     'ELECTRICITY_USED_TARIFF_1',
+     'ELECTRICITY_USED_TARIFF_2',
+     'ELECTRICITY_DELIVERED_TARIFF_1',
+     'ELECTRICITY_DELIVERED_TARIFF_2',
+     'ELECTRICITY_ACTIVE_TARIFF',
+     'CURRENT_ELECTRICITY_USAGE',
+     'CURRENT_ELECTRICITY_DELIVERY',
+     'LONG_POWER_FAILURE_COUNT',
+     'VOLTAGE_SAG_L1_COUNT',
+     'VOLTAGE_SAG_L2_COUNT',
+     'VOLTAGE_SAG_L3_COUNT',
+     'VOLTAGE_SWELL_L1_COUNT',
+     'VOLTAGE_SWELL_L2_COUNT',
+     'VOLTAGE_SWELL_L3_COUNT',
+     'TEXT_MESSAGE_CODE',
+     'TEXT_MESSAGE',
+     'DEVICE_TYPE',
+     'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE',
+     'EQUIPMENT_IDENTIFIER_GAS',
+     'HOURLY_GAS_METER_READING']
 
 
 Installation
