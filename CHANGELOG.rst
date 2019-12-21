@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.16** (2019-12-21)
+
+- Add support for Belgian and Smarty meters (`pull request #44 <https://github.com/ndokter/dsmr_parser/pull/44>`_).
+
 **0.15** (2019-12-12)
 
 - Fixed asyncio loop issue (`pull request #43 <https://github.com/ndokter/dsmr_parser/pull/43>`_).
