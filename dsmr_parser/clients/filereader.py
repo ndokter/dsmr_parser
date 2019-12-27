@@ -124,6 +124,25 @@ class FileInputReader(object):
 
 
 class FileTailReader(object):
+    """
+      Filereader to read and parse raw telegram strings from the tail of a
+      given file and instantiate Telegram objects for each read telegram.
+      Usage python script "syphon_smartmeter_readings_stdin.py":
+        from dsmr_parser import telegram_specifications
+        from dsmr_parser.clients.filereader import FileTailReader
+
+        if __name__== "__main__":
+
+            infile = '/data/smartmeter/readings.txt'
+
+            filetail_reader = FileTailReader(
+                file = infile,
+                telegram_specification = telegram_specifications.V5
+                )
+
+            for telegram in filetail_reader.read_as_object():
+                print(telegram)
+      """
 
     def __init__(self, file, telegram_specification):
         self._file = file
