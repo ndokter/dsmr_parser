@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.18** (2020-01-28)
+
+- PyCRC replacement (`pull request #48 <https://github.com/ndokter/dsmr_parser/pull/48>`_).
+
 **0.17** (2019-12-21)
 
 - Add a true telegram object (`pull request #40 <https://github.com/ndokter/dsmr_parser/pull/40>`_).
