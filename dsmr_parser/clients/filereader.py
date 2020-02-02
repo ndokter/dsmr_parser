@@ -9,6 +9,7 @@ from dsmr_parser.parsers import TelegramParser
 
 logger = logging.getLogger(__name__)
 
+
 class FileReader(object):
     """
      Filereader to read and parse raw telegram strings from a file and instantiate Telegram objects
@@ -60,7 +61,7 @@ class FileReader(object):
         Read complete DSMR telegram's from a file and return a Telegram object.
         :rtype: generator
         """
-        with open(self._file,"rb") as file_handle:
+        with open(self._file, "rb") as file_handle:
             while True:
                 data = file_handle.readline()
                 str = data.decode()
@@ -73,6 +74,7 @@ class FileReader(object):
                         logger.warning(str(e))
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
+
 
 class FileInputReader(object):
     """
@@ -155,7 +157,7 @@ class FileTailReader(object):
         Read complete DSMR telegram's from a files tail and return a Telegram object.
         :rtype: generator
         """
-        with open(self._file,"rb") as file_handle:
+        with open(self._file, "rb") as file_handle:
             for data in tailer.follow(file_handle):
                 str = data.decode()
                 self.telegram_buffer.append(str)
@@ -163,8 +165,7 @@ class FileTailReader(object):
                 for telegram in self.telegram_buffer.get_all():
                     try:
                         yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
-                    except dsmr_parser.exceptions.InvalidChecksumError as e:
+                    except InvalidChecksumError as e:
                         logger.warning(str(e))
-                    except dsmr_parser.exceptions.ParseError as e:
+                    except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
-

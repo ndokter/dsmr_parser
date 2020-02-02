@@ -1,5 +1,6 @@
 import dsmr_parser.obis_name_mapping
 
+
 class Telegram(object):
     """
     Container for raw and parsed telegram data.
@@ -47,7 +48,7 @@ class Telegram(object):
     def __str__(self):
         output = ""
         for attr, value in self:
-            output += "{}: \t {} \t[{}]\n".format(attr,str(value.value),str(value.unit))
+            output += "{}: \t {} \t[{}]\n".format(attr, str(value.value), str(value.unit))
         return output
 
 
