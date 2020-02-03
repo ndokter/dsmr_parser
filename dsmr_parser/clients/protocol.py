@@ -59,6 +59,7 @@ def create_tcp_dsmr_reader(host, port, dsmr_version,
     conn = loop.create_connection(protocol, host, port)
     return conn
 
+
 class DSMRProtocol(asyncio.Protocol):
     """Assemble and handle incoming data into complete DSM telegrams."""
 

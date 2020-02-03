@@ -12,6 +12,7 @@ setup(
         'pyserial>=3,<4',
         'pyserial-asyncio<1',
         'pytz',
+        'Tailer==0.4.1'
     ],
     entry_points={
         'console_scripts': ['dsmr_console=dsmr_parser.__main__:console']
