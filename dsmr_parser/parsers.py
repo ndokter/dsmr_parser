@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 class TelegramParser(object):
 
+    crc16_tab = []
+
     def __init__(self, telegram_specification, apply_checksum_validation=True):
         """
         :param telegram_specification: determines how the telegram is parsed
@@ -93,24 +95,28 @@ class TelegramParser(object):
 
     @staticmethod
     def crc16(telegram):
-        crc16_tab = []
+        """
+        Calculate the CRC16 value for the given telegram
 
-        for i in range(0, 256):
-            crc = c_ushort(i).value
-            for j in range(0, 8):
-                if (crc & 0x0001):
-                    crc = c_ushort(crc >> 1).value ^ 0xA001
-                else:
-                    crc = c_ushort(crc >> 1).value
-            crc16_tab.append(hex(crc))
-
+        :param str telegram:
+        """
         crcValue = 0x0000
+
+        if len(TelegramParser.crc16_tab) == 0:
+            for i in range(0, 256):
+                crc = c_ushort(i).value
+                for j in range(0, 8):
+                    if (crc & 0x0001):
+                        crc = c_ushort(crc >> 1).value ^ 0xA001
+                    else:
+                        crc = c_ushort(crc >> 1).value
+                TelegramParser.crc16_tab.append(hex(crc))
 
         for c in telegram:
             d = ord(c)
             tmp = crcValue ^ d
             rotated = c_ushort(crcValue >> 8).value
-            crcValue = rotated ^ int(crc16_tab[(tmp & 0x00ff)], 0)
+            crcValue = rotated ^ int(TelegramParser.crc16_tab[(tmp & 0x00ff)], 0)
 
         return crcValue
 
