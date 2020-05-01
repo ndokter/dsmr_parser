@@ -58,6 +58,7 @@ V4 = {
         obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
         obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
         obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
+        obis.SHORT_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
         obis.LONG_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
         # POWER_EVENT_FAILURE_LOG: ProfileGenericParser(), TODO
         obis.VOLTAGE_SAG_L1_COUNT: CosemParser(ValueParser(int)),
@@ -69,6 +70,9 @@ V4 = {
         obis.TEXT_MESSAGE_CODE: CosemParser(ValueParser(int)),
         obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
         obis.DEVICE_TYPE: CosemParser(ValueParser(int)),
+        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
         obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
         obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
         obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
