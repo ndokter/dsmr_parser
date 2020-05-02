@@ -171,7 +171,7 @@ class TelegramParserV5Test(unittest.TestCase):
         assert result[obis.TEXT_MESSAGE].value is None
 
         # DEVICE_TYPE (0-x:24.1.0)
-        assert isinstance(result[obis.TEXT_MESSAGE], CosemObject)
+        assert isinstance(result[obis.DEVICE_TYPE], CosemObject)
         assert result[obis.DEVICE_TYPE].unit is None
         assert isinstance(result[obis.DEVICE_TYPE].value, int)
         assert result[obis.DEVICE_TYPE].value == 3

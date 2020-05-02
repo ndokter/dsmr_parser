@@ -80,6 +80,12 @@ class TelegramParserV4_2Test(unittest.TestCase):
         assert isinstance(result[obis.CURRENT_ELECTRICITY_DELIVERY].value, Decimal)
         assert result[obis.CURRENT_ELECTRICITY_DELIVERY].value == Decimal('0')
 
+        # SHORT_POWER_FAILURE_COUNT (1-0:96.7.21)
+        assert isinstance(result[obis.SHORT_POWER_FAILURE_COUNT], CosemObject)
+        assert result[obis.SHORT_POWER_FAILURE_COUNT].unit is None
+        assert isinstance(result[obis.SHORT_POWER_FAILURE_COUNT].value, int)
+        assert result[obis.SHORT_POWER_FAILURE_COUNT].value == 15
+
         # LONG_POWER_FAILURE_COUNT (96.7.9)
         assert isinstance(result[obis.LONG_POWER_FAILURE_COUNT], CosemObject)
         assert result[obis.LONG_POWER_FAILURE_COUNT].unit is None
@@ -132,8 +138,26 @@ class TelegramParserV4_2Test(unittest.TestCase):
         assert result[obis.TEXT_MESSAGE].unit is None
         assert result[obis.TEXT_MESSAGE].value is None
 
+        # INSTANTANEOUS_CURRENT_L1 (1-0:31.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L1], CosemObject)
+        assert result[obis.INSTANTANEOUS_CURRENT_L1].unit == 'A'
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L1].value, Decimal)
+        assert result[obis.INSTANTANEOUS_CURRENT_L1].value == Decimal('0')
+
+        # INSTANTANEOUS_CURRENT_L2 (1-0:51.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L2], CosemObject)
+        assert result[obis.INSTANTANEOUS_CURRENT_L2].unit == 'A'
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L2].value, Decimal)
+        assert result[obis.INSTANTANEOUS_CURRENT_L2].value == Decimal('6')
+
+        # INSTANTANEOUS_CURRENT_L3 (1-0:71.7.0)
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L3], CosemObject)
+        assert result[obis.INSTANTANEOUS_CURRENT_L3].unit == 'A'
+        assert isinstance(result[obis.INSTANTANEOUS_CURRENT_L3].value, Decimal)
+        assert result[obis.INSTANTANEOUS_CURRENT_L3].value == Decimal('2')
+
         # DEVICE_TYPE (0-x:24.1.0)
-        assert isinstance(result[obis.TEXT_MESSAGE], CosemObject)
+        assert isinstance(result[obis.DEVICE_TYPE], CosemObject)
         assert result[obis.DEVICE_TYPE].unit is None
         assert isinstance(result[obis.DEVICE_TYPE].value, int)
         assert result[obis.DEVICE_TYPE].value == 3
