@@ -1,5 +1,14 @@
 Change Log
 ----------
+**0.19** (2020-05-03)
+
+- Add following missing elements to telegram specification v4:
+    - SHORT_POWER_FAILURE_COUNT,
+    - INSTANTANEOUS_CURRENT_L1,
+    - INSTANTANEOUS_CURRENT_L2,
+    - INSTANTANEOUS_CURRENT_L3
+- Add missing tests + fix small test bugs
+- Complete telegram object v4 parse test
 
 **0.18** (2020-01-28)
 
