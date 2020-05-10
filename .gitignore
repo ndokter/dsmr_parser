@@ -2,6 +2,7 @@
 *.pyc
 .tox
 .cache
+.venv
 *.egg-info
 /.project
 /.pydevproject
