@@ -2,11 +2,13 @@
 *.pyc
 .tox
 .cache
+.venv
 *.egg-info
 /.project
 /.pydevproject
 /.coverage
 build/
 dist/
+venv/
 *.*~
 *~
