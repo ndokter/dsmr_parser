@@ -183,7 +183,7 @@ class CosemParser(DSMRObjectParser):
         return CosemObject(self._parse(line))
 
 
-class ProfileGenericParser(DSMRObjectParser):
+class ProfileGenericParser(object):
     """
     Power failure log parser.
 
@@ -204,6 +204,22 @@ class ProfileGenericParser(DSMRObjectParser):
     8) Buffer value 2 (oldest entry of buffer attribute without unit)
     9) Unit of buffer values (Unit of capture objects attribute)
     """
+
+    def _parse(self, line):
+        # Match value groups, but exclude the parentheses. Adapted to also match OBIS code in 3rd position.
+        pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
+        values = re.findall(pattern, line)
+
+        # Convert empty value groups to None for clarity.
+        values = [None if value == '' else value for value in values]
+
+        buffer_length = int(values[0])
+
+        if (not values) or (len(values) != (buffer_length * 2 + 2)):
+            raise ParseError("Invalid '%s' line for '%s'", line, self)
+
+        return [self.value_formats[i].parse(value)
+                for i, value in enumerate(values)]
 
     def parse(self, line):
         raise NotImplementedError()

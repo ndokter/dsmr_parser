@@ -1,4 +1,5 @@
 import dsmr_parser.obis_name_mapping
+import datetime
 
 
 class Telegram(object):
@@ -48,7 +49,7 @@ class Telegram(object):
     def __str__(self):
         output = ""
         for attr, value in self:
-            output += "{}: \t {} \t[{}]\n".format(attr, str(value.value), str(value.unit))
+            output += "{}: \t {}\n".format(attr, str(value))
         return output
 
 
@@ -87,6 +88,10 @@ class MBusObject(DSMRObject):
         else:
             return self.values[1]['unit']
 
+    def __str__(self):
+        output = "{}\t[{}] at {}".format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()))
+        return output
+
 
 class CosemObject(DSMRObject):
 
@@ -97,6 +102,13 @@ class CosemObject(DSMRObject):
     @property
     def unit(self):
         return self.values[0]['unit']
+
+    def __str__(self):
+        print_value = self.value
+        if isinstance(self.value, datetime.datetime):
+            print_value = self.value.astimezone().isoformat()
+        output = "{}\t[{}]".format(str(print_value), str(self.unit))
+        return output
 
 
 class ProfileGeneric(DSMRObject):
