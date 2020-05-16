@@ -7,6 +7,7 @@ from dsmr_parser import obis_name_mapping
 from dsmr_parser.objects import CosemObject
 from dsmr_parser.objects import MBusObject
 from dsmr_parser.objects import Telegram
+from dsmr_parser.objects import ProfileGenericObject
 from dsmr_parser.parsers import TelegramParser
 from test.example_telegrams import TELEGRAM_V4_2
 from decimal import Decimal
@@ -286,6 +287,15 @@ class TelegramTest(unittest.TestCase):
                                   unit_val='m3',
                                   value_type=Decimal,
                                   value_val=Decimal('981.443'))
+        # POWER_EVENT_FAILURE_LOG (1-0:99.97.0)
+        testitem_name = 'POWER_EVENT_FAILURE_LOG'
+        object_type = ProfileGenericObject
+        testitem = eval("telegram.{}".format(testitem_name))
+        assert isinstance(testitem, object_type)
+#        assert testitem.unit == unit_val
+#        assert isinstance(testitem.value, value_type)
+#        assert testitem.value == value_val
+        self.item_names_tested.append(testitem_name)
 
         # check if all items in telegram V4 specification are covered
         V4_name_list = [obis_name_mapping.EN[signature] for signature, parser in

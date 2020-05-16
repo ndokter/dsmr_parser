@@ -2,9 +2,9 @@ from decimal import Decimal
 from copy import deepcopy
 
 from dsmr_parser import obis_references as obis
-from dsmr_parser.parsers import CosemParser, ValueParser, MBusParser
+from dsmr_parser.parsers import CosemParser, ValueParser, MBusParser, ProfileGenericParser
 from dsmr_parser.value_types import timestamp
-
+from dsmr_parser.profile_generic_specifications import BUFFER_TYPES, PG_HEAD_PARSERS, PG_UNIDENTIFIED_BUFFERTYPE_PARSERS
 
 """
 dsmr_parser.telegram_specifications
@@ -37,8 +37,9 @@ V2_2 = {
             ValueParser(int),
             ValueParser(int),
             ValueParser(int),
-            ValueParser(str),
-            ValueParser(Decimal),
+            ValueParser(str),  # obis ref
+            ValueParser(str),  # unit, position 5
+            ValueParser(Decimal),  # meter reading, position 6
         ),
     }
 }
@@ -60,7 +61,10 @@ V4 = {
         obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
         obis.SHORT_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
         obis.LONG_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
-        # POWER_EVENT_FAILURE_LOG: ProfileGenericParser(), TODO
+        obis.POWER_EVENT_FAILURE_LOG:
+            ProfileGenericParser(BUFFER_TYPES,
+                                 PG_HEAD_PARSERS,
+                                 PG_UNIDENTIFIED_BUFFERTYPE_PARSERS),
         obis.VOLTAGE_SAG_L1_COUNT: CosemParser(ValueParser(int)),
         obis.VOLTAGE_SAG_L2_COUNT: CosemParser(ValueParser(int)),
         obis.VOLTAGE_SAG_L3_COUNT: CosemParser(ValueParser(int)),

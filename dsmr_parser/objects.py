@@ -74,7 +74,7 @@ class MBusObject(DSMRObject):
         # TODO object, but let the parse set them differently? So don't use
         # TODO hardcoded indexes here.
         if len(self.values) != 2:  # v2
-            return self.values[5]['value']
+            return self.values[6]['value']
         else:
             return self.values[1]['value']
 
@@ -84,7 +84,7 @@ class MBusObject(DSMRObject):
         # TODO object, but let the parse set them differently? So don't use
         # TODO hardcoded indexes here.
         if len(self.values) != 2:  # v2
-            return self.values[4]['value']
+            return self.values[5]['value']
         else:
             return self.values[1]['unit']
 
@@ -111,5 +111,7 @@ class CosemObject(DSMRObject):
         return output
 
 
-class ProfileGeneric(DSMRObject):
-    pass  # TODO implement
+class ProfileGenericObject(DSMRObject):
+    def __str__(self):
+        output = "{}".format(self.values)
+        return output

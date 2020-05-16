@@ -3,7 +3,7 @@ import re
 
 from ctypes import c_ushort
 
-from dsmr_parser.objects import MBusObject, CosemObject
+from dsmr_parser.objects import MBusObject, CosemObject, ProfileGenericObject
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 
 logger = logging.getLogger(__name__)
@@ -123,19 +123,28 @@ class DSMRObjectParser(object):
     def __init__(self, *value_formats):
         self.value_formats = value_formats
 
+    def _is_line_wellformed(self, line, values):
+        # allows overriding by child class
+        return (values and (len(values) == len(self.value_formats)))
+
+    def _parse_values(self, values):
+        # allows overriding by child class
+        return [self.value_formats[i].parse(value)
+                for i, value in enumerate(values)]
+
     def _parse(self, line):
         # Match value groups, but exclude the parentheses
-        pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*]{0,}(?=\)))+')
+        pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
+
         values = re.findall(pattern, line)
+
+        if not self._is_line_wellformed(line, values):
+            raise ParseError("Invalid '%s' line for '%s'", line, self)
 
         # Convert empty value groups to None for clarity.
         values = [None if value == '' else value for value in values]
 
-        if not values or len(values) != len(self.value_formats):
-            raise ParseError("Invalid '%s' line for '%s'", line, self)
-
-        return [self.value_formats[i].parse(value)
-                for i, value in enumerate(values)]
+        return self._parse_values(values)
 
 
 class MBusParser(DSMRObjectParser):
@@ -183,7 +192,7 @@ class CosemParser(DSMRObjectParser):
         return CosemObject(self._parse(line))
 
 
-class ProfileGenericParser(object):
+class ProfileGenericParser(DSMRObjectParser):
     """
     Power failure log parser.
 
@@ -204,25 +213,34 @@ class ProfileGenericParser(object):
     8) Buffer value 2 (oldest entry of buffer attribute without unit)
     9) Unit of buffer values (Unit of capture objects attribute)
     """
+    def __init__(self, buffer_types, head_parsers, parsers_for_unidentified):
+        self.value_formats = head_parsers
+        self.buffer_types = buffer_types
+        self.parsers_for_unidentified = parsers_for_unidentified
 
-    def _parse(self, line):
-        # Match value groups, but exclude the parentheses. Adapted to also match OBIS code in 3rd position.
-        pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
-        values = re.findall(pattern, line)
+    def _is_line_wellformed(self, line, values):
+        if values and (len(values) >= 2) and (values[0].isdigit()):
+            buffer_length = int(values[0])
+            return (buffer_length <= 10) and (len(values) == (buffer_length * 2 + 2))
+        else:
+            return False
 
-        # Convert empty value groups to None for clarity.
-        values = [None if value == '' else value for value in values]
-
+    def _parse_values(self, values):
         buffer_length = int(values[0])
+        buffer_value_obis_ID = values[1]
+        if (buffer_length > 0):
+            if buffer_value_obis_ID in self.buffer_types:
+                bufferValueParsers = self.buffer_types[buffer_value_obis_ID]
+            else:
+                bufferValueParsers = self.parsers_for_unidentified
+        # add the parsers for the encountered value type z times
+        for _ in range(buffer_length):
+            self.value_formats.extend(bufferValueParsers)
 
-        if (not values) or (len(values) != (buffer_length * 2 + 2)):
-            raise ParseError("Invalid '%s' line for '%s'", line, self)
-
-        return [self.value_formats[i].parse(value)
-                for i, value in enumerate(values)]
+        return [self.value_formats[i].parse(value) for i, value in enumerate(values)]
 
     def parse(self, line):
-        raise NotImplementedError()
+        return ProfileGenericObject(self._parse(line))
 
 
 class ValueParser(object):
