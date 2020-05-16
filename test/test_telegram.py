@@ -287,14 +287,30 @@ class TelegramTest(unittest.TestCase):
                                   unit_val='m3',
                                   value_type=Decimal,
                                   value_val=Decimal('981.443'))
+
         # POWER_EVENT_FAILURE_LOG (1-0:99.97.0)
         testitem_name = 'POWER_EVENT_FAILURE_LOG'
         object_type = ProfileGenericObject
         testitem = eval("telegram.{}".format(testitem_name))
         assert isinstance(testitem, object_type)
-#        assert testitem.unit == unit_val
-#        assert isinstance(testitem.value, value_type)
-#        assert testitem.value == value_val
+        assert testitem.buffer_length == 3
+        assert testitem.buffer_type == '0-0:96.7.19'
+        buffer = testitem.buffer
+        assert isinstance(testitem.buffer, list)
+        assert len(buffer) == 3
+        assert all([isinstance(item, MBusObject) for item in buffer])
+        date0 = datetime.datetime(2000, 1, 4, 17, 3, 20, tzinfo=datetime.timezone.utc)
+        date1 = datetime.datetime(1999, 12, 31, 23, 0, 1, tzinfo=datetime.timezone.utc)
+        date2 = datetime.datetime(2000, 1, 1, 23, 0, 3, tzinfo=datetime.timezone.utc)
+        assert buffer[0].datetime == date0
+        assert buffer[1].datetime == date1
+        assert buffer[2].datetime == date2
+        assert buffer[0].value == 237126
+        assert buffer[1].value == 2147583646
+        assert buffer[2].value == 2317482647
+        assert all([isinstance(item.value, int) for item in buffer])
+        assert all([isinstance(item.unit, str) for item in buffer])
+        assert all([(item.unit == 's') for item in buffer])
         self.item_names_tested.append(testitem_name)
 
         # check if all items in telegram V4 specification are covered

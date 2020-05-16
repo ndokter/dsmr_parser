@@ -112,6 +112,41 @@ class CosemObject(DSMRObject):
 
 
 class ProfileGenericObject(DSMRObject):
+    """
+    Represents all data in a GenericProfile value.
+    All buffer values are returned as a list of MBusObjects,
+    containing the datetime (timestamp) and the value.
+    """
+
+    def __init__(self, values):
+        super().__init__(values)
+        self._buffer_list = None
+
+    @property
+    def buffer_length(self):
+        return self.values[0]['value']
+
+    @property
+    def buffer_type(self):
+        return self.values[1]['value']
+
+    @property
+    def buffer(self):
+        if self._buffer_list is None:
+            self._buffer_list = []
+            values_offset = 2
+            for i in range(self.buffer_length):
+                offset = values_offset + i*2
+                self._buffer_list.append(MBusObject([self.values[offset], self.values[offset + 1]]))
+        return self._buffer_list
+
     def __str__(self):
-        output = "{}".format(self.values)
+        output = "\t buffer length: {}\n".format(self.buffer_length)
+        output += "\t buffer type: {}".format(self.buffer_type)
+        for buffer_value in self.buffer:
+            timestamp = buffer_value.datetime
+            if isinstance(timestamp, datetime.datetime):
+                timestamp = str(timestamp.astimezone().isoformat())
+            output += "\n\t event occured at: {}".format(timestamp)
+            output += "\t for: {} [{}]".format(buffer_value.value, buffer_value.unit)
         return output

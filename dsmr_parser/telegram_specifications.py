@@ -107,7 +107,10 @@ V5 = {
         obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
         obis.LONG_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
         obis.SHORT_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
-        # POWER_EVENT_FAILURE_LOG: ProfileGenericParser(), TODO
+        obis.POWER_EVENT_FAILURE_LOG:
+            ProfileGenericParser(BUFFER_TYPES,
+                                 PG_HEAD_PARSERS,
+                                 PG_UNIDENTIFIED_BUFFERTYPE_PARSERS),
         obis.VOLTAGE_SAG_L1_COUNT: CosemParser(ValueParser(int)),
         obis.VOLTAGE_SAG_L2_COUNT: CosemParser(ValueParser(int)),
         obis.VOLTAGE_SAG_L3_COUNT: CosemParser(ValueParser(int)),
