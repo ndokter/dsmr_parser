@@ -140,6 +140,18 @@ class ProfileGenericObject(DSMRObject):
                 self._buffer_list.append(MBusObject([self.values[offset], self.values[offset + 1]]))
         return self._buffer_list
 
+    @property
+    def value(self):
+        list = [['buffer_length', self.buffer_length]]
+        list.append(['buffer_type', self.buffer_type])
+        buffer_repr = [
+            (['datetime', buffer_item.datetime],
+             ['value', buffer_item.value])
+            for buffer_item in self.buffer
+        ]
+        list.append(['buffer', buffer_repr])
+        return dict(list)
+
     def __str__(self):
         output = "\t buffer length: {}\n".format(self.buffer_length)
         output += "\t buffer type: {}".format(self.buffer_type)
