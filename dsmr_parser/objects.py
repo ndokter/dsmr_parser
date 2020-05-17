@@ -1,4 +1,5 @@
 import dsmr_parser.obis_name_mapping
+import datetime
 
 
 class Telegram(object):
@@ -48,7 +49,7 @@ class Telegram(object):
     def __str__(self):
         output = ""
         for attr, value in self:
-            output += "{}: \t {} \t[{}]\n".format(attr, str(value.value), str(value.unit))
+            output += "{}: \t {}\n".format(attr, str(value))
         return output
 
 
@@ -73,7 +74,7 @@ class MBusObject(DSMRObject):
         # TODO object, but let the parse set them differently? So don't use
         # TODO hardcoded indexes here.
         if len(self.values) != 2:  # v2
-            return self.values[5]['value']
+            return self.values[6]['value']
         else:
             return self.values[1]['value']
 
@@ -83,9 +84,13 @@ class MBusObject(DSMRObject):
         # TODO object, but let the parse set them differently? So don't use
         # TODO hardcoded indexes here.
         if len(self.values) != 2:  # v2
-            return self.values[4]['value']
+            return self.values[5]['value']
         else:
             return self.values[1]['unit']
+
+    def __str__(self):
+        output = "{}\t[{}] at {}".format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()))
+        return output
 
 
 class CosemObject(DSMRObject):
@@ -98,6 +103,50 @@ class CosemObject(DSMRObject):
     def unit(self):
         return self.values[0]['unit']
 
+    def __str__(self):
+        print_value = self.value
+        if isinstance(self.value, datetime.datetime):
+            print_value = self.value.astimezone().isoformat()
+        output = "{}\t[{}]".format(str(print_value), str(self.unit))
+        return output
 
-class ProfileGeneric(DSMRObject):
-    pass  # TODO implement
+
+class ProfileGenericObject(DSMRObject):
+    """
+    Represents all data in a GenericProfile value.
+    All buffer values are returned as a list of MBusObjects,
+    containing the datetime (timestamp) and the value.
+    """
+
+    def __init__(self, values):
+        super().__init__(values)
+        self._buffer_list = None
+
+    @property
+    def buffer_length(self):
+        return self.values[0]['value']
+
+    @property
+    def buffer_type(self):
+        return self.values[1]['value']
+
+    @property
+    def buffer(self):
+        if self._buffer_list is None:
+            self._buffer_list = []
+            values_offset = 2
+            for i in range(self.buffer_length):
+                offset = values_offset + i*2
+                self._buffer_list.append(MBusObject([self.values[offset], self.values[offset + 1]]))
+        return self._buffer_list
+
+    def __str__(self):
+        output = "\t buffer length: {}\n".format(self.buffer_length)
+        output += "\t buffer type: {}".format(self.buffer_type)
+        for buffer_value in self.buffer:
+            timestamp = buffer_value.datetime
+            if isinstance(timestamp, datetime.datetime):
+                timestamp = str(timestamp.astimezone().isoformat())
+            output += "\n\t event occured at: {}".format(timestamp)
+            output += "\t for: {} [{}]".format(buffer_value.value, buffer_value.unit)
+        return output

@@ -1,5 +1,19 @@
 Change Log
 ----------
+**0.20** (2020-05-12)
+
+- All objects can now print their values
+- Add parser + object for generic profile
+
+**0.19** (2020-05-03)
+
+- Add following missing elements to telegram specification v4:
+    - SHORT_POWER_FAILURE_COUNT,
+    - INSTANTANEOUS_CURRENT_L1,
+    - INSTANTANEOUS_CURRENT_L2,
+    - INSTANTANEOUS_CURRENT_L3
+- Add missing tests + fix small test bugs
+- Complete telegram object v4 parse test
 
 **0.18** (2020-01-28)
 
@@ -36,7 +50,7 @@ Change Log
 
 **0.10** (2017-06-05)
 
-- bugix: don't force full telegram signatures (`pull request #25 <https://github.com/ndokter/dsmr_parser/pull/25>`_)
+- bugfix: don't force full telegram signatures (`pull request #25 <https://github.com/ndokter/dsmr_parser/pull/25>`_)
 - removed unused code for automatic telegram detection as this needs reworking after the fix mentioned above
 - InvalidChecksumError's are logged as warning instead of error
 
