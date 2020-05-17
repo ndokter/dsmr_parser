@@ -145,8 +145,8 @@ class ProfileGenericObject(DSMRObject):
         list = [['buffer_length', self.buffer_length]]
         list.append(['buffer_type', self.buffer_type])
         buffer_repr = [
-            (['datetime', buffer_item.datetime],
-             ['value', buffer_item.value])
+            dict([['datetime', buffer_item.datetime],
+             ['value', buffer_item.value]])
             for buffer_item in self.buffer
         ]
         list.append(['buffer', buffer_repr])
