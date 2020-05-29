@@ -1,5 +1,7 @@
 import dsmr_parser.obis_name_mapping
 import datetime
+import json
+from decimal import Decimal
 
 
 class Telegram(object):
@@ -52,6 +54,9 @@ class Telegram(object):
             output += "{}: \t {}\n".format(attr, str(value))
         return output
 
+    def to_json(self):
+        return json.dumps(dict([[attr, json.loads(value.to_json())] for attr, value in self]))
+
 
 class DSMRObject(object):
     """
@@ -92,6 +97,22 @@ class MBusObject(DSMRObject):
         output = "{}\t[{}] at {}".format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()))
         return output
 
+    def to_json(self):
+        timestamp = self.datetime
+        if isinstance(self.datetime, datetime.datetime):
+            timestamp = self.datetime.astimezone().isoformat()
+        value = self.value
+        if isinstance(self.value, datetime.datetime):
+            value = self.value.astimezone().isoformat()
+        if isinstance(self.value, Decimal):
+            value = float(self.value)
+        output = {
+            'datetime': timestamp,
+            'value': value,
+            'unit': self.unit
+        }
+        return json.dumps(output)
+
 
 class CosemObject(DSMRObject):
 
@@ -109,6 +130,18 @@ class CosemObject(DSMRObject):
             print_value = self.value.astimezone().isoformat()
         output = "{}\t[{}]".format(str(print_value), str(self.unit))
         return output
+
+    def to_json(self):
+        json_value = self.value
+        if isinstance(self.value, datetime.datetime):
+            json_value = self.value.astimezone().isoformat()
+        if isinstance(self.value, Decimal):
+            json_value = float(self.value)
+        output = {
+            'value': json_value,
+            'unit': self.unit
+        }
+        return json.dumps(output)
 
 
 class ProfileGenericObject(DSMRObject):
@@ -150,3 +183,25 @@ class ProfileGenericObject(DSMRObject):
             output += "\n\t event occured at: {}".format(timestamp)
             output += "\t for: {} [{}]".format(buffer_value.value, buffer_value.unit)
         return output
+
+    def to_json(self):
+        """
+        :return: A json of all values in the GenericProfileObject , with the following structure
+                 {'buffer_length': n,
+                  'buffer_type': obis_ref,
+                  'buffer': [{'datetime': d1,
+                              'value': v1,
+                              'unit': u1},
+                              ...
+                               {'datetime': dn,
+                              'value': vn,
+                              'unit': un}
+                              ]
+                  }
+        """
+        list = [['buffer_length', self.buffer_length]]
+        list.append(['buffer_type', self.buffer_type])
+        buffer_repr = [json.loads(buffer_item.to_json()) for buffer_item in self.buffer]
+        list.append(['buffer', buffer_repr])
+        output = dict(list)
+        return json.dumps(output)

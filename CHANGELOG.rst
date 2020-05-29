@@ -1,5 +1,9 @@
 Change Log
 ----------
+**0.21** (2020-05-25)
+
+- All objects can produce a json serialization of their state.
+
 **0.20** (2020-05-12)
 
 - All objects can now print their values
