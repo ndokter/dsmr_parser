@@ -95,7 +95,7 @@ class DSMRProtocol(asyncio.Protocol):
     def connection_lost(self, exc):
         """Stop when connection is lost."""
         if exc:
-            self.log.exception('disconnected due to exception')
+            self.log.exception('disconnected due to exception', exc_info=exc)
         else:
             self.log.info('disconnected because of close/abort.')
         self._closed.set()
