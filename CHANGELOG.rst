@@ -1,5 +1,10 @@
 Change Log
 ----------
+**0.22** (2020-08-23)
+
+- CRC check speed is improved
+- Exception info improvement
+
 **0.21** (2020-05-25)
 
 - All objects can produce a json serialization of their state.
