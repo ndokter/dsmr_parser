@@ -225,6 +225,8 @@ class ProfileGenericParser(DSMRObjectParser):
         self.parsers_for_unidentified = parsers_for_unidentified
 
     def _is_line_wellformed(self, line, values):
+        if values and (len(values) == 1) and (values[0] == ''):
+            return True
         if values and (len(values) >= 2) and (values[0].isdigit()):
             buffer_length = int(values[0])
             return (buffer_length <= 10) and (len(values) == (buffer_length * 2 + 2))
@@ -232,6 +234,9 @@ class ProfileGenericParser(DSMRObjectParser):
             return False
 
     def _parse_values(self, values):
+        if values and (len(values) == 1) and (values[0] == None):
+            return [self.value_formats[i].parse(value)
+                for i, value in enumerate(values)]
         buffer_length = int(values[0])
         buffer_value_obis_ID = values[1]
         if (buffer_length > 0):
