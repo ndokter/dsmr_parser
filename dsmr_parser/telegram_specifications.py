@@ -34,7 +34,7 @@ V2_2 = {
         obis.VALVE_POSITION_GAS: CosemParser(ValueParser(str)),
         obis.GAS_METER_READING: MBusParser(
             ValueParser(timestamp),
-            ValueParser(int),
+            ValueParser(str),  # changed to str see issue60
             ValueParser(int),
             ValueParser(int),
             ValueParser(str),  # obis ref
