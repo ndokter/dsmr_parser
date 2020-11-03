@@ -56,7 +56,7 @@ into a dictionary.
 
      # String is formatted in separate lines for readability.
      telegram_str = (
-         '/ISk5\2MT382-1000\r\n'
+         '/ISk5\\2MT382-1000\r\n'
          '\r\n'
          '0-0:96.1.1(4B384547303034303436333935353037)\r\n'
          '1-0:1.8.1(12345.678*kWh)\r\n'
