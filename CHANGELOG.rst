@@ -1,5 +1,11 @@
 Change Log
 ----------
+
+**0.23** (2020-11-07)
+- Resolved issue with x-x:24.3.0 where it contains non-integer character (`pull request #61 <https://github.com/ndokter/dsmr_parser/pull/61>`_).
+- Tests are not installed anymore (`pull request #59 <https://github.com/ndokter/dsmr_parser/pull/59>`_).
+- Example telegram improvement (`pull request #58 <https://github.com/ndokter/dsmr_parser/pull/58>`_).
+
 **0.22** (2020-08-23)
 
 - CRC check speed is improved
