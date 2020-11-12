@@ -152,6 +152,7 @@ BELGIUM_FLUVIUS['objects'].update({
 
 LUXEMBOURG_SMARTY = deepcopy(V5)
 LUXEMBOURG_SMARTY['objects'].update({
+    obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
     obis.LUXEMBOURG_ELECTRICITY_USED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
     obis.LUXEMBOURG_ELECTRICITY_DELIVERED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
 })
