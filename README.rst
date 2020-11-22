@@ -41,7 +41,50 @@ process because the code is blocking (not asynchronous):
 
 **AsyncIO client**
 
-To be documented.
+For a test run using a tcp server (lasting 20 seconds) use the following example:
+
+.. code-block:: python
+
+    import asyncio
+    import logging
+    from dsmr_parser import obis_references
+    from dsmr_parser.clients.protocol import create_dsmr_reader, create_tcp_dsmr_reader
+
+    logging.basicConfig(level=logging.INFO, format='%(message)s')
+
+    HOST = MY_HOST
+    PORT = MY_PORT
+    DSMR_VERSION = MY_DSMR_VERSION
+
+    logger = logging.getLogger('tcpclient')
+    logger.debug("Logger created")
+
+    def printTelegram(telegram):
+        logger.info(telegram)
+
+
+    async def main():
+        try:
+            logger.debug("Getting loop")
+            loop = asyncio.get_event_loop()
+            logger.debug("Creating reader")
+            await 	create_tcp_dsmr_reader(
+                                HOST,
+                                PORT,
+                                DSMR_VERSION,
+                                printTelegram,
+                                loop
+                                )
+            logger.debug("Reader created going to sleep now")					
+            await asyncio.sleep(20)
+            logger.info('Finished run')					
+        except Exception as e:
+            logger.error("Unexpected error: "+ e)
+
+    asyncio.run(main())
+
+Note the creation of a callback function to call when a telegram is received. In this case `printTelegram`. Normally the used loop is one running 
+
 
 
 Parsing module usage
