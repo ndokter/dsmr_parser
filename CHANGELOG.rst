@@ -1,6 +1,9 @@
 Change Log
 ----------
 
+**0.24** (2020-11-27)
+- Add Luxembourg equipment identifier (`pull request #62 <https://github.com/ndokter/dsmr_parser/pull/62>`_).
+
 **0.23** (2020-11-07)
 - Resolved issue with x-x:24.3.0 where it contains non-integer character (`pull request #61 <https://github.com/ndokter/dsmr_parser/pull/61>`_).
 - Tests are not installed anymore (`pull request #59 <https://github.com/ndokter/dsmr_parser/pull/59>`_).
