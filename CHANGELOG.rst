@@ -1,6 +1,9 @@
 Change Log
 ----------
 
+**0.25** (2020-12-14)
+- fix for empty parentheses in ProfileGenericParser (`pull request #57 <https://github.com/ndokter/dsmr_parser/pull/57>`_).
+
 **0.24** (2020-11-27)
 - Add Luxembourg equipment identifier (`pull request #62 <https://github.com/ndokter/dsmr_parser/pull/62>`_).
 
