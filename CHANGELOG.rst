@@ -1,6 +1,9 @@
 Change Log
 ----------
 
+**0.26** (2020-12-15)
+- reverted fix for empty parentheses in ProfileGenericParser (`pull request #68 <https://github.com/ndokter/dsmr_parser/pull/68>`_).
+
 **0.25** (2020-12-14)
 - fix for empty parentheses in ProfileGenericParser (`pull request #57 <https://github.com/ndokter/dsmr_parser/pull/57>`_).
 
