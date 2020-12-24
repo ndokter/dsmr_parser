@@ -225,8 +225,6 @@ class ProfileGenericParser(DSMRObjectParser):
         self.parsers_for_unidentified = parsers_for_unidentified
 
     def _is_line_wellformed(self, line, values):
-        
-
         if values and (len(values) == 1) and (values[0] == ''):
             # special case: single empty parentheses (indicated by empty string)
             return True
@@ -238,9 +236,9 @@ class ProfileGenericParser(DSMRObjectParser):
             return False
 
     def _parse_values(self, values):
-        if values and (len(values) == 1) and (values[0] == None):
+        if values and (len(values) == 1) and (values[0] is None):
             # special case: single empty parentheses; make sure empty ProfileGenericObject is created
-            values = [0, None] # buffer_length=0, buffer_value_obis_ID=None
+            values = [0, None]  # buffer_length=0, buffer_value_obis_ID=None
         buffer_length = int(values[0])
         buffer_value_obis_ID = values[1]
         if (buffer_length > 0):
