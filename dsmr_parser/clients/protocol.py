@@ -14,7 +14,7 @@ from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
     SERIAL_SETTINGS_V4, SERIAL_SETTINGS_V5
 
 
-def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **args):
+def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
@@ -37,7 +37,7 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **args):
                                   dsmr_version)
 
     protocol = partial(DSMRProtocol, loop, TelegramParser(specification),
-                       telegram_callback=telegram_callback, **args)
+                       telegram_callback=telegram_callback, **kwargs)
 
     return protocol, serial_settings
 
@@ -110,7 +110,7 @@ class DSMRProtocol(asyncio.Protocol):
             self._active = False
             self.loop.call_later(self._keep_alive_interval, self.keep_alive)
         else:
-            self.log.debug('keep-alive failed')
+            self.log.warning('keep-alive check failed')
             self.transport.close()
 
     def connection_lost(self, exc):
