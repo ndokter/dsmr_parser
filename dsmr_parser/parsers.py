@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class TelegramParser(object):
-
     crc16_tab = []
 
     def __init__(self, telegram_specification, apply_checksum_validation=True):
@@ -56,7 +55,11 @@ class TelegramParser(object):
             # Some signatures are optional and may not be present,
             # so only parse lines that match
             if match:
-                telegram[signature] = parser.parse(match.group(0))
+                try:
+                    telegram[signature] = parser.parse(match.group(0))
+                except Exception:
+                    logger.error("ignore line with signature {}, because parsing failed.".format(signature),
+                                 exc_info=True)
 
         return telegram
 
@@ -219,6 +222,7 @@ class ProfileGenericParser(DSMRObjectParser):
     8) Buffer value 2 (oldest entry of buffer attribute without unit)
     9) Unit of buffer values (Unit of capture objects attribute)
     """
+
     def __init__(self, buffer_types, head_parsers, parsers_for_unidentified):
         self.value_formats = head_parsers
         self.buffer_types = buffer_types
@@ -271,7 +275,6 @@ class ValueParser(object):
         self.coerce_type = coerce_type
 
     def parse(self, value):
-
         unit_of_measurement = None
 
         if value and '*' in value:
