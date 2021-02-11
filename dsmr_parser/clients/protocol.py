@@ -91,7 +91,7 @@ class DSMRProtocol(asyncio.Protocol):
         self.transport = transport
         self.log.debug('connected')
         self._active = False
-        if self._keep_alive_interval:
+        if self.loop and self._keep_alive_interval:
             self.loop.call_later(self._keep_alive_interval, self.keep_alive)
 
     def data_received(self, data):
@@ -108,10 +108,12 @@ class DSMRProtocol(asyncio.Protocol):
         if self._active:
             self.log.debug('keep-alive checked')
             self._active = False
-            self.loop.call_later(self._keep_alive_interval, self.keep_alive)
+            if self.loop:
+                self.loop.call_later(self._keep_alive_interval, self.keep_alive)
         else:
             self.log.warning('keep-alive check failed')
-            self.transport.close()
+            if self.transport:
+                self.transport.close()
 
     def connection_lost(self, exc):
         """Stop when connection is lost."""
