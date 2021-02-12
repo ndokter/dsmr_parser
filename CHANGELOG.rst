@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.28** (2021-02-21)
+- Optional keep alive monitoring for TCP/IP connections (`pull request #73 <https://github.com/ndokter/dsmr_parser/pull/73>`_).
+- Catch parse errors in TelegramParser, ignore lines that can not be parsed (`pull request #74 <https://github.com/ndokter/dsmr_parser/pull/74>`_).
+
 **0.27** (2020-12-24)
 - fix for empty parentheses in ProfileGenericParser (redone) (`pull request #69 <https://github.com/ndokter/dsmr_parser/pull/69>`_).
 

@@ -3,10 +3,10 @@ from setuptools import setup, find_packages
 setup(
     name='dsmr-parser',
     description='Library to parse Dutch Smart Meter Requirements (DSMR)',
-    author='Nigel Dokter',
+    author='Nigel Dokter and many others',
     author_email='nigel@nldr.net',
     url='https://github.com/ndokter/dsmr_parser',
-    version='0.27',
+    version='0.28',
     packages=find_packages(exclude=('test', 'test.*')),
     install_requires=[
         'pyserial>=3,<4',
