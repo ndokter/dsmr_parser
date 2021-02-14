@@ -158,7 +158,7 @@ class ProfileGenericObject(DSMRObject):
     @property
     def value(self):
         # value is added to make sure the telegram iterator does not break
-        return self.__str__()
+        return self.values
 
     @property
     def unit(self):
