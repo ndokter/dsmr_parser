@@ -136,7 +136,6 @@ class DSMRProtocol(asyncio.Protocol):
         else:
             self.telegram_callback(parsed_telegram)
 
-    @asyncio.coroutine
-    def wait_closed(self):
+    async def wait_closed(self):
         """Wait until connection is closed."""
-        yield from self._closed.wait()
+        await self._closed.wait()
