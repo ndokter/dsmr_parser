@@ -68,8 +68,7 @@ class AsyncSerialReader(SerialReader):
 
     PORT_KEY = 'url'
 
-    @asyncio.coroutine
-    def read(self, queue):
+    async def read(self, queue):
         """
         Read complete DSMR telegram's from the serial interface and parse it
         into CosemObject's and MbusObject's.
@@ -81,12 +80,12 @@ class AsyncSerialReader(SerialReader):
         """
         # create Serial StreamReader
         conn = serial_asyncio.open_serial_connection(**self.serial_settings)
-        reader, _ = yield from conn
+        reader, _ = await conn
 
         while True:
             # Read line if available or give control back to loop until new
             # data has arrived.
-            data = yield from reader.readline()
+            data = await reader.readline()
             self.telegram_buffer.append(data.decode('ascii'))
 
             for telegram in self.telegram_buffer.get_all():
