@@ -156,6 +156,16 @@ class ProfileGenericObject(DSMRObject):
         self._buffer_list = None
 
     @property
+    def value(self):
+        # value is added to make sure the telegram iterator does not break
+        return self.values
+
+    @property
+    def unit(self):
+        # value is added to make sure all items have a unit so code that relies on that does not break
+        return None
+
+    @property
     def buffer_length(self):
         return self.values[0]['value']
 
