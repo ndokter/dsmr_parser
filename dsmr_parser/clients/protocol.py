@@ -23,6 +23,9 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     elif dsmr_version == '4':
         specification = telegram_specifications.V4
         serial_settings = SERIAL_SETTINGS_V4
+    elif dsmr_version == '4+':
+        specification = telegram_specifications.V5
+        serial_settings = SERIAL_SETTINGS_V4
     elif dsmr_version == '5':
         specification = telegram_specifications.V5
         serial_settings = SERIAL_SETTINGS_V5
