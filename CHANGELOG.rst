@@ -1,6 +1,9 @@
 Change Log
 ----------
 
+**0.29** (2021-08-18)
+- Add support for Swedish smart meters (`pull request #86 <https://github.com/ndokter/dsmr_parser/pull/86>`_).
+
 **0.28** (2021-02-21)
 - Optional keep alive monitoring for TCP/IP connections (`pull request #73 <https://github.com/ndokter/dsmr_parser/pull/73>`_).
 - Catch parse errors in TelegramParser, ignore lines that can not be parsed (`pull request #74 <https://github.com/ndokter/dsmr_parser/pull/74>`_).
