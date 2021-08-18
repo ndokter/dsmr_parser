@@ -1,8 +1,12 @@
 Change Log
 ----------
 
-**0.29** (2021-08-18)
+**0.30** (2021-08-18)
 - Add support for Swedish smart meters (`pull request #86 <https://github.com/ndokter/dsmr_parser/pull/86>`_).
+
+**0.29** (2021-04-18)
+- Add value and unit properties to ProfileGenericObject to make sure that code like iterators that rely on that do not break (`pull request #71 <https://github.com/ndokter/dsmr_parser/pull/71>`_).
+Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github.com/ndokter/dsmr_parser/pull/76>`_).
 
 **0.28** (2021-02-21)
 - Optional keep alive monitoring for TCP/IP connections (`pull request #73 <https://github.com/ndokter/dsmr_parser/pull/73>`_).
