@@ -66,3 +66,5 @@ BELGIUM_HOURLY_GAS_METER_READING = r'\d-\d:24\.2\.3.+?\r\n'  # Different code, s
 LUXEMBOURG_EQUIPMENT_IDENTIFIER = r'\d-\d:42\.0\.0.+?\r\n'  # Logical device name
 LUXEMBOURG_ELECTRICITY_USED_TARIFF_GLOBAL = r'\d-\d:1\.8\.0.+?\r\n'  # Total imported energy register (P+)
 LUXEMBOURG_ELECTRICITY_DELIVERED_TARIFF_GLOBAL = r'\d-\d:2\.8\.0.+?\r\n'  # Total exported energy register (P-)
+SWEDEN_ELECTRICITY_USED_TARIFF_GLOBAL = r'\d-\d:1\.8\.0.+?\r\n'  # Total imported energy register (P+)
+SWEDEN_ELECTRICITY_DELIVERED_TARIFF_GLOBAL = r'\d-\d:2\.8\.0.+?\r\n'  # Total exported energy register (P-)
