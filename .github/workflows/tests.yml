@@ -35,10 +35,11 @@ jobs:
           key: pip-${{ matrix.python-version }}-${{ hashFiles('setup.py', 'tox.ini') }}
           restore-keys: pip-${{ matrix.python-version }}-
 
+      - name: Install dependencies
+        run: pip install tox
+
       - name: Run tests
-        run: |
-          pip install tox
-          tox
+        run: tox
 
       - name: Code coverage upload
         uses: codecov/codecov-action@v1
