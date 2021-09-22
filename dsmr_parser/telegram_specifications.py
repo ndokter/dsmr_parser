@@ -157,7 +157,8 @@ LUXEMBOURG_SMARTY['objects'].update({
     obis.LUXEMBOURG_ELECTRICITY_DELIVERED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
 })
 
-# Source: https://www.energiforetagen.se/globalassets/energiforetagen/det-erbjuder-vi/kurser-och-konferenser/elnat/branschrekommendation-lokalt-granssnitt-v2_0-201912.pdf
+# Source: https://www.energiforetagen.se/globalassets/energiforetagen/det-erbjuder-vi/kurser-och-konferenser/elnat/
+#         branschrekommendation-lokalt-granssnitt-v2_0-201912.pdf
 SWEDEN = {
     'checksum_support': True,
     'objects': {
