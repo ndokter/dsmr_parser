@@ -29,13 +29,13 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     elif dsmr_version == '5B':
         specification = telegram_specifications.BELGIUM_FLUVIUS
         serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == '5L':
+    elif dsmr_version == "5L":
         specification = telegram_specifications.LUXEMBOURG_SMARTY
         serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == '5S':
+    elif dsmr_version == "5S":
         specification = telegram_specifications.SWEDEN
         serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == 'Q3D':
+    elif dsmr_version == 'Q3D":
         specification = telegram_specifications.Q3D
         serial_settings = SERIAL_SETTINGS_V5
     else:
