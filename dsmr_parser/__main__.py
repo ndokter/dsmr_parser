@@ -39,18 +39,13 @@ def console():
 
     # create tcp or serial connection depending on args
     if args.host and args.port:
-        create_connection = partial(
-            create_tcp_dsmr_reader,
-            args.host,
-            args.port,
-            args.version,
-            print_callback,
-            loop=loop,
-        )
+        create_connection = partial(create_tcp_dsmr_reader,
+                                    args.host, args.port, args.version,
+                                    print_callback, loop=loop)
     else:
-        create_connection = partial(
-            create_dsmr_reader, args.device, args.version, print_callback, loop=loop
-        )
+        create_connection = partial(create_dsmr_reader,
+                                    args.device, args.version,
+                                    print_callback, loop=loop)
 
     try:
         # connect and keep connected until interrupted by ctrl-c
