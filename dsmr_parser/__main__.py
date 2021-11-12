@@ -10,15 +10,20 @@ def console():
     """Output DSMR data to console."""
 
     parser = argparse.ArgumentParser(description=console.__doc__)
-    parser.add_argument('--device', default='/dev/ttyUSB0',
-                        help='port to read DSMR data from')
-    parser.add_argument('--host', default=None,
-                        help='alternatively connect using TCP host.')
-    parser.add_argument('--port', default=None,
-                        help='TCP port to use for connection')
-    parser.add_argument('--version', default='2.2', choices=['2.2', '4', '5', '5B', '5L', '5S'],
-                        help='DSMR version (2.2, 4, 5, 5B, 5L, 5S)')
-    parser.add_argument('--verbose', '-v', action='count')
+    parser.add_argument(
+        "--device", default="/dev/ttyUSB0", help="port to read DSMR data from"
+    )
+    parser.add_argument(
+        "--host", default=None, help="alternatively connect using TCP host."
+    )
+    parser.add_argument("--port", default=None, help="TCP port to use for connection")
+    parser.add_argument(
+        "--version",
+        default="2.2",
+        choices=["2.2", "4", "5", "5B", "5L", "5S", "Q3D"],
+        help="DSMR version (2.2, 4, 5, 5B, 5L, 5S, Q3D)",
+    )
+    parser.add_argument("--verbose", "-v", action="count")
 
     args = parser.parse_args()
 
@@ -39,13 +44,18 @@ def console():
 
     # create tcp or serial connection depending on args
     if args.host and args.port:
-        create_connection = partial(create_tcp_dsmr_reader,
-                                    args.host, args.port, args.version,
-                                    print_callback, loop=loop)
+        create_connection = partial(
+            create_tcp_dsmr_reader,
+            args.host,
+            args.port,
+            args.version,
+            print_callback,
+            loop=loop,
+        )
     else:
-        create_connection = partial(create_dsmr_reader,
-                                    args.device, args.version,
-                                    print_callback, loop=loop)
+        create_connection = partial(
+            create_dsmr_reader, args.device, args.version, print_callback, loop=loop
+        )
 
     try:
         # connect and keep connected until interrupted by ctrl-c
