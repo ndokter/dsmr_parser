@@ -9,6 +9,7 @@ from dsmr_parser.profile_generic_specifications import BUFFER_TYPES, PG_HEAD_PAR
 """
 dsmr_parser.telegram_specifications
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 This module contains DSMR telegram specifications. Each specifications describes
 how the telegram lines are parsed.
 """
