@@ -134,7 +134,10 @@ class DSMRProtocol(asyncio.Protocol):
         self.log.debug('got telegram: %s', telegram)
 
         try:
-            telegram = telegram.decode("ascii")
+            # we accepted 8-bit at transport level (e.g. tcp)
+            telegram_data = telegram.encode("latin1")
+            # we need to ensure 7-bit at telegram level (IEC 646 required in section 5.4 of IEC 62056-21)
+            telegram = telegram_data.decode("ascii")
             parsed_telegram = self.telegram_parser.parse(telegram)
         except InvalidChecksumError as e:
             self.log.warning(str(e))
