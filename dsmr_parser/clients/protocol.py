@@ -134,6 +134,7 @@ class DSMRProtocol(asyncio.Protocol):
         self.log.debug('got telegram: %s', telegram)
 
         try:
+            telegram = telegram.decode("ascii")
             parsed_telegram = self.telegram_parser.parse(telegram)
         except InvalidChecksumError as e:
             self.log.warning(str(e))
