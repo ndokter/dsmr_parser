@@ -102,12 +102,16 @@ class DSMRProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         """Add incoming data to buffer."""
+
+        # accept latin-1 (8-bit) on the line, to allow for non-ascii transport or padding
         data = data.decode("latin1")
         self._active = True
         self.log.debug('received data: %s', data)
         self.telegram_buffer.append(data)
 
         for telegram in self.telegram_buffer.get_all():
+            # ensure actual telegram is ascii (7-bit) only (IEC 646 required in section 5.4 of IEC 62056-21)
+            telegram = telegram.encode("latin1").decode("ascii")
             self.handle_telegram(telegram)
 
     def keep_alive(self):
@@ -134,10 +138,6 @@ class DSMRProtocol(asyncio.Protocol):
         self.log.debug('got telegram: %s', telegram)
 
         try:
-            # we accepted 8-bit at transport level (e.g. tcp)
-            telegram_data = telegram.encode("latin1")
-            # we need to ensure 7-bit at telegram level (IEC 646 required in section 5.4 of IEC 62056-21)
-            telegram = telegram_data.decode("ascii")
             parsed_telegram = self.telegram_parser.parse(telegram)
         except InvalidChecksumError as e:
             self.log.warning(str(e))
