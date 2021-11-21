@@ -136,7 +136,7 @@ TELEGRAM_V5 = (
 #
 # last two lines are added by the COM-1 Ethernet Gateway
 
-TELEGRAM_ESY5Q3DB1024_V304 = ( # Easymeter an Hauptstromzähler
+TELEGRAM_ESY5Q3DB1024_V304 = (
     '/ESY5Q3DB1024 V3.04\r\n'
     '\r\n'
     '1-0:0.0.0*255(0272031312565)\r\n'
@@ -150,10 +150,11 @@ TELEGRAM_ESY5Q3DB1024_V304 = ( # Easymeter an Hauptstromzähler
     '0-0:96.1.255*255(1ESY1313002565)\r\n'
     '!\r\n'
     '  25803103\r\n'
-    '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\r\n'
+    '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+    '\xff\xff\xff\xff\xff\r\n'
 )
 
-TELEGRAM_ESY5Q3DA1004_V304 = ( # Easymeter an Wärmepumpe
+TELEGRAM_ESY5Q3DA1004_V304 = (
     '/ESY5Q3DA1004 V3.04\r\n'
     '\r\n'
     '1-0:0.0.0*255(1336001560)\r\n'

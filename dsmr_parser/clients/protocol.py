@@ -113,7 +113,7 @@ class DSMRProtocol(asyncio.Protocol):
         self.telegram_buffer.append(data)
 
         for telegram in self.telegram_buffer.get_all():
-            # ensure actual telegram is ascii (7-bit) only (IEC 646 required in section 5.4 of IEC 62056-21)
+            # ensure actual telegram is ascii (7-bit) only (ISO 646:1991 IRV required in section 5.5 of IEC 62056-21)
             telegram = telegram.encode("latin1").decode("ascii")
             self.handle_telegram(telegram)
 
