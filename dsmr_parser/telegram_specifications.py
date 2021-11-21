@@ -182,3 +182,18 @@ SWEDEN = {
         obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
     }
 }
+
+Q3D = {
+    "checksum_support": False,
+    "objects": {
+        obis.Q3D_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
+        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
+        obis.Q3D_EQUIPMENT_STATE: CosemParser(ValueParser(str)),
+        obis.Q3D_EQUIPMENT_SERIALNUMBER: CosemParser(ValueParser(str)),
+    },
+}
