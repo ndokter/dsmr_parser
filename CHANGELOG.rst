@@ -1,6 +1,9 @@
 Change Log
 ----------
 
+**0.31** (2021-11-21)
+- Support for (German) EasyMeter Q3D using COM-1 Ethernet Gateway (`pull request #92 <https://github.com/ndokter/dsmr_parser/pull/92>`_).
+
 **0.30** (2021-08-18)
 - Add support for Swedish smart meters (`pull request #86 <https://github.com/ndokter/dsmr_parser/pull/86>`_).
 
