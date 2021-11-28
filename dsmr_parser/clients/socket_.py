@@ -22,7 +22,6 @@ class SocketReader(object):
         self.telegram_buffer = TelegramBuffer()
         self.telegram_specification = telegram_specification
 
-
     def read(self):
         """
         Read complete DSMR telegram's from remote interface and parse it
