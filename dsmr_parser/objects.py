@@ -179,7 +179,7 @@ class ProfileGenericObject(DSMRObject):
             self._buffer_list = []
             values_offset = 2
             for i in range(self.buffer_length):
-                offset = values_offset + i*2
+                offset = values_offset + i * 2
                 self._buffer_list.append(MBusObject([self.values[offset], self.values[offset + 1]]))
         return self._buffer_list
 
