@@ -16,6 +16,13 @@ from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
 
 def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     """Creates a DSMR asyncio protocol."""
+    protocol = _create_dsmr_protocol(dsmr_version, telegram_callback,
+                                     DSMRProtocol, loop, **kwargs)
+    return protocol
+
+
+def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol loop=None, **kwargs):
+    """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
         specification = telegram_specifications.V2_2
@@ -39,7 +46,7 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
 
-    protocol = partial(DSMRProtocol, loop, TelegramParser(specification),
+    protocol = partial(protocol, loop, TelegramParser(specification),
                        telegram_callback=telegram_callback, **kwargs)
 
     return protocol, serial_settings
@@ -142,26 +149,3 @@ class DSMRProtocol(asyncio.Protocol):
     async def wait_closed(self):
         """Wait until connection is closed."""
         await self._closed.wait()
-
-
-PACKETTYPE_DSMR = 0x62
-SUBTYPE_P1 = 0x01
-
-class RFXtrxDSMRProtocol(DSMRProtocol):
-
-    remaining_data = b''
-
-    def data_received(self, data):
-        """Add incoming data to buffer."""
-
-        data = self.remaining_data + data
-
-        while (len(data) > 0 and (packetlength := data[0]+1) <= len(data)):
-            packettype = data[1]
-            subtype = data[2]
-            if (packettype == PACKETTYPE_DSMR and subtype == SUBTYPE_P1):
-                dsmr_data = data[4:packetlength]
-                super().data_received(dsmr_data)
-            data = data[packetlength:]
-
-        self.remaining_data = data
