@@ -142,3 +142,26 @@ class DSMRProtocol(asyncio.Protocol):
     async def wait_closed(self):
         """Wait until connection is closed."""
         await self._closed.wait()
+
+
+PACKETTYPE_DSMR = 0x62
+SUBTYPE_P1 = 0x01
+
+class RFXtrxDSMRProtocol(DSMRProtocol):
+
+    _data = b''
+
+    def data_received(self, data):
+        """Add incoming data to buffer."""
+
+        data = self._data + data
+
+        while (len(data) > 0 and (packetlength := data[0]+1) <= len(data)):
+            packettype = data[1]
+            subtype = data[2]
+            if (packettype == PACKETTYPE_DSMR and subtype == SUBTYPE_P1):
+                dsmr_data = data[4:packetlength]
+                super().data_received(dsmr_data)
+            data = data[packetlength:]
+
+        self._data = data
