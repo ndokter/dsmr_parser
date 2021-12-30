@@ -21,7 +21,7 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     return protocol
 
 
-def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol loop=None, **kwargs):
+def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, **kwargs):
     """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':

@@ -1,15 +1,13 @@
 """Asyncio protocol implementation for handling telegrams over a RFXtrx connection ."""
 
-from functools import partial
 import asyncio
 
 from serial_asyncio import create_serial_connection
-
 from .protocol import DSMRProtocol, _create_dsmr_protocol
 
 
 def create_rfxtrx_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
-    """Creates a DSMR asyncio protocol."""
+    """Creates a RFXtrxDSMR asyncio protocol."""
     protocol = _create_dsmr_protocol(dsmr_version, telegram_callback,
                                      RFXtrxDSMRProtocol, loop, **kwargs)
     return protocol
