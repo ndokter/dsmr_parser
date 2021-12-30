@@ -149,12 +149,12 @@ SUBTYPE_P1 = 0x01
 
 class RFXtrxDSMRProtocol(DSMRProtocol):
 
-    _data = b''
+    remaining_data = b''
 
     def data_received(self, data):
         """Add incoming data to buffer."""
 
-        data = self._data + data
+        data = self.remaining_data + data
 
         while (len(data) > 0 and (packetlength := data[0]+1) <= len(data)):
             packettype = data[1]
@@ -164,4 +164,4 @@ class RFXtrxDSMRProtocol(DSMRProtocol):
                 super().data_received(dsmr_data)
             data = data[packetlength:]
 
-        self._data = data
+        self.remaining_data = data
