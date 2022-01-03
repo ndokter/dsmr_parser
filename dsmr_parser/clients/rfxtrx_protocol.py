@@ -49,7 +49,7 @@ class RFXtrxDSMRProtocol(DSMRProtocol):
 
         data = self.remaining_data + data
 
-        while (len(data) > 0 and (packetlength := data[0]+1) <= len(data)):
+        while len(data) > 0 and (packetlength := data[0] + 1) <= len(data):
             packettype = data[1]
             subtype = data[2]
             if (packettype == PACKETTYPE_DSMR and subtype == SUBTYPE_P1):
