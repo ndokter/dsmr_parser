@@ -16,6 +16,13 @@ from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
 
 def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     """Creates a DSMR asyncio protocol."""
+    protocol = _create_dsmr_protocol(dsmr_version, telegram_callback,
+                                     DSMRProtocol, loop, **kwargs)
+    return protocol
+
+
+def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, **kwargs):
+    """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
         specification = telegram_specifications.V2_2
@@ -45,7 +52,7 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
 
-    protocol = partial(DSMRProtocol, loop, TelegramParser(specification),
+    protocol = partial(protocol, loop, TelegramParser(specification),
                        telegram_callback=telegram_callback, **kwargs)
 
     return protocol, serial_settings
