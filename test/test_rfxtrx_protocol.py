@@ -3,8 +3,6 @@ from unittest.mock import Mock
 import unittest
 
 from dsmr_parser import obis_references as obis
-from dsmr_parser import telegram_specifications
-from dsmr_parser.parsers import TelegramParser
 from dsmr_parser.clients.rfxtrx_protocol import create_rfxtrx_dsmr_protocol, PACKETTYPE_DSMR, SUBTYPE_P1
 
 
