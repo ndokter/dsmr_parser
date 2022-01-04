@@ -128,3 +128,44 @@ TELEGRAM_V5 = (
     '0-2:96.1.0()\r\n'
     '!6EEE\r\n'
 )
+
+# EasyMeter via COM-1 Ethernet Gateway
+# Q3D Manual (german) https://www.easymeter.com/downloads/products/zaehler/Q3D/Easymeter_Q3D_DE_2016-06-15.pdf
+#  - type code on page 8
+#  - D0-Specs on page 20
+#
+# last two lines are added by the COM-1 Ethernet Gateway
+
+TELEGRAM_ESY5Q3DB1024_V304 = (
+    '/ESY5Q3DB1024 V3.04\r\n'
+    '\r\n'
+    '1-0:0.0.0*255(0272031312565)\r\n'
+    '1-0:1.8.0*255(00052185.7825309*kWh)\r\n'
+    '1-0:2.8.0*255(00019949.3221493*kWh)\r\n'
+    '1-0:21.7.0*255(000747.85*W)\r\n'
+    '1-0:41.7.0*255(000737.28*W)\r\n'
+    '1-0:61.7.0*255(000639.73*W)\r\n'
+    '1-0:1.7.0*255(002124.86*W)\r\n'
+    '1-0:96.5.5*255(80)\r\n'
+    '0-0:96.1.255*255(1ESY1313002565)\r\n'
+    '!\r\n'
+    '  25803103\r\n'
+    '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff'
+    '\xff\xff\xff\xff\xff\r\n'
+)
+
+TELEGRAM_ESY5Q3DA1004_V304 = (
+    '/ESY5Q3DA1004 V3.04\r\n'
+    '\r\n'
+    '1-0:0.0.0*255(1336001560)\r\n'
+    '1-0:1.8.0*255(00032549.5061662*kWh)\r\n'
+    '1-0:21.7.0*255(000557.29*W)\r\n'
+    '1-0:41.7.0*255(000521.62*W)\r\n'
+    '1-0:61.7.0*255(000609.30*W)\r\n'
+    '1-0:1.7.0*255(001688.21*W)\r\n'
+    '1-0:96.5.5*255(80)\r\n'
+    '0-0:96.1.255*255(1ESY1336001560)\r\n'
+    '!\r\n'
+    '  25818685\r\n'
+    'DE0000000000000000000000000000003\r\n'
+)

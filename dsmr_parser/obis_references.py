@@ -8,7 +8,6 @@ objects are introduced.
 """
 P1_MESSAGE_HEADER = r'\d-\d:0\.2\.8.+?\r\n'
 P1_MESSAGE_TIMESTAMP = r'\d-\d:1\.0\.0.+?\r\n'
-ELECTRICITY_IMPORTED_TOTAL = r'\d-\d:1\.8\.0.+?\r\n'
 ELECTRICITY_USED_TARIFF_1 = r'\d-\d:1\.8\.1.+?\r\n'
 ELECTRICITY_USED_TARIFF_2 = r'\d-\d:1\.8\.2.+?\r\n'
 ELECTRICITY_DELIVERED_TARIFF_1 = r'\d-\d:2\.8\.1.+?\r\n'
@@ -61,10 +60,13 @@ ELECTRICITY_DELIVERED_TARIFF_ALL = (
     ELECTRICITY_DELIVERED_TARIFF_2
 )
 
-# Alternate codes for foreign countries.
+# International generalized additions
+ELECTRICITY_IMPORTED_TOTAL = r'\d-\d:1\.8\.0.+?\r\n'  # Total imported energy register (P+)
+ELECTRICITY_EXPORTED_TOTAL = r'\d-\d:2\.8\.0.+?\r\n'  # Total exported energy register (P-)
+
+# International non generalized additions (country specific) / risk for necessary refactoring
 BELGIUM_HOURLY_GAS_METER_READING = r'\d-\d:24\.2\.3.+?\r\n'  # Different code, same format.
 LUXEMBOURG_EQUIPMENT_IDENTIFIER = r'\d-\d:42\.0\.0.+?\r\n'  # Logical device name
-LUXEMBOURG_ELECTRICITY_USED_TARIFF_GLOBAL = r'\d-\d:1\.8\.0.+?\r\n'  # Total imported energy register (P+)
-LUXEMBOURG_ELECTRICITY_DELIVERED_TARIFF_GLOBAL = r'\d-\d:2\.8\.0.+?\r\n'  # Total exported energy register (P-)
-SWEDEN_ELECTRICITY_USED_TARIFF_GLOBAL = r'\d-\d:1\.8\.0.+?\r\n'  # Total imported energy register (P+)
-SWEDEN_ELECTRICITY_DELIVERED_TARIFF_GLOBAL = r'\d-\d:2\.8\.0.+?\r\n'  # Total exported energy register (P-)
+Q3D_EQUIPMENT_IDENTIFIER = r'\d-\d:0\.0\.0.+?\r\n'  # Logical device name
+Q3D_EQUIPMENT_STATE = r'\d-\d:96\.5\.5.+?\r\n'  # Device state (hexadecimal)
+Q3D_EQUIPMENT_SERIALNUMBER = r'\d-\d:96\.1\.255.+?\r\n'  # Device Serialnumber
