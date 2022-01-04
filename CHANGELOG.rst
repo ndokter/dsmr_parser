@@ -1,6 +1,9 @@
 Change Log
 ----------
 
+**0.32** (2022-01-04)
+- Support DSMR data read via RFXtrx with integrated P1 reader (`pull request #98 <https://github.com/ndokter/dsmr_parser/pull/98>`_).
+
 **0.31** (2021-11-21)
 - Support for (German) EasyMeter Q3D using COM-1 Ethernet Gateway (`pull request #92 <https://github.com/ndokter/dsmr_parser/pull/92>`_).
 
