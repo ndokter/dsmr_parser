@@ -2,35 +2,45 @@ Change Log
 ----------
 
 **0.32** (2022-01-04)
+
 - Support DSMR data read via RFXtrx with integrated P1 reader (`pull request #98 <https://github.com/ndokter/dsmr_parser/pull/98>`_).
 
 **0.31** (2021-11-21)
+
 - Support for (German) EasyMeter Q3D using COM-1 Ethernet Gateway (`pull request #92 <https://github.com/ndokter/dsmr_parser/pull/92>`_).
 
 **0.30** (2021-08-18)
+
 - Add support for Swedish smart meters (`pull request #86 <https://github.com/ndokter/dsmr_parser/pull/86>`_).
 
 **0.29** (2021-04-18)
+
 - Add value and unit properties to ProfileGenericObject to make sure that code like iterators that rely on that do not break (`pull request #71 <https://github.com/ndokter/dsmr_parser/pull/71>`_).
 Remove deprecated asyncio coroutine decorator (`pull request #76 <https://github.com/ndokter/dsmr_parser/pull/76>`_).
 
 **0.28** (2021-02-21)
+
 - Optional keep alive monitoring for TCP/IP connections (`pull request #73 <https://github.com/ndokter/dsmr_parser/pull/73>`_).
 - Catch parse errors in TelegramParser, ignore lines that can not be parsed (`pull request #74 <https://github.com/ndokter/dsmr_parser/pull/74>`_).
 
 **0.27** (2020-12-24)
+
 - fix for empty parentheses in ProfileGenericParser (redone) (`pull request #69 <https://github.com/ndokter/dsmr_parser/pull/69>`_).
 
 **0.26** (2020-12-15)
+
 - reverted fix for empty parentheses in ProfileGenericParser (`pull request #68 <https://github.com/ndokter/dsmr_parser/pull/68>`_).
 
 **0.25** (2020-12-14)
+
 - fix for empty parentheses in ProfileGenericParser (`pull request #57 <https://github.com/ndokter/dsmr_parser/pull/57>`_).
 
 **0.24** (2020-11-27)
+
 - Add Luxembourg equipment identifier (`pull request #62 <https://github.com/ndokter/dsmr_parser/pull/62>`_).
 
 **0.23** (2020-11-07)
+
 - Resolved issue with x-x:24.3.0 where it contains non-integer character (`pull request #61 <https://github.com/ndokter/dsmr_parser/pull/61>`_).
 - Tests are not installed anymore (`pull request #59 <https://github.com/ndokter/dsmr_parser/pull/59>`_).
 - Example telegram improvement (`pull request #58 <https://github.com/ndokter/dsmr_parser/pull/58>`_).
