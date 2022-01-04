@@ -153,8 +153,8 @@ BELGIUM_FLUVIUS['objects'].update({
 LUXEMBOURG_SMARTY = deepcopy(V5)
 LUXEMBOURG_SMARTY['objects'].update({
     obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-    obis.LUXEMBOURG_ELECTRICITY_USED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
-    obis.LUXEMBOURG_ELECTRICITY_DELIVERED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
+    obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+    obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
 })
 
 # Source: https://www.energiforetagen.se/globalassets/energiforetagen/det-erbjuder-vi/kurser-och-konferenser/elnat/
@@ -164,8 +164,8 @@ SWEDEN = {
     'objects': {
         obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
         obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.SWEDEN_ELECTRICITY_USED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
-        obis.SWEDEN_ELECTRICITY_DELIVERED_TARIFF_GLOBAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
         obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
         obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
         obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),

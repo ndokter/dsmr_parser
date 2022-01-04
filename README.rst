@@ -46,6 +46,25 @@ process because the code is blocking (not asynchronous):
 
 To be documented.
 
+**Socket client**
+
+Read a remote serial port (for example using ser2net) and work with the parsed telegrams.
+It should be run in a separate process because the code is blocking (not asynchronous):
+
+.. code-block:: python
+
+     from dsmr_parser import telegram_specifications
+     from dsmr_parser.clients import SocketReader
+    
+     socket_reader = SocketReader(
+         host='127.0.0.1',
+         port=2001,
+         telegram_specification=telegram_specifications.V4
+     )
+    
+     for telegram in socket_reader.read():
+         print(telegram)  # see 'Telegram object' docs below
+
 
 Parsing module usage
 --------------------
