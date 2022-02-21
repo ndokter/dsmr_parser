@@ -1,6 +1,3 @@
-**Notice:** this repository is in need of a new maintainer. If you are interested or have ideas about this, please let me know.
-
-
 DSMR Parser
 ===========
 
