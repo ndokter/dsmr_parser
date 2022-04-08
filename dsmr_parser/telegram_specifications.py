@@ -155,7 +155,7 @@ BELGIUM_FLUVIUS['objects'].update({
     obis.BELGIUM_MAX_CURRENT_PER_PHASE: MBusParser(
         ValueParser(timestamp),
         ValueParser(Decimal)
-    ),    
+    ),
 })
 
 LUXEMBOURG_SMARTY = deepcopy(V5)
