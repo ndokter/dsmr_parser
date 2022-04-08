@@ -148,14 +148,10 @@ BELGIUM_FLUVIUS['objects'].update({
         ValueParser(timestamp),
         ValueParser(Decimal)
     ),
-    obis.BELGIUM_MAX_POWER_PER_PHASE: MBusParser(
-        ValueParser(timestamp),
-        ValueParser(Decimal)
-    ),
-    obis.BELGIUM_MAX_CURRENT_PER_PHASE: MBusParser(
-        ValueParser(timestamp),
-        ValueParser(Decimal)
-    ),
+    obis.BELGIUM_MAX_POWER_PER_PHASE: CosemParser(ValueParser(Decimal)),
+    obis.BELGIUM_MAX_CURRENT_PER_PHASE: CosemParser(ValueParser(Decimal)),
+    obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)),
+    obis.VALVE_POSITION_GAS: CosemParser(ValueParser(str)),    
 })
 
 LUXEMBOURG_SMARTY = deepcopy(V5)
