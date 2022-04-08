@@ -144,10 +144,18 @@ ALL = (V2_2, V3, V4, V5)
 
 BELGIUM_FLUVIUS = deepcopy(V5)
 BELGIUM_FLUVIUS['objects'].update({
-    obis.BELGIUM_HOURLY_GAS_METER_READING: MBusParser(
+    obis.BELGIUM_5MIN_GAS_METER_READING: MBusParser(
         ValueParser(timestamp),
         ValueParser(Decimal)
-    )
+    ),
+    obis.BELGIUM_MAX_POWER_PER_PHASE: MBusParser(
+        ValueParser(timestamp),
+        ValueParser(Decimal)
+    ),
+    obis.BELGIUM_MAX_CURRENT_PER_PHASE: MBusParser(
+        ValueParser(timestamp),
+        ValueParser(Decimal)
+    ),
 })
 
 LUXEMBOURG_SMARTY = deepcopy(V5)
