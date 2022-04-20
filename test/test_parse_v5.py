@@ -241,7 +241,6 @@ class TelegramParserV5Test(unittest.TestCase):
 
     def test_checksum_missing(self):
         # Remove the checksum value causing a ParseError.
-        corrupted_telegram = TELEGRAM_V5.replace('!87B3\r\n', '')
-
+        corrupted_telegram = TELEGRAM_V5.replace('!6EEE\r\n', '')
         with self.assertRaises(ParseError):
             TelegramParser.validate_checksum(corrupted_telegram)

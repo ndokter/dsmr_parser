@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class TelegramParser(object):
-
     crc16_tab = []
 
     def __init__(self, telegram_specification, apply_checksum_validation=True):
@@ -56,7 +55,11 @@ class TelegramParser(object):
             # Some signatures are optional and may not be present,
             # so only parse lines that match
             if match:
-                telegram[signature] = parser.parse(match.group(0))
+                try:
+                    telegram[signature] = parser.parse(match.group(0))
+                except Exception:
+                    logger.error("ignore line with signature {}, because parsing failed.".format(signature),
+                                 exc_info=True)
 
         return telegram
 
@@ -219,12 +222,17 @@ class ProfileGenericParser(DSMRObjectParser):
     8) Buffer value 2 (oldest entry of buffer attribute without unit)
     9) Unit of buffer values (Unit of capture objects attribute)
     """
+
     def __init__(self, buffer_types, head_parsers, parsers_for_unidentified):
         self.value_formats = head_parsers
         self.buffer_types = buffer_types
         self.parsers_for_unidentified = parsers_for_unidentified
 
     def _is_line_wellformed(self, line, values):
+        if values and (len(values) == 1) and (values[0] == ''):
+            # special case: single empty parentheses (indicated by empty string)
+            return True
+
         if values and (len(values) >= 2) and (values[0].isdigit()):
             buffer_length = int(values[0])
             return (buffer_length <= 10) and (len(values) == (buffer_length * 2 + 2))
@@ -232,6 +240,9 @@ class ProfileGenericParser(DSMRObjectParser):
             return False
 
     def _parse_values(self, values):
+        if values and (len(values) == 1) and (values[0] is None):
+            # special case: single empty parentheses; make sure empty ProfileGenericObject is created
+            values = [0, None]  # buffer_length=0, buffer_value_obis_ID=None
         buffer_length = int(values[0])
         buffer_value_obis_ID = values[1]
         if (buffer_length > 0):
@@ -264,7 +275,6 @@ class ValueParser(object):
         self.coerce_type = coerce_type
 
     def parse(self, value):
-
         unit_of_measurement = None
 
         if value and '*' in value:

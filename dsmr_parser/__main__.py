@@ -16,8 +16,8 @@ def console():
                         help='alternatively connect using TCP host.')
     parser.add_argument('--port', default=None,
                         help='TCP port to use for connection')
-    parser.add_argument('--version', default='2.2', choices=['2.2', '4'],
-                        help='DSMR version (2.2, 4)')
+    parser.add_argument('--version', default='2.2', choices=['2.2', '4', '5', '5B', '5L', '5S', 'Q3D'],
+                        help='DSMR version (2.2, 4, 5, 5B, 5L, 5S, Q3D)')
     parser.add_argument('--verbose', '-v', action='count')
 
     args = parser.parse_args()

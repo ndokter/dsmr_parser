@@ -4,8 +4,8 @@ DSMR Parser
 .. image:: https://img.shields.io/pypi/v/dsmr-parser.svg
     :target: https://pypi.python.org/pypi/dsmr-parser
 
-.. image:: https://travis-ci.org/ndokter/dsmr_parser.svg?branch=master
-    :target: https://travis-ci.org/ndokter/dsmr_parser
+.. image:: https://img.shields.io/github/workflow/status/ndokter/dsmr_parser/Tests/master
+    :target: https://github.com/ndokter/dsmr_parser/actions/workflows/tests.yml
 
 A library for parsing Dutch Smart Meter Requirements (DSMR) telegram data. It
 also includes client implementation to directly read and parse smart meter data.
@@ -14,7 +14,7 @@ also includes client implementation to directly read and parse smart meter data.
 Features
 --------
 
-DSMR Parser supports DSMR versions 2, 3, 4 and 5. It has been tested with Python 3.4, 3.5 and 3.6.
+DSMR Parser supports DSMR versions 2, 3, 4 and 5. See for the `currently supported/tested Python versions here <https://github.com/ndokter/dsmr_parser/blob/master/.github/workflows/tests.yml#L14>`_.
 
 
 Client module usage
@@ -39,12 +39,30 @@ process because the code is blocking (not asynchronous):
      for telegram in serial_reader.read():
          print(telegram)  # see 'Telegram object' docs below
 
+**Socket client**
+
+Read a remote serial port (for example using ser2net) and work with the parsed telegrams.
+It should be run in a separate process because the code is blocking (not asynchronous):
+
+.. code-block:: python
+
+     from dsmr_parser import telegram_specifications
+     from dsmr_parser.clients import SocketReader
+    
+     socket_reader = SocketReader(
+         host='127.0.0.1',
+         port=2001,
+         telegram_specification=telegram_specifications.V4
+     )
+    
+     for telegram in socket_reader.read():
+         print(telegram)  # see 'Telegram object' docs below
+
 **AsyncIO client**
 
 For a test run using a tcp server (lasting 20 seconds) use the following example:
 
 .. code-block:: python
-
     import asyncio
     import logging
     from dsmr_parser import obis_references
@@ -91,7 +109,6 @@ Moreover, the telegram passed to `telegram_callback(telegram)` is already parsed
 However, if we construct a mock TelegramParser that just returns the already parsed object we can work around this. An example is below:
 
 .. code-block:: python
-
     import asyncio
     import logging
     #from dsmr_parser import obis_references
@@ -151,46 +168,46 @@ However, if we construct a mock TelegramParser that just returns the already par
         except Exception as e:
             logger.error("Unexpected error: "+ e)
 
-    Parsing module usage
-    --------------------
-    The parsing module accepts complete unaltered telegram strings and parses these
-    into a dictionary.
+Parsing module usage
+--------------------
+The parsing module accepts complete unaltered telegram strings and parses these
+into a dictionary.
 
-    .. code-block:: python
+.. code-block:: python
 
-        from dsmr_parser import telegram_specifications
-        from dsmr_parser.parsers import TelegramParser
+    from dsmr_parser import telegram_specifications
+    from dsmr_parser.parsers import TelegramParser
 
-        # String is formatted in separate lines for readability.
-        telegram_str = (
-            '/ISk5\\2MT382-1000\r\n'
-            '\r\n'
-            '0-0:96.1.1(4B384547303034303436333935353037)\r\n'
-            '1-0:1.8.1(12345.678*kWh)\r\n'
-            '1-0:1.8.2(12345.678*kWh)\r\n'
-            '1-0:2.8.1(12345.678*kWh)\r\n'
-            '1-0:2.8.2(12345.678*kWh)\r\n'
-            '0-0:96.14.0(0002)\r\n'
-            '1-0:1.7.0(001.19*kW)\r\n'
-            '1-0:2.7.0(000.00*kW)\r\n'
-            '0-0:17.0.0(016*A)\r\n'
-            '0-0:96.3.10(1)\r\n'
-            '0-0:96.13.1(303132333435363738)\r\n'
-            '0-0:96.13.0(303132333435363738393A3B3C3D3E3F303132333435363738393A3B3C3D3E'
-            '3F303132333435363738393A3B3C3D3E3F303132333435363738393A3B3C3D3E3F30313233'
-            '3435363738393A3B3C3D3E3F)\r\n'
-            '0-1:96.1.0(3232323241424344313233343536373839)\r\n'
-            '0-1:24.1.0(03)\r\n'
-            '0-1:24.3.0(090212160000)(00)(60)(1)(0-1:24.2.1)(m3)\r\n'
-            '(00001.001)\r\n'
-            '0-1:24.4.0(1)\r\n'
-            '!\r\n'
-        )
+    # String is formatted in separate lines for readability.
+    telegram_str = (
+        '/ISk5\\2MT382-1000\r\n'
+        '\r\n'
+        '0-0:96.1.1(4B384547303034303436333935353037)\r\n'
+        '1-0:1.8.1(12345.678*kWh)\r\n'
+        '1-0:1.8.2(12345.678*kWh)\r\n'
+        '1-0:2.8.1(12345.678*kWh)\r\n'
+        '1-0:2.8.2(12345.678*kWh)\r\n'
+        '0-0:96.14.0(0002)\r\n'
+        '1-0:1.7.0(001.19*kW)\r\n'
+        '1-0:2.7.0(000.00*kW)\r\n'
+        '0-0:17.0.0(016*A)\r\n'
+        '0-0:96.3.10(1)\r\n'
+        '0-0:96.13.1(303132333435363738)\r\n'
+        '0-0:96.13.0(303132333435363738393A3B3C3D3E3F303132333435363738393A3B3C3D3E'
+        '3F303132333435363738393A3B3C3D3E3F303132333435363738393A3B3C3D3E3F30313233'
+        '3435363738393A3B3C3D3E3F)\r\n'
+        '0-1:96.1.0(3232323241424344313233343536373839)\r\n'
+        '0-1:24.1.0(03)\r\n'
+        '0-1:24.3.0(090212160000)(00)(60)(1)(0-1:24.2.1)(m3)\r\n'
+        '(00001.001)\r\n'
+        '0-1:24.4.0(1)\r\n'
+        '!\r\n'
+    )
 
-        parser = TelegramParser(telegram_specifications.V3)
-        
-        telegram = parser.parse(telegram_str)
-        print(telegram)  # see 'Telegram object' docs below
+    parser = TelegramParser(telegram_specifications.V3)
+
+    telegram = parser.parse(telegram_str)
+    print(telegram)  # see 'Telegram object' docs below
 
 Telegram dictionary
 -------------------
@@ -243,7 +260,7 @@ Example to get some of the values:
      gas_reading = telegram[obis_references.HOURLY_GAS_METER_READING]
 
     # See dsmr_reader.obis_references for all readable telegram values.
-    # Note that the avilable values differ per DSMR version.
+    # Note that the available values differ per DSMR version.
 
 Telegram as an Object
 ---------------------
