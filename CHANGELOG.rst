@@ -1,6 +1,13 @@
 Change Log
 ----------
 
+**0.33** (2022-04-20)
+
+- Test Python 3.10 in CI + legacy badge fix (`pull request #105 <https://github.com/ndokter/dsmr_parser/pull/105>`_).
+- Update telegram_specifications.py (`pull request #106 <https://github.com/ndokter/dsmr_parser/pull/106>`_).
+- Improve compatiblity with Belgian standard (`pull request #107 <https://github.com/ndokter/dsmr_parser/pull/107>`_).
+- Improve documentation asyncio (`pull request #63 <https://github.com/ndokter/dsmr_parser/pull/63>`_).
+
 **0.32** (2022-01-04)
 
 - Support DSMR data read via RFXtrx with integrated P1 reader (`pull request #98 <https://github.com/ndokter/dsmr_parser/pull/98>`_).

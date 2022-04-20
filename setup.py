@@ -7,7 +7,7 @@ setup(
     author_email='nigel@nldr.net',
     license='MIT',
     url='https://github.com/ndokter/dsmr_parser',
-    version='0.32',
+    version='0.33',
     packages=find_packages(exclude=('test', 'test.*')),
     install_requires=[
         'pyserial>=3,<4',
