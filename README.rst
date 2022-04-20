@@ -63,6 +63,7 @@ It should be run in a separate process because the code is blocking (not asynchr
 For a test run using a tcp server (lasting 20 seconds) use the following example:
 
 .. code-block:: python
+
     import asyncio
     import logging
     from dsmr_parser import obis_references
