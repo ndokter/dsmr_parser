@@ -155,7 +155,7 @@ Example to get some of the values:
      gas_reading = telegram[obis_references.HOURLY_GAS_METER_READING]
 
     # See dsmr_reader.obis_references for all readable telegram values.
-    # Note that the avilable values differ per DSMR version.
+    # Note that the available values differ per DSMR version.
 
 Telegram as an Object
 ---------------------
