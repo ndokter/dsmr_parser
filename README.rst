@@ -110,6 +110,7 @@ Moreover, the telegram passed to `telegram_callback(telegram)` is already parsed
 However, if we construct a mock TelegramParser that just returns the already parsed object we can work around this. An example is below:
 
 .. code-block:: python
+
     import asyncio
     import logging
     #from dsmr_parser import obis_references
