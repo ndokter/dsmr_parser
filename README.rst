@@ -4,8 +4,8 @@ DSMR Parser
 .. image:: https://img.shields.io/pypi/v/dsmr-parser.svg
     :target: https://pypi.python.org/pypi/dsmr-parser
 
-.. image:: https://travis-ci.org/ndokter/dsmr_parser.svg?branch=master
-    :target: https://travis-ci.org/ndokter/dsmr_parser
+.. image:: https://img.shields.io/github/workflow/status/ndokter/dsmr_parser/Tests/master
+    :target: https://github.com/ndokter/dsmr_parser/actions/workflows/tests.yml
 
 A library for parsing Dutch Smart Meter Requirements (DSMR) telegram data. It
 also includes client implementation to directly read and parse smart meter data.
@@ -14,7 +14,7 @@ also includes client implementation to directly read and parse smart meter data.
 Features
 --------
 
-DSMR Parser supports DSMR versions 2, 3, 4 and 5. It has been tested with Python 3.5, 3.6, 3.7, 3.8 and 3.9.
+DSMR Parser supports DSMR versions 2, 3, 4 and 5. See for the `currently supported/tested Python versions here <https://github.com/ndokter/dsmr_parser/blob/master/.github/workflows/tests.yml#L14>`_.
 
 
 Client module usage
@@ -155,7 +155,7 @@ Example to get some of the values:
      gas_reading = telegram[obis_references.HOURLY_GAS_METER_READING]
 
     # See dsmr_reader.obis_references for all readable telegram values.
-    # Note that the avilable values differ per DSMR version.
+    # Note that the available values differ per DSMR version.
 
 Telegram as an Object
 ---------------------
