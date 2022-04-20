@@ -14,7 +14,7 @@ also includes client implementation to directly read and parse smart meter data.
 Features
 --------
 
-DSMR Parser supports DSMR versions 2, 3, 4 and 5. It has been tested with Python 3.5, 3.6, 3.7, 3.8 and 3.9.
+DSMR Parser supports DSMR versions 2, 3, 4 and 5. See for the [currently supported/tested Python versions here](https://github.com/ndokter/dsmr_parser/blob/master/.github/workflows/tests.yml#L14).
 
 
 Client module usage
