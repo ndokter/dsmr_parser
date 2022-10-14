@@ -201,3 +201,33 @@ Q3D = {
         obis.Q3D_EQUIPMENT_SERIALNUMBER: CosemParser(ValueParser(str)),
     },
 }
+
+
+SAGEMCOM_T210_D_R = {
+    "general_global_cipher": True,
+    "checksum_support": True,
+    'objects': {
+        obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
+        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
+        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
+
+        obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_REACTIVE_EXPORTED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_REACTIVE_EXPORTED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_REACTIVE_IMPORTED: CosemParser(ValueParser(Decimal)),
+
+        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
+
+        obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_REACTIVE_IMPORTED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_REACTIVE_IMPORTED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_REACTIVE_EXPORTED: CosemParser(ValueParser(Decimal)),
+    }
+}
+AUSTRIA_ENERGIENETZE_STEIERMARK = SAGEMCOM_T210_D_R
