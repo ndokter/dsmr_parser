@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**0.34** (2022-10-19)
+
+- Adds support for the Sagemcom T210-D-r smart meter (`pull request #110 <https://github.com/ndokter/dsmr_parser/pull/110>`_).
+
 **0.33** (2022-04-20)
 
 - Test Python 3.10 in CI + legacy badge fix (`pull request #105 <https://github.com/ndokter/dsmr_parser/pull/105>`_).
