@@ -3,12 +3,14 @@ import re
 from binascii import unhexlify
 
 from ctypes import c_ushort
+from decimal import Decimal
 
 from dlms_cosem.connection import XDlmsApduFactory
 from dlms_cosem.protocol.xdlms import GeneralGlobalCipher
 
-from dsmr_parser.objects import MBusObject, CosemObject, ProfileGenericObject
+from dsmr_parser.objects import MBusObject, MBusObjectPeak, CosemObject, ProfileGenericObject
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
+from dsmr_parser.value_types import timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -212,6 +214,43 @@ class MBusParser(DSMRObjectParser):
 
     def parse(self, line):
         return MBusObject(self._parse(line))
+
+
+class MaxDemandParser(DSMRObjectParser):
+    """
+    Max demand history parser.
+
+    These are lines with multiple values. Each containing 2 timestamps and a value
+
+    Line format:
+    'ID (Count) (ID) (ID) (TST) (TST) (Mv1*U1)'
+
+     1  2  3  4  5  6  7
+
+    1) OBIS Reduced ID-code
+    2) Amount of values in the response
+    3) ID of the source
+    4) ^^
+    5) Time Stamp (TST) of the month
+    6) Time Stamp (TST) when the max demand occured
+    6) Measurement value 1 (most recent entry of buffer attribute without unit)
+    7) Unit of measurement values (Unit of capture objects attribute)
+    """
+
+    def parse(self, line):
+        pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
+        values = re.findall(pattern, line)
+
+        objects = []
+
+        count = int(values[0])
+        for i in range(1, count+1):
+            timestamp_month = ValueParser(timestamp).parse(values[i*3+1])
+            timestamp_occurred = ValueParser(timestamp).parse(values[i*3+1])
+            value = ValueParser(Decimal).parse(values[i*3+2])
+            objects.append(MBusObjectPeak([timestamp_month, timestamp_occurred, value]))
+
+        return objects
 
 
 class CosemParser(DSMRObjectParser):
