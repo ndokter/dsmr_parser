@@ -4,7 +4,7 @@ Change Log
 **1.0.0** (2022-12-22)
 
 - switched to new numbering scheme https://semver.org/
-- Added support for Python 3.11 and dropped support for Python 3.6 (`pull request #110 <https://github.com/ndokter/dsmr_parser/pull/112>`_)
+- Added support for Python 3.11 and dropped support for Python 3.6 (`pull request #112 <https://github.com/ndokter/dsmr_parser/pull/112>`_)
 - Add support for Fluvius V1.7.1 DSMR messages (`pull request #110 <https://github.com/ndokter/dsmr_parser/pull/113>`_)
 
 **0.34** (2022-10-19)
