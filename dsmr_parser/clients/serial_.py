@@ -98,7 +98,11 @@ class AsyncSerialReader(SerialReader):
                     
     async def read_as_object(self, queue):
         """
-        Read complete DSMR telegram's from the serial interface and return a Telegram object.
+        Read complete DSMR telegram's from the serial interface 
+        and return a Telegram object.
+        
+        Instead of being a generator, Telegram objects are pushed 
+        to provided queue for asynchronous processing.
         
         :rtype: None
         """
