@@ -113,6 +113,7 @@ class MBusObject(DSMRObject):
         }
         return json.dumps(output)
 
+
 class MBusObjectPeak(DSMRObject):
 
     @property
@@ -132,7 +133,9 @@ class MBusObjectPeak(DSMRObject):
         return self.values[2]['unit']
 
     def __str__(self):
-        output = "{}\t[{}] at {} occurred {}".format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()), str(self.occurred.astimezone().isoformat()))
+        output = "{}\t[{}] at {} occurred {}"\
+            .format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()),
+                    str(self.occurred.astimezone().isoformat()))
         return output
 
     def to_json(self):

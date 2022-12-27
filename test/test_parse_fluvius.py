@@ -246,7 +246,6 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert isinstance(result[obis.BELGIUM_MBUS2_METER_READING1].value, Decimal)
         assert result[obis.BELGIUM_MBUS2_METER_READING1].value == Decimal('872.234')
 
-
     def test_checksum_valid(self):
         # No exception is raised.
         TelegramParser.validate_checksum(TELEGRAM_FLUVIUS_V171)

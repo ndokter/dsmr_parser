@@ -244,10 +244,10 @@ class MaxDemandParser(DSMRObjectParser):
         objects = []
 
         count = int(values[0])
-        for i in range(1, count+1):
-            timestamp_month = ValueParser(timestamp).parse(values[i*3+1])
-            timestamp_occurred = ValueParser(timestamp).parse(values[i*3+1])
-            value = ValueParser(Decimal).parse(values[i*3+2])
+        for i in range(1, count + 1):
+            timestamp_month = ValueParser(timestamp).parse(values[i * 3 + 1])
+            timestamp_occurred = ValueParser(timestamp).parse(values[i * 3 + 1])
+            value = ValueParser(Decimal).parse(values[i * 3 + 2])
             objects.append(MBusObjectPeak([timestamp_month, timestamp_occurred, value]))
 
         return objects
