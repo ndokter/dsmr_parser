@@ -100,7 +100,7 @@ class AsyncSerialReader(SerialReader):
         """
         Read complete DSMR telegram's from the serial interface and return a Telegram object.
         
-        :rtype: generator
+        :rtype: None
         """
 
         # create Serial StreamReader
