@@ -4,7 +4,7 @@ DSMR Parser
 .. image:: https://img.shields.io/pypi/v/dsmr-parser.svg
     :target: https://pypi.python.org/pypi/dsmr-parser
 
-.. image:: https://img.shields.io/github/workflow/status/ndokter/dsmr_parser/Tests/master
+.. image:: https://img.shields.io/github/actions/workflow/status/ndokter/dsmr_parser/tests.yml?branch=master
     :target: https://github.com/ndokter/dsmr_parser/actions/workflows/tests.yml
 
 A library for parsing Dutch Smart Meter Requirements (DSMR) telegram data. It
