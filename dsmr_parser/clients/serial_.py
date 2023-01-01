@@ -95,15 +95,15 @@ class AsyncSerialReader(SerialReader):
                     )
                 except ParseError as e:
                     logger.warning('Failed to parse telegram: %s', e)
-                    
+
     async def read_as_object(self, queue):
         """
-        Read complete DSMR telegram's from the serial interface 
+        Read complete DSMR telegram's from the serial interface
         and return a Telegram object.
-        
-        Instead of being a generator, Telegram objects are pushed 
+
+        Instead of being a generator, Telegram objects are pushed
         to provided queue for asynchronous processing.
-        
+
         :rtype: None
         """
 
@@ -119,12 +119,11 @@ class AsyncSerialReader(SerialReader):
             self.telegram_buffer.append(data.decode('ascii'))
 
             for telegram in self.telegram_buffer.get_all():
-
-                    try:
-                        queue.put_nowait(
-                            Telegram(telegram, self.telegram_parser, self.telegram_specification)
-                        )
-                    except InvalidChecksumError as e:
-                        logger.warning(str(e))
-                    except ParseError as e:
-                        logger.error('Failed to parse telegram: %s', e)
+                try:
+                    queue.put_nowait(
+                        Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                    )
+                except InvalidChecksumError as e:
+                    logger.warning(str(e))
+                except ParseError as e:
+                    logger.error('Failed to parse telegram: %s', e)
