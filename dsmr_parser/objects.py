@@ -1,7 +1,9 @@
+from collections import defaultdict
+from decimal import Decimal
+
 import dsmr_parser.obis_name_mapping
 import datetime
 import json
-from decimal import Decimal
 
 
 class Telegram(object):
@@ -16,28 +18,33 @@ class Telegram(object):
     yields:
     ['P1_MESSAGE_HEADER',  'P1_MESSAGE_TIMESTAMP', 'EQUIPMENT_IDENTIFIER', ...]
     """
-    def __init__(self, telegram_data, telegram_specification):
-        self._telegram_specification = telegram_specification
+    def __init__(self):
+        self._telegram_data = defaultdict(list)
         self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
         self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
-        self._dictionary = telegram_data
         self._item_names = self._get_item_names()
+
+    def add(self, obis_reference, value):
+        self._telegram_data[obis_reference].append(value)
+
+    def get(self, obis_reference, channel):
+        return next(filter(lambda x: x.channel == channel, self._telegram_data[obis_reference]))
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
         obis_reference = self._reverse_obis_name_mapping[name]
-        value = self._dictionary[obis_reference]
+        value = self._telegram_data[obis_reference][0]
         setattr(self, name, value)
         return value
 
     def __getitem__(self, obis_reference):
-        return self._dictionary[obis_reference]
+        return self._telegram_data[obis_reference][0]
 
     def __len__(self):
-        return len(self._dictionary)
+        return len(self._telegram_data)  #TODO: its nested now
 
     def _get_item_names(self):
-        return [self._obis_name_mapping[k] for k, v in self._dictionary.items()]
+        return [self._obis_name_mapping[k] for k, v in self._telegram_data.items()]
 
     def __iter__(self):
         for attr in self._item_names:
@@ -61,6 +68,10 @@ class DSMRObject(object):
 
     def __init__(self, values):
         self.values = values
+
+    @property
+    def channel(self):
+        return 0  # TODO
 
 
 class MBusObject(DSMRObject):

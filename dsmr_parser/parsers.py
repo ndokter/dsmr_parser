@@ -74,25 +74,27 @@ class TelegramParser(object):
             except Exception:
                 pass
 
-        if self.apply_checksum_validation \
-                and self.telegram_specification['checksum_support']:
+        if self.apply_checksum_validation and self.telegram_specification['checksum_support']:
             self.validate_checksum(telegram_data)
 
-        telegram = {}
+        telegram = Telegram()
 
         for signature, parser in self.telegram_specification['objects'].items():
-            match = re.search(signature, telegram_data, re.DOTALL)
+            pattern = re.compile(signature, re.DOTALL)
+            matches = pattern.findall(telegram_data)
 
             # Some signatures are optional and may not be present,
             # so only parse lines that match
-            if match:
+            for match in matches:
                 try:
-                    telegram[signature] = parser.parse(match.group(0))
+                    value = parser.parse(match)
                 except Exception:
                     logger.error("ignore line with signature {}, because parsing failed.".format(signature),
                                  exc_info=True)
+                else:
+                    telegram.add(obis_reference=signature, value=value)
 
-        return Telegram(telegram, self.telegram_specification)
+        return telegram
 
     @staticmethod
     def validate_checksum(telegram):
