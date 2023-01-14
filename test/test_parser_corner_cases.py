@@ -18,7 +18,7 @@ class TestParserCornerCases(unittest.TestCase):
     def test_power_event_log_empty_1(self):
         # POWER_EVENT_FAILURE_LOG (1-0:99.97.0)
         parser = TelegramParser(telegram_specifications.V5)
-        telegram = Telegram(TELEGRAM_V5, parser, telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5)
 
         object_type = ProfileGenericObject
         testitem = telegram.POWER_EVENT_FAILURE_LOG

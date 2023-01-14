@@ -6,15 +6,7 @@ from decimal import Decimal
 
 class Telegram(object):
     """
-    Container for raw and parsed telegram data.
-    Initializing:
-        from dsmr_parser import telegram_specifications
-        from dsmr_parser.exceptions import InvalidChecksumError, ParseError
-        from dsmr_parser.objects import CosemObject, MBusObject, Telegram
-        from dsmr_parser.parsers import TelegramParser
-        from test.example_telegrams import TELEGRAM_V4_2
-        parser = TelegramParser(telegram_specifications.V4)
-        telegram = Telegram(TELEGRAM_V4_2, parser, telegram_specifications.V4)
+    Container for parsed telegram data.
 
     Attributes can be accessed on a telegram object by addressing by their english name, for example:
         telegram.ELECTRICITY_USED_TARIFF_1
@@ -24,21 +16,25 @@ class Telegram(object):
     yields:
     ['P1_MESSAGE_HEADER',  'P1_MESSAGE_TIMESTAMP', 'EQUIPMENT_IDENTIFIER', ...]
     """
-    def __init__(self, telegram_data, telegram_parser, telegram_specification):
-        self._telegram_data = telegram_data
+    def __init__(self, telegram_data, telegram_specification):
         self._telegram_specification = telegram_specification
-        self._telegram_parser = telegram_parser
         self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
         self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
-        self._dictionary = self._telegram_parser.parse(telegram_data)
+        self._dictionary = telegram_data
         self._item_names = self._get_item_names()
 
     def __getattr__(self, name):
-        ''' will only get called for undefined attributes '''
+        """ will only get called for undefined attributes """
         obis_reference = self._reverse_obis_name_mapping[name]
         value = self._dictionary[obis_reference]
         setattr(self, name, value)
         return value
+
+    def __getitem__(self, obis_reference):
+        return self._dictionary[obis_reference]
+
+    def __len__(self):
+        return len(self._dictionary)
 
     def _get_item_names(self):
         return [self._obis_name_mapping[k] for k, v in self._dictionary.items()]

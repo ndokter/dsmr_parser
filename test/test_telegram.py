@@ -30,7 +30,7 @@ class TelegramTest(unittest.TestCase):
 
     def test_instantiate(self):
         parser = TelegramParser(telegram_specifications.V4)
-        telegram = Telegram(TELEGRAM_V4_2, parser, telegram_specifications.V4)
+        telegram = parser.parse(TELEGRAM_V4_2)
 
         # P1_MESSAGE_HEADER (1-3:0.2.8)
         self.verify_telegram_item(telegram,

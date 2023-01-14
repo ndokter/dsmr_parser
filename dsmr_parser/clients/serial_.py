@@ -55,7 +55,7 @@ class SerialReader(object):
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
-                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                        yield self.telegram_parser.parse(telegram)
                     except InvalidChecksumError as e:
                         logger.warning(str(e))
                     except ParseError as e:
@@ -121,7 +121,7 @@ class AsyncSerialReader(SerialReader):
             for telegram in self.telegram_buffer.get_all():
                 try:
                     queue.put_nowait(
-                        Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                        self.telegram_parser.parse(telegram)
                     )
                 except InvalidChecksumError as e:
                     logger.warning(str(e))

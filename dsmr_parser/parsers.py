@@ -8,7 +8,7 @@ from decimal import Decimal
 from dlms_cosem.connection import XDlmsApduFactory
 from dlms_cosem.protocol.xdlms import GeneralGlobalCipher
 
-from dsmr_parser.objects import MBusObject, MBusObjectPeak, CosemObject, ProfileGenericObject
+from dsmr_parser.objects import MBusObject, MBusObjectPeak, CosemObject, ProfileGenericObject, Telegram
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.value_types import timestamp
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class TelegramParser(object):
     crc16_tab = []
 
-    def __init__(self, telegram_specification, apply_checksum_validation=True):
+    def __init__(self, telegram_specification, apply_checksum_validation=True, gas_meter_channel=None):
         """
         :param telegram_specification: determines how the telegram is parsed
         :param apply_checksum_validation: validate checksum if applicable for
@@ -37,15 +37,7 @@ class TelegramParser(object):
             ('!ABCD') including line endings in between the telegram's lines
         :param str encryption_key: encryption key
         :param str authentication_key: authentication key
-        :rtype: dict
-        :returns: Shortened example:
-            {
-                ..
-                r'\d-\d:96\.1\.1.+?\r\n': <CosemObject>,  # EQUIPMENT_IDENTIFIER
-                r'\d-\d:1\.8\.1.+?\r\n': <CosemObject>,   # ELECTRICITY_USED_TARIFF_1
-                r'\d-\d:24\.3\.0.+?\r\n.+?\r\n': <MBusObject>,  # GAS_METER_READING
-                ..
-            }
+        :rtype: Telegram
         :raises ParseError:
         :raises InvalidChecksumError:
         """
@@ -100,7 +92,7 @@ class TelegramParser(object):
                     logger.error("ignore line with signature {}, because parsing failed.".format(signature),
                                  exc_info=True)
 
-        return telegram
+        return Telegram(telegram, self.telegram_specification)
 
     @staticmethod
     def validate_checksum(telegram):

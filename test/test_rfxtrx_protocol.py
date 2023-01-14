@@ -4,7 +4,7 @@ import unittest
 
 from dsmr_parser import obis_references as obis
 from dsmr_parser.clients.rfxtrx_protocol import create_rfxtrx_dsmr_protocol, PACKETTYPE_DSMR, SUBTYPE_P1
-
+from dsmr_parser.objects import Telegram
 
 TELEGRAM_V2_2 = (
     '/ISk5\2MT382-1004\r\n'
@@ -68,7 +68,7 @@ class RFXtrxProtocolTest(unittest.TestCase):
         self.protocol.data_received(data[200:])
 
         telegram = self.protocol.telegram_callback.call_args_list[0][0][0]
-        assert isinstance(telegram, dict)
+        assert isinstance(telegram, Telegram)
 
         assert float(telegram[obis.CURRENT_ELECTRICITY_USAGE].value) == 1.01
         assert telegram[obis.CURRENT_ELECTRICITY_USAGE].unit == 'kW'
