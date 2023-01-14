@@ -6,7 +6,6 @@ from dsmr_parser import telegram_specifications
 from dsmr_parser import obis_name_mapping
 from dsmr_parser.objects import CosemObject
 from dsmr_parser.objects import MBusObject
-from dsmr_parser.objects import Telegram
 from dsmr_parser.objects import ProfileGenericObject
 from dsmr_parser.parsers import TelegramParser
 from test.example_telegrams import TELEGRAM_V4_2

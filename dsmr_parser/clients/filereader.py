@@ -4,7 +4,6 @@ import tailer
 
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
-from dsmr_parser.objects import Telegram
 from dsmr_parser.parsers import TelegramParser
 
 logger = logging.getLogger(__name__)

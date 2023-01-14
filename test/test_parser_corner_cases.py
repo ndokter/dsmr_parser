@@ -2,7 +2,6 @@ import unittest
 
 from dsmr_parser import telegram_specifications
 
-from dsmr_parser.objects import Telegram
 from dsmr_parser.objects import ProfileGenericObject
 from dsmr_parser.parsers import TelegramParser
 from dsmr_parser.parsers import ProfileGenericParser
