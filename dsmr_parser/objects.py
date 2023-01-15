@@ -24,11 +24,18 @@ class Telegram(object):
         self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
         self._item_names = self._get_item_names()
 
-    def add(self, obis_reference, value):
-        self._telegram_data[obis_reference].append(value)
+    def add(self, obis_reference, dsmr_object):
+        self._telegram_data[obis_reference].append(dsmr_object)
 
-    def get(self, obis_reference, channel):
-        return next(filter(lambda x: x.channel == channel, self._telegram_data[obis_reference]))
+    # TODO experiment with api to see what is nice
+    def get(self, obis_reference, channel=None):
+        if channel is None:
+            return self._telegram_data[obis_reference]
+
+        try:
+            return next(filter(lambda x: x.channel == channel, self._telegram_data[obis_reference]))
+        except StopIteration:
+            return None
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
@@ -66,12 +73,9 @@ class DSMRObject(object):
     Represents all data from a single telegram line.
     """
 
-    def __init__(self, values):
+    def __init__(self, channel, values):
+        self.channel = channel  # TODO consider if only MBus should have channels
         self.values = values
-
-    @property
-    def channel(self):
-        return 0  # TODO
 
 
 class MBusObject(DSMRObject):
@@ -203,8 +207,8 @@ class ProfileGenericObject(DSMRObject):
     containing the datetime (timestamp) and the value.
     """
 
-    def __init__(self, values):
-        super().__init__(values)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._buffer_list = None
 
     @property
@@ -230,9 +234,16 @@ class ProfileGenericObject(DSMRObject):
         if self._buffer_list is None:
             self._buffer_list = []
             values_offset = 2
+
             for i in range(self.buffer_length):
                 offset = values_offset + i * 2
-                self._buffer_list.append(MBusObject([self.values[offset], self.values[offset + 1]]))
+                self._buffer_list.append(
+                    MBusObject(
+                        channel=self.channel,
+                        values=[self.values[offset], self.values[offset + 1]]
+                    )
+                )
+
         return self._buffer_list
 
     def __str__(self):

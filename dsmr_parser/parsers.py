@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class TelegramParser(object):
     crc16_tab = []
 
-    def __init__(self, telegram_specification, apply_checksum_validation=True, gas_meter_channel=None):
+    def __init__(self, telegram_specification, apply_checksum_validation=True):
         """
         :param telegram_specification: determines how the telegram is parsed
         :param apply_checksum_validation: validate checksum if applicable for
@@ -87,12 +87,12 @@ class TelegramParser(object):
             # so only parse lines that match
             for match in matches:
                 try:
-                    value = parser.parse(match)
+                    dsmr_object = parser.parse(match)
                 except Exception:
                     logger.error("ignore line with signature {}, because parsing failed.".format(signature),
                                  exc_info=True)
                 else:
-                    telegram.add(obis_reference=signature, value=value)
+                    telegram.add(obis_reference=signature, dsmr_object=dsmr_object)
 
         return telegram
 
@@ -174,6 +174,20 @@ class DSMRObjectParser(object):
         return [self.value_formats[i].parse(value)
                 for i, value in enumerate(values)]
 
+    def _parse_channel(self, line):
+        """
+        Get the channel identifier of a line.
+
+        Line format:
+        '0-2:24.2.1(200426223001S)(00246.138*m3)'
+           ^
+        channel
+        """
+        try:
+            return int(line[2])
+        except ValueError:
+            raise ParseError("Invalid channel for line '%s' in '%s'", line, self)
+
     def _parse(self, line):
         # Match value groups, but exclude the parentheses
         pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
@@ -207,7 +221,10 @@ class MBusParser(DSMRObjectParser):
     """
 
     def parse(self, line):
-        return MBusObject(self._parse(line))
+        return MBusObject(
+            channel=self._parse_channel(line),
+            values=self._parse(line)
+        )
 
 
 class MaxDemandParser(DSMRObjectParser):
@@ -235,6 +252,8 @@ class MaxDemandParser(DSMRObjectParser):
         pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
         values = re.findall(pattern, line)
 
+        channel = self._parse_channel(line)
+
         objects = []
 
         count = int(values[0])
@@ -242,7 +261,10 @@ class MaxDemandParser(DSMRObjectParser):
             timestamp_month = ValueParser(timestamp).parse(values[i * 3 + 1])
             timestamp_occurred = ValueParser(timestamp).parse(values[i * 3 + 1])
             value = ValueParser(Decimal).parse(values[i * 3 + 2])
-            objects.append(MBusObjectPeak([timestamp_month, timestamp_occurred, value]))
+            objects.append(MBusObjectPeak(
+                channel=channel,
+                values=[timestamp_month, timestamp_occurred, value]
+            ))
 
         return objects
 
@@ -268,7 +290,10 @@ class CosemParser(DSMRObjectParser):
     """
 
     def parse(self, line):
-        return CosemObject(self._parse(line))
+        return CosemObject(
+            channel=self._parse_channel(line),
+            values=self._parse(line)
+        )
 
 
 class ProfileGenericParser(DSMRObjectParser):
@@ -327,7 +352,10 @@ class ProfileGenericParser(DSMRObjectParser):
         return [self.value_formats[i].parse(value) for i, value in enumerate(values)]
 
     def parse(self, line):
-        return ProfileGenericObject(self._parse(line))
+        return ProfileGenericObject(
+            channel=self._parse_channel(line),
+            values=self._parse(line)
+        )
 
 
 class ValueParser(object):
@@ -335,7 +363,7 @@ class ValueParser(object):
     Parses a single value from DSMRObject's.
 
     Example with coerce_type being int:
-        (002*A) becomes {'value': 1, 'unit': 'A'}
+        (002*A) becomes {'value': 2, 'unit': 'A'}
 
     Example with coerce_type being str:
         (42) becomes {'value': '42', 'unit': None}
