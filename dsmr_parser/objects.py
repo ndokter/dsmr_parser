@@ -48,7 +48,7 @@ class Telegram(object):
         return self._telegram_data[obis_reference][0]
 
     def __len__(self):
-        return len(self._telegram_data)  #TODO: its nested now
+        return len(self._telegram_data)  # TODO: its nested now
 
     def _get_item_names(self):
         return [self._obis_name_mapping[k] for k, v in self._telegram_data.items()]
