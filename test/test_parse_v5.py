@@ -244,3 +244,21 @@ class TelegramParserV5Test(unittest.TestCase):
         corrupted_telegram = TELEGRAM_V5.replace('!6EEE\r\n', '')
         with self.assertRaises(ParseError):
             TelegramParser.validate_checksum(corrupted_telegram)
+
+    def test_gas_timestamp_invalid(self):
+        # Issue 120
+        # Sometimes a MBUS device (For ex a Gas Meter) returns an invalid timestamp
+        # Instead of failing, we should just ignore the timestamp
+        invalid_date_telegram = TELEGRAM_V5.replace(
+            '0-1:24.2.1(170102161005W)(00000.107*m3)\r\n',
+            '0-1:24.2.1(632525252525S)(00000.000)\r\n'
+        )
+        invalid_date_telegram = invalid_date_telegram.replace('!6EEE\r\n', '!90C2\r\n')
+        parser = TelegramParser(telegram_specifications.V5)
+        result = parser.parse(invalid_date_telegram)
+
+        # HOURLY_GAS_METER_READING (0-1:24.2.1)
+        assert isinstance(result[obis.HOURLY_GAS_METER_READING], MBusObject)
+        assert result[obis.HOURLY_GAS_METER_READING].unit is None
+        assert isinstance(result[obis.HOURLY_GAS_METER_READING].value, Decimal)
+        assert result[obis.HOURLY_GAS_METER_READING].value == Decimal('0.000')
