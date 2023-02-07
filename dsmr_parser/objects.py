@@ -27,15 +27,11 @@ class Telegram(object):
     def add(self, obis_reference, dsmr_object):
         self._telegram_data[obis_reference].append(dsmr_object)
 
-    # TODO experiment with api to see what is nice
-    def get(self, obis_reference, channel=None):
-        if channel is None:
-            return self._telegram_data[obis_reference]
-
+    def get_by_channel(self, obis_reference, channel):
         try:
             return next(filter(lambda x: x.channel == channel, self._telegram_data[obis_reference]))
         except StopIteration:
-            return None
+            raise LookupError('No value found for OBIS reference "{}" on channel "{}"'.format(obis_reference, channel))
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
@@ -45,7 +41,11 @@ class Telegram(object):
         return value
 
     def __getitem__(self, obis_reference):
-        return self._telegram_data[obis_reference][0]
+        try:
+            return self._telegram_data[obis_reference][0]
+        except IndexError:
+            # The index error is an internal detail. The KeyError is expected as a user.
+            raise KeyError
 
     def __len__(self):
         return len(self._telegram_data)  # TODO: its nested now

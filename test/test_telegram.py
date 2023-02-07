@@ -4,11 +4,12 @@ import pytz
 
 from dsmr_parser import telegram_specifications
 from dsmr_parser import obis_name_mapping
+from dsmr_parser import obis_references as obis
 from dsmr_parser.objects import CosemObject
 from dsmr_parser.objects import MBusObject
 from dsmr_parser.objects import ProfileGenericObject
 from dsmr_parser.parsers import TelegramParser
-from test.example_telegrams import TELEGRAM_V4_2
+from test.example_telegrams import TELEGRAM_V4_2, TELEGRAM_V5_TWO_MBUS
 from decimal import Decimal
 
 
@@ -319,3 +320,47 @@ class TelegramTest(unittest.TestCase):
         item_names_tested_set = set(self.item_names_tested)
 
         assert item_names_tested_set == V4_name_set
+
+    def test_get(self):
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
+
+        mbus_1 = telegram.get(obis.HOURLY_GAS_METER_READING, channel=1)
+        mbus_2 = telegram.get(obis.HOURLY_GAS_METER_READING, channel=2)
+
+        self.assertEqual(type(mbus_1), MBusObject)
+        self.assertEqual(mbus_1.channel, 1)
+        self.assertEqual(mbus_1.value, 0)
+
+        self.assertEqual(type(mbus_2), MBusObject)
+        self.assertEqual(mbus_2.channel, 2)
+        self.assertEqual(mbus_2.value, Decimal('246.138'))
+
+    def test_get_without_channel(self):
+        """ Retrieve MBUS device without supplying channel which fetches the first MBUS record found """
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
+
+        mbus = telegram.get(obis.HOURLY_GAS_METER_READING)
+
+        self.assertEqual(type(mbus), MBusObject)
+        self.assertEqual(mbus.channel, 1)
+        self.assertEqual(mbus.value, 0)
+
+    def test_get_unknown_value(self):
+        """ Retrieve MBUS device without supplying channel which fetches the first MBUS record found """
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
+
+        # Test valid OBIS reference with wrong channel
+        with self.assertRaises(LookupError) as exception_context:
+            telegram.get_by_channel(obis.HOURLY_GAS_METER_READING, channel=123)
+
+        self.assertEqual(
+            str(exception_context.exception),
+            'No value found for OBIS reference "\d-\d:24\.2\.1.+?\\r\\n" on channel "123"'
+        )
+
+        # Test invalid OBIS reference
+        with self.assertRaises(LookupError):
+            telegram.get_by_channel('invalid_obis_reference', channel=1)
