@@ -33,11 +33,13 @@ class Telegram(object):
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         self._item_names.append(self._obis_name_mapping[obis_reference])
 
-        # Detect Mbus readingsusing obis id+channel and group these into MbusDevice
-        if dsmr_object.is_mbus_reading:
+        # Group Mbus related values into a MbusDevice object.
+        # TODO sometimes this is a list due to BELGIUM_MAXIMUM_DEMAND_13_MONTHS
+        if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
             channel_id = dsmr_object.obis_id_code[1]
             mbus_device = self._mbus_devices[channel_id]
             mbus_device.add(obis_reference, dsmr_object)
+
 
     def get_mbus_devices(self):
         """
