@@ -5,7 +5,6 @@ Change Log
 
 - Add instantaneous reactive power + fixed swapped reactive total import export (`pull request #124 <https://github.com/ndokter/dsmr_parser/pull/124>`_ by `yada75 <https://github.com/yada75>`_)
 
-
 **1.0.0** (2022-12-22)
 
 - switched to new numbering scheme https://semver.org/

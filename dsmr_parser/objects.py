@@ -20,6 +20,9 @@ class Telegram(object):
     """
     def __init__(self):
         self._telegram_data = defaultdict(list)
+        self._mbus_devices = defaultdict(MbusDevice)
+
+        # Reverse name mapping and attribute related:
         self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
         self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
         self._item_names = []
@@ -30,21 +33,43 @@ class Telegram(object):
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         self._item_names.append(self._obis_name_mapping[obis_reference])
 
-    def get(self, obis_reference, channel=None):
-        """
-        Get value by OBIS reference (regex). If multiple values exist a list is returned, unless filtering by channel.
-        May assume that values are sorted by channel.
-        """
-        if channel is None:
-            try:
-                return self._telegram_data[obis_reference]
-            except KeyError:
-                raise LookupError('No value found for OBIS reference "{}"'.format(obis_reference))
+        # Detect Mbus readingsusing obis id+channel and group these into MbusDevice
+        if dsmr_object.is_mbus_reading:
+            channel_id = dsmr_object.obis_id_code[1]
+            mbus_device = self._mbus_devices[channel_id]
+            mbus_device.add(obis_reference, dsmr_object)
 
-        try:
-            return [v for v in self._telegram_data[obis_reference] if v.channel == channel][0]
-        except IndexError:
-            raise LookupError('No value found for OBIS reference "{}" on channel "{}"'.format(obis_reference, channel))
+    def get_mbus_devices(self):
+        """
+        Return MbusDevice objects which are used for water, heat and gas meters.
+        """
+        # TODO sort by channel ID
+        return list(self._mbus_devices.values())
+
+    def get_mbus_device_by_channel(self, channel_id=None):
+        return self._mbus_devices[channel_id]
+
+    # # TODO devices groeperen. alle values van dat channel daar in groeperen en wrappen in device object gebruik makende van device id
+    # def get(self, obis_reference, channel=None):
+    #     """
+    #     Get values by OBIS reference (regex). If multiple values exist a list is returned, unless filtering by channel.
+    #     May assume that values are sorted by channel.
+    #     """
+    #     if channel is None:
+    #         try:
+    #             values = self._telegram_data[obis_reference]
+    #         except KeyError:
+    #             raise LookupError('No value found for OBIS reference "{}"'.format(obis_reference))
+    #
+    #         if len(values) == 1:
+    #             return values[0]
+    #         else:
+    #             return values
+    #
+    #     try:
+    #         return [v for v in self._telegram_data[obis_reference] if v.channel == channel][0]
+    #     except IndexError:
+    #         raise LookupError('No value found for OBIS reference "{}" on channel "{}"'.format(obis_reference, channel))
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
@@ -88,11 +113,16 @@ class DSMRObject(object):
     """
     Represents all data from a single telegram line.
     """
-
-    def __init__(self, channel, values):
-        self.channel = channel  # TODO consider if only MBus should have channels
+    def __init__(self, obis_id_code, values):
+        self.obis_id_code = obis_id_code
         self.values = values
 
+    @property
+    def is_mbus_reading(self):
+        """ Detect Mbus related readings using obis id + channel """
+        obis_id, channel_id = self.obis_id_code
+
+        return obis_id == 0 and channel_id != 0
 
 class MBusObject(DSMRObject):
 
@@ -255,7 +285,7 @@ class ProfileGenericObject(DSMRObject):
                 offset = values_offset + i * 2
                 self._buffer_list.append(
                     MBusObject(
-                        channel=self.channel,
+                        obis_id_code=self.obis_id_code,
                         values=[self.values[offset], self.values[offset + 1]]
                     )
                 )
@@ -294,3 +324,25 @@ class ProfileGenericObject(DSMRObject):
         list.append(['buffer', buffer_repr])
         output = dict(list)
         return json.dumps(output)
+
+
+class MbusDevice:
+
+    def __init__(self):
+        self._telegram_data = {}
+        self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
+        self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
+        self._item_names = []
+
+    def add(self, obis_reference, dsmr_object):
+        self._telegram_data[obis_reference] = dsmr_object
+
+        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
+        self._item_names.append(self._obis_name_mapping[obis_reference])
+
+    def __getattr__(self, name):
+        """ will only get called for undefined attributes """
+        obis_reference = self._reverse_obis_name_mapping[name]
+        value = self._telegram_data[obis_reference]
+        setattr(self, name, value)
+        return value

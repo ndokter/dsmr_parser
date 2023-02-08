@@ -174,19 +174,19 @@ class DSMRObjectParser(object):
         return [self.value_formats[i].parse(value)
                 for i, value in enumerate(values)]
 
-    def _parse_channel(self, line):
+    def _parse_obis_id_code(self, line):
         """
-        Get the channel identifier of a line.
+        Get the OBIS ID code
 
-        Line format:
+        Example line:
         '0-2:24.2.1(200426223001S)(00246.138*m3)'
-           ^
-        channel
+
+        OBIS ID code = 0-2 returned as tuple
         """
         try:
-            return int(line[2])
+            return int(line[0]), int(line[2])
         except ValueError:
-            raise ParseError("Invalid channel for line '%s' in '%s'", line, self)
+            raise ParseError("Invalid OBIS ID code for line '%s' in '%s'", line, self)
 
     def _parse(self, line):
         # Match value groups, but exclude the parentheses
@@ -222,7 +222,7 @@ class MBusParser(DSMRObjectParser):
 
     def parse(self, line):
         return MBusObject(
-            channel=self._parse_channel(line),
+            obis_id_code=self._parse_obis_id_code(line),
             values=self._parse(line)
         )
 
@@ -252,7 +252,7 @@ class MaxDemandParser(DSMRObjectParser):
         pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
         values = re.findall(pattern, line)
 
-        channel = self._parse_channel(line)
+        obis_id_code = self._parse_obis_id_code(line)
 
         objects = []
 
@@ -262,7 +262,7 @@ class MaxDemandParser(DSMRObjectParser):
             timestamp_occurred = ValueParser(timestamp).parse(values[i * 3 + 1])
             value = ValueParser(Decimal).parse(values[i * 3 + 2])
             objects.append(MBusObjectPeak(
-                channel=channel,
+                obis_id_code=obis_id_code,
                 values=[timestamp_month, timestamp_occurred, value]
             ))
 
@@ -291,7 +291,7 @@ class CosemParser(DSMRObjectParser):
 
     def parse(self, line):
         return CosemObject(
-            channel=self._parse_channel(line),
+            obis_id_code=self._parse_obis_id_code(line),
             values=self._parse(line)
         )
 
@@ -353,7 +353,7 @@ class ProfileGenericParser(DSMRObjectParser):
 
     def parse(self, line):
         return ProfileGenericObject(
-            channel=self._parse_channel(line),
+            obis_id_code=self._parse_obis_id_code(line),
             values=self._parse(line)
         )
 

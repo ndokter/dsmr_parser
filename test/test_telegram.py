@@ -5,7 +5,7 @@ import pytz
 from dsmr_parser import telegram_specifications
 from dsmr_parser import obis_name_mapping
 from dsmr_parser import obis_references as obis
-from dsmr_parser.objects import CosemObject
+from dsmr_parser.objects import CosemObject, MbusDevice
 from dsmr_parser.objects import MBusObject
 from dsmr_parser.objects import ProfileGenericObject
 from dsmr_parser.parsers import TelegramParser
@@ -327,54 +327,84 @@ class TelegramTest(unittest.TestCase):
 
         self.assertEqual(len(telegram), 35)
 
-    def test_get(self):
-        """ Retrieve MBUS device without supplying channel which fetches all (two) records found. """
+    # def test_get(self):
+    #     """ Retrieve MBUS device without supplying channel which fetches all (two) records found. """
+    #     parser = TelegramParser(telegram_specifications.V5)
+    #     telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
+    #
+    #     # A single value is returned for the current electricity usage
+    #     electricity_used_value = telegram.get(obis.CURRENT_ELECTRICITY_USAGE)
+    #     self.assertEqual(type(electricity_used_value), CosemObject)
+    #     self.assertEqual(electricity_used_value.channel, 0)
+    #     self.assertEqual(electricity_used_value.value, Decimal('0.111'))
+    #
+    #     # Multiple values are returned for the gas reading
+    #     gas_values = telegram.get(obis.HOURLY_GAS_METER_READING)
+    #     self.assertEqual(len(gas_values), 2)
+    #
+    #     gas_value_1 = gas_values[0]
+    #     self.assertEqual(type(gas_value_1), MBusObject)
+    #     self.assertEqual(gas_value_1.channel, 1)
+    #     self.assertEqual(gas_value_1.value, 0)
+    #
+    #     gas_value_2 = gas_values[1]
+    #     self.assertEqual(type(gas_value_2), MBusObject)
+    #     self.assertEqual(gas_value_2.channel, 2)
+    #     self.assertEqual(gas_value_2.value, Decimal('246.138'))
+    #
+    # def test_get_with_channel(self):
+    #     parser = TelegramParser(telegram_specifications.V5)
+    #     telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
+    #
+    #     gas_value_1 = telegram.get(obis.HOURLY_GAS_METER_READING, channel=1)
+    #     gas_value_2 = telegram.get(obis.HOURLY_GAS_METER_READING, channel=2)
+    #
+    #     self.assertEqual(type(gas_value_1), MBusObject)
+    #     self.assertEqual(gas_value_1.channel, 1)
+    #     self.assertEqual(gas_value_1.value, 0)
+    #
+    #     self.assertEqual(type(gas_value_2), MBusObject)
+    #     self.assertEqual(gas_value_2.channel, 2)
+    #     self.assertEqual(gas_value_2.value, Decimal('246.138'))
+    #
+    # def test_get_unknown_value(self):
+    #     """ Retrieve MBUS device without supplying channel which fetches the first MBUS record found """
+    #     parser = TelegramParser(telegram_specifications.V5)
+    #     telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
+    #
+    #     # Test valid OBIS reference with wrong channel
+    #     with self.assertRaises(LookupError) as exception_context:
+    #         telegram.get(obis.HOURLY_GAS_METER_READING, channel=123)
+    #
+    #     self.assertEqual(
+    #         str(exception_context.exception),
+    #         'No value found for OBIS reference "\\d-\\d:24\\.2\\.1.+?\\r\\n" on channel "123"'
+    #     )
+    #
+    #     # Test invalid OBIS reference
+    #     with self.assertRaises(LookupError):
+    #         telegram.get('invalid_obis_reference', channel=1)
+
+    # TODO
+    def test_get_mbus_devices(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
 
-        gas_values = telegram.get(obis.HOURLY_GAS_METER_READING)
+        mbus_devices = telegram.get_mbus_devices()
+        print(mbus_devices)
+        self.assertEqual(len(mbus_devices), 2)
 
-        self.assertEqual(len(gas_values), 2)
+        mbus_device_1 = mbus_devices[0]
+        self.assertEqual(type(mbus_device_1), MbusDevice)
+        print('mbus_device_1.HOURLY_GAS_METER_READING: ', mbus_device_1.HOURLY_GAS_METER_READING)
 
-        gas_value_1 = gas_values[0]
-        self.assertEqual(type(gas_value_1), MBusObject)
-        self.assertEqual(gas_value_1.channel, 1)
-        self.assertEqual(gas_value_1.value, 0)
+        mbus_device_2 = mbus_devices[1]
+        self.assertEqual(type(mbus_device_2), MbusDevice)
+        print('mbus_device_2.HOURLY_GAS_METER_READING: ', mbus_device_2.HOURLY_GAS_METER_READING)
 
-        gas_value_2 = gas_values[1]
-        self.assertEqual(type(gas_value_2), MBusObject)
-        self.assertEqual(gas_value_2.channel, 2)
-        self.assertEqual(gas_value_2.value, Decimal('246.138'))
-
-    def test_get_with_channel(self):
+    # TODO
+    def test_get_mbus_device_by_channel(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
 
-        gas_value_1 = telegram.get(obis.HOURLY_GAS_METER_READING, channel=1)
-        gas_value_2 = telegram.get(obis.HOURLY_GAS_METER_READING, channel=2)
-
-        self.assertEqual(type(gas_value_1), MBusObject)
-        self.assertEqual(gas_value_1.channel, 1)
-        self.assertEqual(gas_value_1.value, 0)
-
-        self.assertEqual(type(gas_value_2), MBusObject)
-        self.assertEqual(gas_value_2.channel, 2)
-        self.assertEqual(gas_value_2.value, Decimal('246.138'))
-
-    def test_get_unknown_value(self):
-        """ Retrieve MBUS device without supplying channel which fetches the first MBUS record found """
-        parser = TelegramParser(telegram_specifications.V5)
-        telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
-
-        # Test valid OBIS reference with wrong channel
-        with self.assertRaises(LookupError) as exception_context:
-            telegram.get(obis.HOURLY_GAS_METER_READING, channel=123)
-
-        self.assertEqual(
-            str(exception_context.exception),
-            'No value found for OBIS reference "\\d-\\d:24\\.2\\.1.+?\\r\\n" on channel "123"'
-        )
-
-        # Test invalid OBIS reference
-        with self.assertRaises(LookupError):
-            telegram.get('invalid_obis_reference', channel=1)
+        print('by channel: ', telegram.get_mbus_device_by_channel(2).HOURLY_GAS_METER_READING)

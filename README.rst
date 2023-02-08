@@ -16,7 +16,6 @@ Features
 
 DSMR Parser supports DSMR versions 2, 3, 4 and 5. See for the `currently supported/tested Python versions here <https://github.com/ndokter/dsmr_parser/blob/master/.github/workflows/tests.yml#L14>`_.
 
-
 Client module usage
 -------------------
 
@@ -264,10 +263,30 @@ Example to get some of the values:
     # See dsmr_reader.obis_references for all readable telegram values.
     # Note that the available values differ per DSMR version.
 
-Telegram as an Object
+Telegram object
 ---------------------
-An object version of the telegram is available as well.
 
+.. code-block:: python
+
+    # DSMR v5 telegram example
+    from dsmr_parser import telegram_specifications
+    from dsmr_parser.parsers import TelegramParser
+    from test.example_telegrams import TELEGRAM_V5
+
+    parser = TelegramParser(telegram_specifications.V5)
+    telegram = parser.parse(TELEGRAM_V5)
+
+    # Get telegram message timestamp.
+    telegram.get(obis_references.P1_MESSAGE_TIMESTAMP)
+
+    # Get current electricity usage
+    telegram.get(obis_references.CURRENT_ELECTRICITY_USAGE)
+
+    # Get gas meter readings. Note that this returns a list if multiple gas meter readings are found.
+    # These gas reading have a channel attribute that can be used to filter them. Or you can supply a channel
+    # as an argument:
+    gas_readings = telegram.get(obis_references.HOURLY_GAS_METER_READING)
+    gas_reading_channel_1 = telegram.get(obis_references.HOURLY_GAS_METER_READING, channel=1)
 
 .. code-block:: python
 
