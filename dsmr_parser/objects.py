@@ -22,15 +22,28 @@ class Telegram(object):
         self._telegram_data = defaultdict(list)
         self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
         self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
-        self._item_names = self._get_item_names()
+        self._item_names = []
 
     def add(self, obis_reference, dsmr_object):
         self._telegram_data[obis_reference].append(dsmr_object)
 
-    def get_by_channel(self, obis_reference, channel):
+        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
+        self._item_names.append(self._obis_name_mapping[obis_reference])
+
+    def get(self, obis_reference, channel=None):
+        """
+        Get value by OBIS reference (regex). If multiple values exist a list is returned, unless filtering by channel.
+        May assume that values are sorted by channel.
+        """
+        if channel is None:
+            try:
+                return self._telegram_data[obis_reference]
+            except KeyError:
+                raise LookupError('No value found for OBIS reference "{}"'.format(obis_reference))
+
         try:
-            return next(filter(lambda x: x.channel == channel, self._telegram_data[obis_reference]))
-        except StopIteration:
+            return [v for v in self._telegram_data[obis_reference] if v.channel == channel][0]
+        except IndexError:
             raise LookupError('No value found for OBIS reference "{}" on channel "{}"'.format(obis_reference, channel))
 
     def __getattr__(self, name):
@@ -41,6 +54,12 @@ class Telegram(object):
         return value
 
     def __getitem__(self, obis_reference):
+        """
+        Has the limitation that it will return the first occurrence of the OBIS reference. Will miss values in case of
+        multiple MBUS devices like gas or water meters. In this case use .get(..) instead.
+
+        Example usage: telegram[obis_references.P1_MESSAGE_HEADER]
+        """
         try:
             return self._telegram_data[obis_reference][0]
         except IndexError:
@@ -48,10 +67,7 @@ class Telegram(object):
             raise KeyError
 
     def __len__(self):
-        return len(self._telegram_data)  # TODO: its nested now
-
-    def _get_item_names(self):
-        return [self._obis_name_mapping[k] for k, v in self._telegram_data.items()]
+        return len(self._telegram_data)
 
     def __iter__(self):
         for attr in self._item_names:
