@@ -34,44 +34,20 @@ class Telegram(object):
         self._item_names.append(self._obis_name_mapping[obis_reference])
 
         # Group Mbus related values into a MbusDevice object.
-        # TODO sometimes this is a list due to BELGIUM_MAXIMUM_DEMAND_13_MONTHS
+        # TODO MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
         if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
             channel_id = dsmr_object.obis_id_code[1]
             mbus_device = self._mbus_devices[channel_id]
             mbus_device.add(obis_reference, dsmr_object)
 
-
     def get_mbus_devices(self):
         """
         Return MbusDevice objects which are used for water, heat and gas meters.
         """
-        # TODO sort by channel ID
-        return list(self._mbus_devices.values())
+        return [d[1] for d in sorted(self._mbus_devices.items(), key=lambda x: x[0])]
 
     def get_mbus_device_by_channel(self, channel_id=None):
         return self._mbus_devices[channel_id]
-
-    # # TODO devices groeperen. alle values van dat channel daar in groeperen en wrappen in device object gebruik makende van device id
-    # def get(self, obis_reference, channel=None):
-    #     """
-    #     Get values by OBIS reference (regex). If multiple values exist a list is returned, unless filtering by channel.
-    #     May assume that values are sorted by channel.
-    #     """
-    #     if channel is None:
-    #         try:
-    #             values = self._telegram_data[obis_reference]
-    #         except KeyError:
-    #             raise LookupError('No value found for OBIS reference "{}"'.format(obis_reference))
-    #
-    #         if len(values) == 1:
-    #             return values[0]
-    #         else:
-    #             return values
-    #
-    #     try:
-    #         return [v for v in self._telegram_data[obis_reference] if v.channel == channel][0]
-    #     except IndexError:
-    #         raise LookupError('No value found for OBIS reference "{}" on channel "{}"'.format(obis_reference, channel))
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
@@ -125,6 +101,7 @@ class DSMRObject(object):
         obis_id, channel_id = self.obis_id_code
 
         return obis_id == 0 and channel_id != 0
+
 
 class MBusObject(DSMRObject):
 
