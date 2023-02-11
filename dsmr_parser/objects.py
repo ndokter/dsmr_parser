@@ -316,7 +316,7 @@ class MbusDevice:
     def add(self, obis_reference, dsmr_object):
         self._telegram_data[obis_reference] = dsmr_object
 
-        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
+        # Update name mapping used to get value by attribute. Example: device.HOURLY_GAS_METER_READING
         self._item_names.append(self._obis_name_mapping[obis_reference])
 
     def __getattr__(self, name):

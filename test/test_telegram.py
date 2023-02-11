@@ -329,14 +329,12 @@ class TelegramTest(unittest.TestCase):
     def test_get_mbus_devices(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
-
         mbus_devices = telegram.get_mbus_devices()
 
         self.assertEqual(len(mbus_devices), 2)
 
         mbus_device_1 = mbus_devices[0]
         self.assertEqual(mbus_device_1.EQUIPMENT_IDENTIFIER_GAS.value, None)
-
         self.assertEqual(mbus_device_1.HOURLY_GAS_METER_READING.value, Decimal('0'))
 
         mbus_device_2 = mbus_devices[1]

@@ -112,10 +112,8 @@ However, if we construct a mock TelegramParser that just returns the already par
 
     import asyncio
     import logging
-    #from dsmr_parser import obis_references
-    #from dsmr_parser import telegram_specifications
-    #from dsmr_parser.clients.protocol import create_dsmr_reader, create_tcp_dsmr_reader
-    #from dsmr_parser.objects import Telegram
+    from dsmr_parser import telegram_specifications
+    from dsmr_parser.clients.protocol import create_tcp_dsmr_reader
 
     logging.basicConfig(level=logging.INFO, format='%(message)s')
 
@@ -141,19 +139,18 @@ However, if we construct a mock TelegramParser that just returns the already par
         except ParseError as e:
             logger.error('Failed to parse telegram: %s', e)
 
-
     async def main():
         try:
             logger.debug("Getting loop")
             loop = asyncio.get_event_loop()
             logger.debug("Creating reader")
-            await 	create_tcp_dsmr_reader(
-                                HOST,
-                                PORT,
-                                DSMR_VERSION,
-                                printTelegram,
-                                loop
-                                )
+            await create_tcp_dsmr_reader(
+                HOST,
+                PORT,
+                DSMR_VERSION,
+                printTelegram,
+                loop
+            )
             logger.debug("Reader created going to sleep now")					
             while True:
                 await asyncio.sleep(1)
@@ -172,7 +169,7 @@ However, if we construct a mock TelegramParser that just returns the already par
 Parsing module usage
 --------------------
 The parsing module accepts complete unaltered telegram strings and parses these
-into a dictionary.
+into a Telegram object. This previously was a dictionary, but the Telegram object is mostly compatible.
 
 .. code-block:: python
 
@@ -207,61 +204,8 @@ into a dictionary.
 
     parser = TelegramParser(telegram_specifications.V3)
 
+    # see 'Telegram object' docs below
     telegram = parser.parse(telegram_str)
-    print(telegram)  # see 'Telegram object' docs below
-
-Telegram dictionary
--------------------
-
-A dictionary of which the key indicates the field type. These regex values
-correspond to one of dsmr_parser.obis_reference constants.
-
-The value is either a CosemObject or MBusObject. These have a 'value' and 'unit'
-property. MBusObject's additionally have a 'datetime' property. The 'value' can
-contain any python type (int, str, Decimal) depending on the field. The 'unit'
-contains 'kW', 'A', 'kWh' or 'm3'.
-
-.. code-block:: python
-
-    # Contents of a parsed DSMR v3 telegram
-    {'\\d-\\d:17\\.0\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39eb8>,
-     '\\d-\\d:1\\.7\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10f916390>,
-     '\\d-\\d:1\\.8\\.1.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39e10>,
-     '\\d-\\d:1\\.8\\.2.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39ef0>,
-     '\\d-\\d:24\\.1\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fbaef28>,
-     '\\d-\\d:24\\.3\\.0.+?\\r\\n.+?\\r\\n': <dsmr_parser.objects.MBusObject object at 0x10f9163c8>,
-     '\\d-\\d:24\\.4\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39f60>,
-     '\\d-\\d:2\\.7\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39fd0>,
-     '\\d-\\d:2\\.8\\.1.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fbaee10>,
-     '\\d-\\d:2\\.8\\.2.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39e80>,
-     '\\d-\\d:96\\.13\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39d30>,
-     '\\d-\\d:96\\.13\\.1.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fbaeeb8>,
-     '\\d-\\d:96\\.14\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fbaef98>,
-     '\\d-\\d:96\\.1\\.0.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fbaef60>,
-     '\\d-\\d:96\\.1\\.1.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39f98>,
-     '\\d-\\d:96\\.3\\.10.+?\\r\\n': <dsmr_parser.objects.CosemObject object at 0x10fc39dd8>}
-
-Example to get some of the values:
-
-.. code-block:: python
-
-    from dsmr_parser import obis_references
-
-     # The telegram message timestamp.
-     message_datetime = telegram[obis_references.P1_MESSAGE_TIMESTAMP]
-
-     # Using the active tariff to determine the electricity being used and
-     # delivered for the right tariff.
-     active_tariff = telegram[obis_references.ELECTRICITY_ACTIVE_TARIFF]
-     active_tariff = int(tariff.value)
-
-     electricity_used_total = telegram[obis_references.ELECTRICITY_USED_TARIFF_ALL[active_tariff - 1]]
-     electricity_delivered_total = telegram[obis_references.ELECTRICITY_DELIVERED_TARIFF_ALL[active_tariff - 1]]
-
-     gas_reading = telegram[obis_references.HOURLY_GAS_METER_READING]
-
-    # See dsmr_reader.obis_references for all readable telegram values.
-    # Note that the available values differ per DSMR version.
 
 Telegram object
 ---------------------
@@ -276,122 +220,31 @@ Telegram object
     parser = TelegramParser(telegram_specifications.V5)
     telegram = parser.parse(TELEGRAM_V5)
 
-    # Get telegram message timestamp.
-    telegram.get(obis_references.P1_MESSAGE_TIMESTAMP)
+    # Print contents of all available values
+    # See dsmr_parser.obis_name_mapping for all readable telegram values.
+    # The available values differ per DSMR version and meter.
+    print(telegram)
+    # P1_MESSAGE_HEADER: 	 42 	[None]
+    # P1_MESSAGE_TIMESTAMP: 	 2016-11-13 19:57:57+00:00 	[None]
+    # EQUIPMENT_IDENTIFIER: 	 3960221976967177082151037881335713 	[None]
+    # ELECTRICITY_USED_TARIFF_1: 	 1581.123 	[kWh]
+    # etc.
 
-    # Get current electricity usage
-    telegram.get(obis_references.CURRENT_ELECTRICITY_USAGE)
+    # Example to get current electricity usage
+    print(telegram.CURRENT_ELECTRICITY_USAGE)
+    print(telegram.CURRENT_ELECTRICITY_USAGE.value)
+    print(telegram.CURRENT_ELECTRICITY_USAGE.unit)
+    # <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
+    # Decimal('2.027')
+    # 'kW'
 
-    # Get gas meter readings. Note that this returns a list if multiple gas meter readings are found.
-    # These gas reading have a channel attribute that can be used to filter them. Or you can supply a channel
-    # as an argument:
-    gas_readings = telegram.get(obis_references.HOURLY_GAS_METER_READING)
-    gas_reading_channel_1 = telegram.get(obis_references.HOURLY_GAS_METER_READING, channel=1)
+    # All Mbus device readings like gas meters and water meters can be retrieved as follows:
+    mbus_devices = telegram.get_mbus_devices()
 
-.. code-block:: python
-
-    # DSMR v4.2 p1 using dsmr_parser and telegram objects
-
-    from dsmr_parser import telegram_specifications
-    from dsmr_parser.clients import SerialReader, SERIAL_SETTINGS_V5
-    from dsmr_parser.objects import CosemObject, MBusObject, Telegram
-    from dsmr_parser.parsers import TelegramParser
-    import os
-
-    serial_reader = SerialReader(
-        device='/dev/ttyUSB0',
-        serial_settings=SERIAL_SETTINGS_V5,
-        telegram_specification=telegram_specifications.V4
-    )
-
-    # telegram = next(serial_reader.read_as_object())
-    # print(telegram)
-
-    for telegram in serial_reader.read_as_object():
-        os.system('clear')
-        print(telegram)
-
-Example of output of print of the telegram object:
-
-.. code-block:: console
-
-    P1_MESSAGE_HEADER: 	 42 	[None]
-    P1_MESSAGE_TIMESTAMP: 	 2016-11-13 19:57:57+00:00 	[None]
-    EQUIPMENT_IDENTIFIER: 	 3960221976967177082151037881335713 	[None]
-    ELECTRICITY_USED_TARIFF_1: 	 1581.123 	[kWh]
-    ELECTRICITY_USED_TARIFF_2: 	 1435.706 	[kWh]
-    ELECTRICITY_DELIVERED_TARIFF_1: 	 0.000 	[kWh]
-    ELECTRICITY_DELIVERED_TARIFF_2: 	 0.000 	[kWh]
-    ELECTRICITY_ACTIVE_TARIFF: 	 0002 	[None]
-    CURRENT_ELECTRICITY_USAGE: 	 2.027 	[kW]
-    CURRENT_ELECTRICITY_DELIVERY: 	 0.000 	[kW]
-    LONG_POWER_FAILURE_COUNT: 	 7 	[None]
-    VOLTAGE_SAG_L1_COUNT: 	 0 	[None]
-    VOLTAGE_SAG_L2_COUNT: 	 0 	[None]
-    VOLTAGE_SAG_L3_COUNT: 	 0 	[None]
-    VOLTAGE_SWELL_L1_COUNT: 	 0 	[None]
-    VOLTAGE_SWELL_L2_COUNT: 	 0 	[None]
-    VOLTAGE_SWELL_L3_COUNT: 	 0 	[None]
-    TEXT_MESSAGE_CODE: 	 None 	[None]
-    TEXT_MESSAGE: 	 None 	[None]
-    DEVICE_TYPE: 	 3 	[None]
-    INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: 	 0.170 	[kW]
-    INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: 	 1.247 	[kW]
-    INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: 	 0.209 	[kW]
-    INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: 	 0.000 	[kW]
-    INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: 	 0.000 	[kW]
-    INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000 	[kW]
-    EQUIPMENT_IDENTIFIER_GAS: 	 4819243993373755377509728609491464 	[None]
-    HOURLY_GAS_METER_READING: 	 981.443 	[m3]
-
-Accessing the telegrams information as  attributes directly:
-
-.. code-block:: python
-
-    telegram
-    Out[3]: <dsmr_parser.objects.Telegram at 0x7f5e995d9898>
-    telegram.CURRENT_ELECTRICITY_USAGE
-    Out[4]: <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
-    telegram.CURRENT_ELECTRICITY_USAGE.value
-    Out[5]: Decimal('2.027')
-    telegram.CURRENT_ELECTRICITY_USAGE.unit
-    Out[6]: 'kW'
-
-The telegram object has an iterator, can be used to find all the information elements in the current telegram:
-
-.. code-block:: python
-
-    [attr for attr, value in telegram]
-    Out[11]:
-    ['P1_MESSAGE_HEADER',
-     'P1_MESSAGE_TIMESTAMP',
-     'EQUIPMENT_IDENTIFIER',
-     'ELECTRICITY_USED_TARIFF_1',
-     'ELECTRICITY_USED_TARIFF_2',
-     'ELECTRICITY_DELIVERED_TARIFF_1',
-     'ELECTRICITY_DELIVERED_TARIFF_2',
-     'ELECTRICITY_ACTIVE_TARIFF',
-     'CURRENT_ELECTRICITY_USAGE',
-     'CURRENT_ELECTRICITY_DELIVERY',
-     'LONG_POWER_FAILURE_COUNT',
-     'VOLTAGE_SAG_L1_COUNT',
-     'VOLTAGE_SAG_L2_COUNT',
-     'VOLTAGE_SAG_L3_COUNT',
-     'VOLTAGE_SWELL_L1_COUNT',
-     'VOLTAGE_SWELL_L2_COUNT',
-     'VOLTAGE_SWELL_L3_COUNT',
-     'TEXT_MESSAGE_CODE',
-     'TEXT_MESSAGE',
-     'DEVICE_TYPE',
-     'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE',
-     'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE',
-     'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE',
-     'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE',
-     'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE',
-     'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE',
-     'EQUIPMENT_IDENTIFIER_GAS',
-     'HOURLY_GAS_METER_READING']
-
+    # A specific device based on the channel the device is connected to can be retrieved as follows:
+    mbus_device = telegram.get_mbus_device_by_channel(1)
+    print(mbus_device.EQUIPMENT_IDENTIFIER_GAS.value)  # '4730303339303031393336393930363139'
+    print(mbus_device.HOURLY_GAS_METER_READING.value)  # Decimal('246.138')
 
 Installation
 ------------
