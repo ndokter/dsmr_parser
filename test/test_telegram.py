@@ -336,7 +336,7 @@ class TelegramTest(unittest.TestCase):
 
         mbus_device_1 = mbus_devices[0]
         self.assertEqual(mbus_device_1.EQUIPMENT_IDENTIFIER_GAS.value, None)
-        print()
+
         self.assertEqual(mbus_device_1.HOURLY_GAS_METER_READING.value, Decimal('0'))
 
         mbus_device_2 = mbus_devices[1]
