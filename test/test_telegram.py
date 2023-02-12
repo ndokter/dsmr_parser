@@ -356,3 +356,14 @@ class TelegramTest(unittest.TestCase):
         self.assertEqual(mbus_device_2.DEVICE_TYPE.value, 3)
         self.assertEqual(mbus_device_2.EQUIPMENT_IDENTIFIER_GAS.value, '4730303339303031393336393930363139')
         self.assertEqual(mbus_device_2.HOURLY_GAS_METER_READING.value, Decimal('246.138'))
+
+    def test_without_mbus_devices(self):
+        parser = TelegramParser(telegram_specifications.V5, apply_checksum_validation=False)
+        telegram = parser.parse('')
+
+        self.assertEqual(telegram.get_mbus_devices(), [])
+        self.assertIsNone(telegram.get_mbus_device_by_channel(1))
+
+        # Because of a bug related to incorrect use of defaultdict,
+        # test again for unwanted side effects
+        self.assertEqual(telegram.get_mbus_devices(), [])

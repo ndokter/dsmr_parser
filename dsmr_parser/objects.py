@@ -36,9 +36,12 @@ class Telegram(object):
         # Group Mbus related values into a MbusDevice object.
         # TODO MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
         if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
-            channel_id = dsmr_object.obis_id_code[1]
-            mbus_device = self._mbus_devices[channel_id]
-            mbus_device.add(obis_reference, dsmr_object)
+            self._add_mbus(obis_reference, dsmr_object)
+
+    def _add_mbus(self, obis_reference, dsmr_object):
+        channel_id = dsmr_object.obis_id_code[1]
+        mbus_device = self._mbus_devices[channel_id]
+        mbus_device.add(obis_reference, dsmr_object)
 
     def get_mbus_devices(self):
         """
@@ -47,7 +50,9 @@ class Telegram(object):
         return [d[1] for d in sorted(self._mbus_devices.items(), key=lambda x: x[0])]
 
     def get_mbus_device_by_channel(self, channel_id):
-        return self._mbus_devices[channel_id]
+        # Check key, because defaultdict would otherwise instantiate an empty MbusDevice
+        if channel_id in self._mbus_devices:
+            return self._mbus_devices[channel_id]
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
