@@ -58,10 +58,10 @@ class Telegram(object):
 
     def __getitem__(self, obis_reference):
         """
-        Has the limitation that it will return the first occurrence of the OBIS reference. Will miss values in case of
-        multiple MBUS devices like gas or water meters. In this case use .get(..) instead.
+        Get value by key. Example: telegram[obis_references.P1_MESSAGE_HEADER]
 
-        Example usage: telegram[obis_references.P1_MESSAGE_HEADER]
+        For Mbus devices like gas and water meters, it's better to use get_mbus_devices and get_mbus_device_by_channel.
+        This key approach will only fetch the first found value and therefor might not be accurate.
         """
         try:
             return self._telegram_data[obis_reference][0]
