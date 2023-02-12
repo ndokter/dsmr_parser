@@ -309,3 +309,33 @@ SAGEMCOM_T210_D_R = {
     }
 }
 AUSTRIA_ENERGIENETZE_STEIERMARK = SAGEMCOM_T210_D_R
+
+ISKRA_IE = {
+    "checksum_support": False,
+    'objects': {
+        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
+        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
+        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
+        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_VOLTAGE_L1: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_VOLTAGE_L2: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_VOLTAGE_L3: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
+        obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)),
+        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
+        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
+    }
+}
