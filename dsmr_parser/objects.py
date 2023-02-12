@@ -46,7 +46,7 @@ class Telegram(object):
         """
         return [d[1] for d in sorted(self._mbus_devices.items(), key=lambda x: x[0])]
 
-    def get_mbus_device_by_channel(self, channel_id=None):
+    def get_mbus_device_by_channel(self, channel_id):
         return self._mbus_devices[channel_id]
 
     def __getattr__(self, name):
