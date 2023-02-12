@@ -334,10 +334,12 @@ class TelegramTest(unittest.TestCase):
         self.assertEqual(len(mbus_devices), 2)
 
         mbus_device_1 = mbus_devices[0]
+        self.assertEqual(mbus_device_1.DEVICE_TYPE.value, 3)
         self.assertEqual(mbus_device_1.EQUIPMENT_IDENTIFIER_GAS.value, None)
         self.assertEqual(mbus_device_1.HOURLY_GAS_METER_READING.value, Decimal('0'))
 
         mbus_device_2 = mbus_devices[1]
+        self.assertEqual(mbus_device_2.DEVICE_TYPE.value, 3)
         self.assertEqual(mbus_device_2.EQUIPMENT_IDENTIFIER_GAS.value, '4730303339303031393336393930363139')
         self.assertEqual(mbus_device_2.HOURLY_GAS_METER_READING.value, Decimal('246.138'))
 
@@ -346,9 +348,11 @@ class TelegramTest(unittest.TestCase):
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
 
         mbus_device_1 = telegram.get_mbus_device_by_channel(1)
+        self.assertEqual(mbus_device_1.DEVICE_TYPE.value, 3)
         self.assertEqual(mbus_device_1.EQUIPMENT_IDENTIFIER_GAS.value, None)
         self.assertEqual(mbus_device_1.HOURLY_GAS_METER_READING.value, Decimal('0'))
 
         mbus_device_2 = telegram.get_mbus_device_by_channel(2)
+        self.assertEqual(mbus_device_2.DEVICE_TYPE.value, 3)
         self.assertEqual(mbus_device_2.EQUIPMENT_IDENTIFIER_GAS.value, '4730303339303031393336393930363139')
         self.assertEqual(mbus_device_2.HOURLY_GAS_METER_READING.value, Decimal('246.138'))

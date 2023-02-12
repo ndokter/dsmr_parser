@@ -171,6 +171,8 @@ Parsing module usage
 The parsing module accepts complete unaltered telegram strings and parses these
 into a Telegram object. This previously was a dictionary, but the Telegram object is mostly compatible.
 
+Getting full telegrams from a bytestream can be made easier by using the TelegramBuffer helper class.
+
 .. code-block:: python
 
     from dsmr_parser import telegram_specifications
@@ -210,41 +212,38 @@ into a Telegram object. This previously was a dictionary, but the Telegram objec
 Telegram object
 ---------------------
 
+A Telegram has attributes for all the parsed values according to the given telegram specification. Each value is a DsmrObject which have a 'value' and 'unit' property. MBusObject's, which are DsmrObject's as well additionally have a 'datetime' property. The 'value' can contain any python type (int, str, Decimal) depending on the field. The 'unit' contains 'kW', 'A', 'kWh' or 'm3'.
+
+Below are some examples on how to get the meter data. Alternatively check out the following unit test for a complete example: TelegramParserV5Test.test_parse
+
 .. code-block:: python
-
-    # DSMR v5 telegram example
-    from dsmr_parser import telegram_specifications
-    from dsmr_parser.parsers import TelegramParser
-    from test.example_telegrams import TELEGRAM_V5
-
-    parser = TelegramParser(telegram_specifications.V5)
-    telegram = parser.parse(TELEGRAM_V5)
 
     # Print contents of all available values
     # See dsmr_parser.obis_name_mapping for all readable telegram values.
     # The available values differ per DSMR version and meter.
     print(telegram)
-    # P1_MESSAGE_HEADER: 	 42 	[None]
-    # P1_MESSAGE_TIMESTAMP: 	 2016-11-13 19:57:57+00:00 	[None]
-    # EQUIPMENT_IDENTIFIER: 	 3960221976967177082151037881335713 	[None]
-    # ELECTRICITY_USED_TARIFF_1: 	 1581.123 	[kWh]
+    # P1_MESSAGE_HEADER: 	        42 [None]
+    # P1_MESSAGE_TIMESTAMP: 	    2016-11-13 19:57:57+00:00 [None]
+    # EQUIPMENT_IDENTIFIER: 	    3960221976967177082151037881335713 [None]
+    # ELECTRICITY_USED_TARIFF_1:    1581.123 [kWh]
     # etc.
 
     # Example to get current electricity usage
-    print(telegram.CURRENT_ELECTRICITY_USAGE)
-    print(telegram.CURRENT_ELECTRICITY_USAGE.value)
-    print(telegram.CURRENT_ELECTRICITY_USAGE.unit)
-    # <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
-    # Decimal('2.027')
-    # 'kW'
+    print(telegram.CURRENT_ELECTRICITY_USAGE)  # <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
+    print(telegram.CURRENT_ELECTRICITY_USAGE.value)  # Decimal('2.027')
+    print(telegram.CURRENT_ELECTRICITY_USAGE.unit)  # 'kW'
 
     # All Mbus device readings like gas meters and water meters can be retrieved as follows:
     mbus_devices = telegram.get_mbus_devices()
 
     # A specific device based on the channel the device is connected to can be retrieved as follows:
     mbus_device = telegram.get_mbus_device_by_channel(1)
+    print(mbus_device.DEVICE_TYPE.value)  # 3
     print(mbus_device.EQUIPMENT_IDENTIFIER_GAS.value)  # '4730303339303031393336393930363139'
     print(mbus_device.HOURLY_GAS_METER_READING.value)  # Decimal('246.138')
+
+    # A deprecated way of getting the values is by key
+    telegram[obis_references.CURRENT_ELECTRICITY_USAGE]
 
 Installation
 ------------
