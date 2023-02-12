@@ -50,9 +50,8 @@ class Telegram(object):
         return [d[1] for d in sorted(self._mbus_devices.items(), key=lambda x: x[0])]
 
     def get_mbus_device_by_channel(self, channel_id):
-        # Check key, because defaultdict would otherwise instantiate an empty MbusDevice
-        if channel_id in self._mbus_devices:
-            return self._mbus_devices[channel_id]
+        # Use .get, because defaultdict would otherwise instantiate an empty MbusDevice
+        return self._mbus_devices.get(channel_id)
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
