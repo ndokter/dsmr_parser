@@ -265,10 +265,10 @@ class TelegramParserV5Test(unittest.TestCase):
         )
         invalid_date_telegram = invalid_date_telegram.replace('!6EEE\r\n', '!90C2\r\n')
         parser = TelegramParser(telegram_specifications.V5)
-        result = parser.parse(invalid_date_telegram)
+        telegram = parser.parse(invalid_date_telegram)
 
         # HOURLY_GAS_METER_READING (0-1:24.2.1)
-        assert isinstance(result[obis.HOURLY_GAS_METER_READING], MBusObject)
-        assert result[obis.HOURLY_GAS_METER_READING].unit is None
-        assert isinstance(result[obis.HOURLY_GAS_METER_READING].value, Decimal)
-        assert result[obis.HOURLY_GAS_METER_READING].value == Decimal('0.000')
+        assert isinstance(telegram.HOURLY_GAS_METER_READING, MBusObject)
+        assert telegram.HOURLY_GAS_METER_READING.unit is None
+        assert isinstance(telegram.HOURLY_GAS_METER_READING.value, Decimal)
+        assert telegram.HOURLY_GAS_METER_READING.value == Decimal('0.000')
