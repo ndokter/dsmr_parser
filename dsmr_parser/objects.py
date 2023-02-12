@@ -1,5 +1,6 @@
 from collections import defaultdict
 from decimal import Decimal
+from operator import attrgetter
 
 import dsmr_parser.obis_name_mapping
 import datetime
@@ -20,7 +21,7 @@ class Telegram(object):
     """
     def __init__(self):
         self._telegram_data = defaultdict(list)
-        self._mbus_devices = defaultdict(MbusDevice)
+        self._mbus_channel_devices = {}
 
         # Reverse name mapping and attribute related:
         self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
@@ -39,19 +40,30 @@ class Telegram(object):
             self._add_mbus(obis_reference, dsmr_object)
 
     def _add_mbus(self, obis_reference, dsmr_object):
+        """
+        The given DsmrObject is assumed to be Mbus related and will be grouped into a MbusDevice.
+        Grouping is done by the DsmrObject channel ID.
+        """
         channel_id = dsmr_object.obis_id_code[1]
-        mbus_device = self._mbus_devices[channel_id]
+
+        # Create new MbusDevice for the first record on this channel_id
+        if channel_id not in self._mbus_channel_devices:
+            self._mbus_channel_devices[channel_id] = MbusDevice(channel_id=channel_id)
+
+        mbus_device = self._mbus_channel_devices[channel_id]
         mbus_device.add(obis_reference, dsmr_object)
 
     def get_mbus_devices(self):
         """
         Return MbusDevice objects which are used for water, heat and gas meters.
         """
-        return [d[1] for d in sorted(self._mbus_devices.items(), key=lambda x: x[0])]
+        mbus_devices = self._mbus_channel_devices.values()
+        mbus_devices = sorted(mbus_devices, key=attrgetter('channel_id'))
+
+        return mbus_devices
 
     def get_mbus_device_by_channel(self, channel_id):
-        # Use .get, because defaultdict would otherwise instantiate an empty MbusDevice
-        return self._mbus_devices.get(channel_id)
+        return self._mbus_channel_devices.get(channel_id)
 
     def __getattr__(self, name):
         """ will only get called for undefined attributes """
@@ -101,7 +113,7 @@ class DSMRObject(object):
 
     @property
     def is_mbus_reading(self):
-        """ Detect Mbus related readings using obis id + channel """
+        """ Detect Mbus related readings using obis id + channel. """
         obis_id, channel_id = self.obis_id_code
 
         return obis_id == 0 and channel_id != 0
@@ -310,9 +322,15 @@ class ProfileGenericObject(DSMRObject):
 
 
 class MbusDevice:
+    """
+    This object is similar to the Telegram except that it only contains readings related to the same mbus device.
+    """
 
-    def __init__(self):
+    def __init__(self, channel_id):
+        self.channel_id = channel_id
         self._telegram_data = {}
+
+        # OBIS name mapping related used by __getattr__
         self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
         self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
         self._item_names = []
