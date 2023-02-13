@@ -2,13 +2,13 @@ import unittest
 import datetime
 import pytz
 
-from dsmr_parser import telegram_specifications
+from dsmr_parser import telegram_specifications, obis_references
 from dsmr_parser import obis_name_mapping
 from dsmr_parser.objects import CosemObject
 from dsmr_parser.objects import MBusObject
 from dsmr_parser.objects import ProfileGenericObject
 from dsmr_parser.parsers import TelegramParser
-from test.example_telegrams import TELEGRAM_V4_2, TELEGRAM_V5_TWO_MBUS
+from test.example_telegrams import TELEGRAM_V4_2, TELEGRAM_V5_TWO_MBUS, TELEGRAM_V5
 from decimal import Decimal
 
 
@@ -325,6 +325,17 @@ class TelegramTest(unittest.TestCase):
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
 
         self.assertEqual(len(telegram), 35)
+
+    def test_iter(self):
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5)
+
+        for obis_reference, dsmr_object in telegram:
+            break
+
+        # Verify that the iterator works for at least on evalue
+        self.assertEqual(obis_reference, obis_name_mapping.EN[obis_references.P1_MESSAGE_HEADER])
+        self.assertEqual(dsmr_object.value, '50')
 
     def test_get_mbus_devices(self):
         parser = TelegramParser(telegram_specifications.V5)

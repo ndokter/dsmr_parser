@@ -2,9 +2,10 @@ from collections import defaultdict
 from decimal import Decimal
 from operator import attrgetter
 
-import dsmr_parser.obis_name_mapping
 import datetime
 import json
+
+from dsmr_parser import obis_name_mapping
 
 
 class Telegram(object):
@@ -23,16 +24,11 @@ class Telegram(object):
         self._telegram_data = defaultdict(list)
         self._mbus_channel_devices = {}
 
-        # Reverse name mapping and attribute related:
-        self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
-        self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
-        self._item_names = []
-
     def add(self, obis_reference, dsmr_object):
         self._telegram_data[obis_reference].append(dsmr_object)
 
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
-        self._item_names.append(self._obis_name_mapping[obis_reference])
+        setattr(self, obis_name_mapping.EN[obis_reference], dsmr_object)
 
         # Group Mbus related values into a MbusDevice object.
         # TODO MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
@@ -65,13 +61,6 @@ class Telegram(object):
     def get_mbus_device_by_channel(self, channel_id):
         return self._mbus_channel_devices.get(channel_id)
 
-    def __getattr__(self, name):
-        """ will only get called for undefined attributes """
-        obis_reference = self._reverse_obis_name_mapping[name]
-        value = self._telegram_data[obis_reference][0]
-        setattr(self, name, value)
-        return value
-
     def __getitem__(self, obis_reference):
         """
         Get value by key. Example: telegram[obis_references.P1_MESSAGE_HEADER]
@@ -89,9 +78,11 @@ class Telegram(object):
         return len(self._telegram_data)
 
     def __iter__(self):
-        for attr in self._item_names:
-            value = getattr(self, attr)
-            yield attr, value
+        for obis_reference, values in self._telegram_data.items():
+            reverse_obis_name = obis_name_mapping.EN[obis_reference]
+            value = values[0]  # TODO might be considered legacy behavior?
+
+            yield reverse_obis_name, value
 
     def __str__(self):
         output = ""
@@ -330,20 +321,8 @@ class MbusDevice:
         self.channel_id = channel_id
         self._telegram_data = {}
 
-        # OBIS name mapping related used by __getattr__
-        self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
-        self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
-        self._item_names = []
-
     def add(self, obis_reference, dsmr_object):
         self._telegram_data[obis_reference] = dsmr_object
 
         # Update name mapping used to get value by attribute. Example: device.HOURLY_GAS_METER_READING
-        self._item_names.append(self._obis_name_mapping[obis_reference])
-
-    def __getattr__(self, name):
-        """ will only get called for undefined attributes """
-        obis_reference = self._reverse_obis_name_mapping[name]
-        value = self._telegram_data[obis_reference]
-        setattr(self, name, value)
-        return value
+        setattr(self, obis_name_mapping.EN[obis_reference], dsmr_object)
