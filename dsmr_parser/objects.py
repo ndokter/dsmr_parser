@@ -23,12 +23,17 @@ class Telegram(object):
     def __init__(self):
         self._telegram_data = defaultdict(list)
         self._mbus_channel_devices = {}
+        self._item_names = []
 
     def add(self, obis_reference, dsmr_object):
         self._telegram_data[obis_reference].append(dsmr_object)
 
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
-        setattr(self, obis_name_mapping.EN[obis_reference], dsmr_object)
+        # Also keep track of the added names internally
+        obis_name = obis_name_mapping.EN[obis_reference]
+        setattr(self, obis_name, dsmr_object)
+        if obis_name not in self._item_names:  # TODO solve issue with repeating obis references
+            self._item_names.append(obis_name)
 
         # Group Mbus related values into a MbusDevice object.
         # TODO MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
@@ -63,26 +68,26 @@ class Telegram(object):
 
     def __getitem__(self, obis_reference):
         """
-        Get value by key. Example: telegram[obis_references.P1_MESSAGE_HEADER]
+        Deprecated method to get obis_reference by key. Exists for backwards compatibility
 
-        For Mbus devices like gas and water meters, it's better to use get_mbus_devices and get_mbus_device_by_channel.
-        This key approach will only fetch the first found value and therefor might not be accurate.
+        Example: telegram[obis_references.P1_MESSAGE_HEADER]
         """
         try:
+            # TODO use _telegram_data here or else TelegramParserFluviusTest.test_parse breaks
             return self._telegram_data[obis_reference][0]
+            # obis_name = obis_name_mapping.EN[obis_reference]
+            # return getattr(self, obis_name)
         except IndexError:
             # The index error is an internal detail. The KeyError is expected as a user.
             raise KeyError
 
     def __len__(self):
-        return len(self._telegram_data)
+        return len(self._item_names)
 
     def __iter__(self):
-        for obis_reference, values in self._telegram_data.items():
-            reverse_obis_name = obis_name_mapping.EN[obis_reference]
-            value = values[0]  # TODO might be considered legacy behavior?
-
-            yield reverse_obis_name, value
+        for attr in self._item_names:
+            value = getattr(self, attr)
+            yield attr, value
 
     def __str__(self):
         output = ""
@@ -91,7 +96,13 @@ class Telegram(object):
         return output
 
     def to_json(self):
-        return json.dumps(dict([[attr, json.loads(value.to_json())] for attr, value in self]))
+        telegram_data = {obis_name: json.loads(value.to_json()) for obis_name, value in self}
+        telegram_data['MBUS_DEVICES'] = [
+            json.loads(mbus_device.to_json())
+            for mbus_device in self._mbus_channel_devices.values()
+        ]
+
+        return json.dumps(telegram_data)
 
 
 class DSMRObject(object):
@@ -319,10 +330,31 @@ class MbusDevice:
 
     def __init__(self, channel_id):
         self.channel_id = channel_id
-        self._telegram_data = {}
+        self._item_names = []
 
     def add(self, obis_reference, dsmr_object):
-        self._telegram_data[obis_reference] = dsmr_object
+        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
+        # Also keep track of the added names internally
+        obis_name = obis_name_mapping.EN[obis_reference]
+        setattr(self, obis_name, dsmr_object)
+        self._item_names.append(obis_name)
 
-        # Update name mapping used to get value by attribute. Example: device.HOURLY_GAS_METER_READING
-        setattr(self, obis_name_mapping.EN[obis_reference], dsmr_object)
+    def __len__(self):
+        return len(self._item_names)
+
+    def __iter__(self):
+        for attr in self._item_names:
+            value = getattr(self, attr)
+            yield attr, value
+
+    def __str__(self):
+        output = ""
+        for attr, value in self:
+            output += "{}: \t {}\n".format(attr, str(value))
+        return output
+
+    def to_json(self):
+        data = {obis_name: json.loads(value.to_json()) for obis_name, value in self}
+        data['CHANNEL_ID'] = self.channel_id
+
+        return json.dumps(data)

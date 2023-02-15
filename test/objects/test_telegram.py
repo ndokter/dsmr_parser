@@ -1,3 +1,4 @@
+import json
 import unittest
 import datetime
 import pytz
@@ -324,17 +325,17 @@ class TelegramTest(unittest.TestCase):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
 
-        self.assertEqual(len(telegram), 35)
+        self.assertEqual(len(telegram._item_names), 35)
 
     def test_iter(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5)
 
-        for obis_reference, dsmr_object in telegram:
+        for obis_name, dsmr_object in telegram:
             break
 
-        # Verify that the iterator works for at least on evalue
-        self.assertEqual(obis_reference, obis_name_mapping.EN[obis_references.P1_MESSAGE_HEADER])
+        # Verify that the iterator works for at least one value
+        self.assertEqual(obis_name, obis_name_mapping.EN[obis_references.P1_MESSAGE_HEADER])
         self.assertEqual(dsmr_object.value, '50')
 
     def test_get_mbus_devices(self):
@@ -378,3 +379,68 @@ class TelegramTest(unittest.TestCase):
         # Because of a bug related to incorrect use of defaultdict,
         # test again for unwanted side effects
         self.assertEqual(telegram.get_mbus_devices(), [])
+
+    def test_to_json(self):
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5)
+        json_data = json.loads(telegram.to_json())
+
+        self.assertEqual(
+            json_data,
+            {'CURRENT_ELECTRICITY_DELIVERY': {'unit': 'kW', 'value': 0.0},
+             'CURRENT_ELECTRICITY_USAGE': {'unit': 'kW', 'value': 0.244},
+             'DEVICE_TYPE': {'unit': None, 'value': 3},
+             'ELECTRICITY_ACTIVE_TARIFF': {'unit': None, 'value': '0002'},
+             'ELECTRICITY_DELIVERED_TARIFF_1': {'unit': 'kWh', 'value': 2.444},
+             'ELECTRICITY_DELIVERED_TARIFF_2': {'unit': 'kWh', 'value': 0.0},
+             'ELECTRICITY_USED_TARIFF_1': {'unit': 'kWh', 'value': 4.426},
+             'ELECTRICITY_USED_TARIFF_2': {'unit': 'kWh', 'value': 2.399},
+             'EQUIPMENT_IDENTIFIER': {'unit': None,
+                                      'value': '4B384547303034303436333935353037'},
+             'EQUIPMENT_IDENTIFIER_GAS': {'unit': None, 'value': None},
+             'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T16:10:05+01:00',
+                                          'unit': 'm3',
+                                          'value': 0.107},
+             'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE': {'unit': 'kW', 'value': 0.0},
+             'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE': {'unit': 'kW', 'value': 0.07},
+             'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE': {'unit': 'kW', 'value': 0.0},
+             'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE': {'unit': 'kW', 'value': 0.032},
+             'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE': {'unit': 'kW', 'value': 0.0},
+             'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE': {'unit': 'kW', 'value': 0.142},
+             'INSTANTANEOUS_CURRENT_L1': {'unit': 'A', 'value': 0.48},
+             'INSTANTANEOUS_CURRENT_L2': {'unit': 'A', 'value': 0.44},
+             'INSTANTANEOUS_CURRENT_L3': {'unit': 'A', 'value': 0.86},
+             'INSTANTANEOUS_VOLTAGE_L1': {'unit': 'V', 'value': 230.0},
+             'INSTANTANEOUS_VOLTAGE_L2': {'unit': 'V', 'value': 230.0},
+             'INSTANTANEOUS_VOLTAGE_L3': {'unit': 'V', 'value': 229.0},
+             'LONG_POWER_FAILURE_COUNT': {'unit': None, 'value': 0},
+             'MBUS_DEVICES': [{'CHANNEL_ID': 1,
+                               'DEVICE_TYPE': {'unit': None, 'value': 3},
+                               'EQUIPMENT_IDENTIFIER_GAS': {'unit': None,
+                                                            'value': '3232323241424344313233343536373839'},
+                               'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T16:10:05+01:00',
+                                                            'unit': 'm3',
+                                                            'value': 0.107}},
+                              {'CHANNEL_ID': 2,
+                               'DEVICE_TYPE': {'unit': None, 'value': 3},
+                               'EQUIPMENT_IDENTIFIER_GAS': {'unit': None, 'value': None}}],
+             'P1_MESSAGE_HEADER': {'unit': None, 'value': '50'},
+             'P1_MESSAGE_TIMESTAMP': {'unit': None, 'value': '2017-01-02T19:20:02+01:00'},
+             'POWER_EVENT_FAILURE_LOG': {'buffer': [],
+                                         'buffer_length': 0,
+                                         'buffer_type': '0-0:96.7.19'},
+             'SHORT_POWER_FAILURE_COUNT': {'unit': None, 'value': 13},
+             'TEXT_MESSAGE': {'unit': None, 'value': None},
+             'VOLTAGE_SAG_L1_COUNT': {'unit': None, 'value': 0},
+             'VOLTAGE_SAG_L2_COUNT': {'unit': None, 'value': 0},
+             'VOLTAGE_SAG_L3_COUNT': {'unit': None, 'value': 0},
+             'VOLTAGE_SWELL_L1_COUNT': {'unit': None, 'value': 0},
+             'VOLTAGE_SWELL_L2_COUNT': {'unit': None, 'value': 0},
+             'VOLTAGE_SWELL_L3_COUNT': {'unit': None, 'value': 0}}
+        )
+
+    def test_getitem(self):
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5)
+
+        self.assertEqual(telegram[obis_references.P1_MESSAGE_HEADER].value, '50')
