@@ -93,6 +93,12 @@ class Telegram(object):
         output = ""
         for attr, value in self:
             output += "{}: \t {}\n".format(attr, str(value))
+
+        for channel_id, mbus_device in self._mbus_channel_devices.items():
+            output += f'MBUS DEVICE (channel: {channel_id})\n'
+            for obis_name, value in mbus_device:
+                output += f'\t{obis_name}: \t {value} \n'
+
         return output
 
     def to_json(self):
@@ -348,7 +354,7 @@ class MbusDevice:
             yield attr, value
 
     def __str__(self):
-        output = ""
+        output = "CHANNEL_ID: \t {}\n".format(self.channel_id)
         for attr, value in self:
             output += "{}: \t {}\n".format(attr, str(value))
         return output
