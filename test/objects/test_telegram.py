@@ -439,6 +439,59 @@ class TelegramTest(unittest.TestCase):
              'VOLTAGE_SWELL_L3_COUNT': {'unit': None, 'value': 0}}
         )
 
+    def test_to_str(self):
+        parser = TelegramParser(telegram_specifications.V5)
+        telegram = parser.parse(TELEGRAM_V5)
+
+        self.assertEqual(
+            str(telegram),
+            (
+                'P1_MESSAGE_HEADER: 	 50	[None]\n'
+                'P1_MESSAGE_TIMESTAMP: 	 2017-01-02T19:20:02+01:00	[None]\n'
+                'EQUIPMENT_IDENTIFIER: 	 4B384547303034303436333935353037	[None]\n'
+                'ELECTRICITY_USED_TARIFF_1: 	 4.426	[kWh]\n'
+                'ELECTRICITY_USED_TARIFF_2: 	 2.399	[kWh]\n'
+                'ELECTRICITY_DELIVERED_TARIFF_1: 	 2.444	[kWh]\n'
+                'ELECTRICITY_DELIVERED_TARIFF_2: 	 0.000	[kWh]\n'
+                'ELECTRICITY_ACTIVE_TARIFF: 	 0002	[None]\n'
+                'CURRENT_ELECTRICITY_USAGE: 	 0.244	[kW]\n'
+                'CURRENT_ELECTRICITY_DELIVERY: 	 0.000	[kW]\n'
+                'LONG_POWER_FAILURE_COUNT: 	 0	[None]\n'
+                'SHORT_POWER_FAILURE_COUNT: 	 13	[None]\n'
+                'POWER_EVENT_FAILURE_LOG: 	 	 buffer length: 0\n'
+                '	 buffer type: 0-0:96.7.19\n'
+                'VOLTAGE_SAG_L1_COUNT: 	 0	[None]\n'
+                'VOLTAGE_SAG_L2_COUNT: 	 0	[None]\n'
+                'VOLTAGE_SAG_L3_COUNT: 	 0	[None]\n'
+                'VOLTAGE_SWELL_L1_COUNT: 	 0	[None]\n'
+                'VOLTAGE_SWELL_L2_COUNT: 	 0	[None]\n'
+                'VOLTAGE_SWELL_L3_COUNT: 	 0	[None]\n'
+                'INSTANTANEOUS_VOLTAGE_L1: 	 230.0	[V]\n'
+                'INSTANTANEOUS_VOLTAGE_L2: 	 230.0	[V]\n'
+                'INSTANTANEOUS_VOLTAGE_L3: 	 229.0	[V]\n'
+                'INSTANTANEOUS_CURRENT_L1: 	 0.48	[A]\n'
+                'INSTANTANEOUS_CURRENT_L2: 	 0.44	[A]\n'
+                'INSTANTANEOUS_CURRENT_L3: 	 0.86	[A]\n'
+                'TEXT_MESSAGE: 	 None	[None]\n'
+                'DEVICE_TYPE: 	 3	[None]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: 	 0.070	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: 	 0.032	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: 	 0.142	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: 	 0.000	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: 	 0.000	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000	[kW]\n'
+                'EQUIPMENT_IDENTIFIER_GAS: 	 None	[None]\n'
+                'HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T16:10:05+01:00\n'
+                'MBUS DEVICE (channel: 1)\n'
+                '	DEVICE_TYPE: 	 3	[None] \n'
+                '	EQUIPMENT_IDENTIFIER_GAS: 	 3232323241424344313233343536373839	[None] \n'
+                '	HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T16:10:05+01:00 \n'
+                'MBUS DEVICE (channel: 2)\n'
+                '	DEVICE_TYPE: 	 3	[None] \n'
+                '	EQUIPMENT_IDENTIFIER_GAS: 	 None	[None] \n'
+            )
+        )
+
     def test_getitem(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5)
