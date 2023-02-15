@@ -398,7 +398,7 @@ class TelegramTest(unittest.TestCase):
              'EQUIPMENT_IDENTIFIER': {'unit': None,
                                       'value': '4B384547303034303436333935353037'},
              'EQUIPMENT_IDENTIFIER_GAS': {'unit': None, 'value': None},
-             'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T16:10:05+01:00',
+             'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T15:10:05+00:00',
                                           'unit': 'm3',
                                           'value': 0.107},
              'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE': {'unit': 'kW', 'value': 0.0},
@@ -418,14 +418,14 @@ class TelegramTest(unittest.TestCase):
                                'DEVICE_TYPE': {'unit': None, 'value': 3},
                                'EQUIPMENT_IDENTIFIER_GAS': {'unit': None,
                                                             'value': '3232323241424344313233343536373839'},
-                               'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T16:10:05+01:00',
+                               'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T15:10:05+00:00',
                                                             'unit': 'm3',
                                                             'value': 0.107}},
                               {'CHANNEL_ID': 2,
                                'DEVICE_TYPE': {'unit': None, 'value': 3},
                                'EQUIPMENT_IDENTIFIER_GAS': {'unit': None, 'value': None}}],
              'P1_MESSAGE_HEADER': {'unit': None, 'value': '50'},
-             'P1_MESSAGE_TIMESTAMP': {'unit': None, 'value': '2017-01-02T19:20:02+01:00'},
+             'P1_MESSAGE_TIMESTAMP': {'unit': None, 'value': '2017-01-02T18:20:02+00:00'},
              'POWER_EVENT_FAILURE_LOG': {'buffer': [],
                                          'buffer_length': 0,
                                          'buffer_type': '0-0:96.7.19'},
@@ -447,7 +447,7 @@ class TelegramTest(unittest.TestCase):
             str(telegram),
             (
                 'P1_MESSAGE_HEADER: 	 50	[None]\n'
-                'P1_MESSAGE_TIMESTAMP: 	 2017-01-02T19:20:02+01:00	[None]\n'
+                'P1_MESSAGE_TIMESTAMP: 	 2017-01-02T18:20:02+00:00	[None]\n'
                 'EQUIPMENT_IDENTIFIER: 	 4B384547303034303436333935353037	[None]\n'
                 'ELECTRICITY_USED_TARIFF_1: 	 4.426	[kWh]\n'
                 'ELECTRICITY_USED_TARIFF_2: 	 2.399	[kWh]\n'
@@ -481,11 +481,11 @@ class TelegramTest(unittest.TestCase):
                 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: 	 0.000	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000	[kW]\n'
                 'EQUIPMENT_IDENTIFIER_GAS: 	 None	[None]\n'
-                'HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T16:10:05+01:00\n'
+                'HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00\n'
                 'MBUS DEVICE (channel: 1)\n'
                 '	DEVICE_TYPE: 	 3	[None] \n'
                 '	EQUIPMENT_IDENTIFIER_GAS: 	 3232323241424344313233343536373839	[None] \n'
-                '	HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T16:10:05+01:00 \n'
+                '	HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00 \n'
                 'MBUS DEVICE (channel: 2)\n'
                 '	DEVICE_TYPE: 	 3	[None] \n'
                 '	EQUIPMENT_IDENTIFIER_GAS: 	 None	[None] \n'

@@ -46,7 +46,7 @@ class MbusDeviceTest(unittest.TestCase):
                 'CHANNEL_ID': 1,
                 'DEVICE_TYPE': {'value': 3, 'unit': None},
                 'EQUIPMENT_IDENTIFIER_GAS': {'value': '4730303339303031393336393930363139', 'unit': None},
-                'HOURLY_GAS_METER_READING': {'datetime': '2020-04-26T22:30:01+02:00', 'value': 246.138, 'unit': 'm3'}}
+                'HOURLY_GAS_METER_READING': {'datetime': '2020-04-26T20:30:01+00:00', 'value': 246.138, 'unit': 'm3'}}
         )
 
     def test_str(self):
@@ -56,6 +56,6 @@ class MbusDeviceTest(unittest.TestCase):
                 'CHANNEL_ID: 	 1\n'
                 'DEVICE_TYPE: 	 3	[None]\n'
                 'EQUIPMENT_IDENTIFIER_GAS: 	 4730303339303031393336393930363139	[None]\n'
-                'HOURLY_GAS_METER_READING: 	 246.138	[m3] at 2020-04-26T22:30:01+02:00\n'
+                'HOURLY_GAS_METER_READING: 	 246.138	[m3] at 2020-04-26T20:30:01+00:00\n'
             )
         )

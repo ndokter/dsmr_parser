@@ -5,6 +5,8 @@ from operator import attrgetter
 import datetime
 import json
 
+import pytz
+
 from dsmr_parser import obis_name_mapping
 
 
@@ -154,16 +156,20 @@ class MBusObject(DSMRObject):
             return self.values[1]['unit']
 
     def __str__(self):
-        output = "{}\t[{}] at {}".format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()))
+        output = "{}\t[{}] at {}".format(
+            str(self.value),
+            str(self.unit),
+            str(self.datetime.astimezone().astimezone(pytz.utc).isoformat())
+        )
         return output
 
     def to_json(self):
         timestamp = self.datetime
         if isinstance(self.datetime, datetime.datetime):
-            timestamp = self.datetime.astimezone().isoformat()
+            timestamp = self.datetime.astimezone().astimezone(pytz.utc).isoformat()
         value = self.value
         if isinstance(self.value, datetime.datetime):
-            value = self.value.astimezone().isoformat()
+            value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         if isinstance(self.value, Decimal):
             value = float(self.value)
         output = {
@@ -194,20 +200,20 @@ class MBusObjectPeak(DSMRObject):
 
     def __str__(self):
         output = "{}\t[{}] at {} occurred {}"\
-            .format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()),
-                    str(self.occurred.astimezone().isoformat()))
+            .format(str(self.value), str(self.unit), str(self.datetime.astimezone().astimezone(pytz.utc).isoformat()),
+                    str(self.occurred.astimezone().astimezone(pytz.utc).isoformat()))
         return output
 
     def to_json(self):
         timestamp = self.datetime
         if isinstance(self.datetime, datetime.datetime):
-            timestamp = self.datetime.astimezone().isoformat()
+            timestamp = self.datetime.astimezone().astimezone(pytz.utc).isoformat()
         timestamp_occurred = self.occurred
         if isinstance(self.occurred, datetime.datetime):
-            timestamp_occurred = self.occurred.astimezone().isoformat()
+            timestamp_occurred = self.occurred.astimezone().astimezone(pytz.utc).isoformat()
         value = self.value
         if isinstance(self.value, datetime.datetime):
-            value = self.value.astimezone().isoformat()
+            value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         if isinstance(self.value, Decimal):
             value = float(self.value)
         output = {
@@ -232,14 +238,14 @@ class CosemObject(DSMRObject):
     def __str__(self):
         print_value = self.value
         if isinstance(self.value, datetime.datetime):
-            print_value = self.value.astimezone().isoformat()
+            print_value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         output = "{}\t[{}]".format(str(print_value), str(self.unit))
         return output
 
     def to_json(self):
         json_value = self.value
         if isinstance(self.value, datetime.datetime):
-            json_value = self.value.astimezone().isoformat()
+            json_value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         if isinstance(self.value, Decimal):
             json_value = float(self.value)
         output = {
@@ -301,7 +307,7 @@ class ProfileGenericObject(DSMRObject):
         for buffer_value in self.buffer:
             timestamp = buffer_value.datetime
             if isinstance(timestamp, datetime.datetime):
-                timestamp = str(timestamp.astimezone().isoformat())
+                timestamp = str(timestamp.astimezone().astimezone(pytz.utc).isoformat())
             output += "\n\t event occured at: {}".format(timestamp)
             output += "\t for: {} [{}]".format(buffer_value.value, buffer_value.unit)
         return output
