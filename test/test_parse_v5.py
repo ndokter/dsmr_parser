@@ -213,7 +213,7 @@ class TelegramParserV5Test(unittest.TestCase):
 
         # There's only one Mbus device (gas meter) in this case. Alternatively
         # use get_mbget_mbus_device_by_channel
-        gas_meter_devices = telegram.get_mbus_devices()
+        gas_meter_devices = telegram.MBUS_DEVICES
         gas_meter_device = gas_meter_devices[0]
 
         # EQUIPMENT_IDENTIFIER_GAS (0-x:96.1.0)

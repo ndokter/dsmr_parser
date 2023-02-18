@@ -338,10 +338,10 @@ class TelegramTest(unittest.TestCase):
         self.assertEqual(obis_name, obis_name_mapping.EN[obis_references.P1_MESSAGE_HEADER])
         self.assertEqual(dsmr_object.value, '50')
 
-    def test_get_mbus_devices(self):
+    def test_mbus_devices(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
-        mbus_devices = telegram.get_mbus_devices()
+        mbus_devices = telegram.MBUS_DEVICES
 
         self.assertEqual(len(mbus_devices), 2)
 
@@ -373,12 +373,12 @@ class TelegramTest(unittest.TestCase):
         parser = TelegramParser(telegram_specifications.V5, apply_checksum_validation=False)
         telegram = parser.parse('')
 
-        self.assertEqual(telegram.get_mbus_devices(), [])
+        self.assertEqual(telegram.MBUS_DEVICES, [])
         self.assertIsNone(telegram.get_mbus_device_by_channel(1))
 
         # Because of a bug related to incorrect use of defaultdict,
         # test again for unwanted side effects
-        self.assertEqual(telegram.get_mbus_devices(), [])
+        self.assertEqual(telegram.MBUS_DEVICES, [])
 
     def test_to_json(self):
         parser = TelegramParser(telegram_specifications.V5)

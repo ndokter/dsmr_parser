@@ -169,9 +169,9 @@ However, if we construct a mock TelegramParser that just returns the already par
 Parsing module usage
 --------------------
 The parsing module accepts complete unaltered telegram strings and parses these
-into a Telegram object. This previously was a dictionary, but the Telegram object is mostly compatible.
+into a Telegram object.
 
-Getting full telegrams from a bytestream can be made easier by using the TelegramBuffer helper class.
+Tip: getting full telegrams from a bytestream can be made easier by using the TelegramBuffer helper class.
 
 .. code-block:: python
 
@@ -214,6 +214,8 @@ Telegram object
 
 A Telegram has attributes for all the parsed values according to the given telegram specification. Each value is a DsmrObject which have a 'value' and 'unit' property. MBusObject's, which are DsmrObject's as well additionally have a 'datetime' property. The 'value' can contain any python type (int, str, Decimal) depending on the field. The 'unit' contains 'kW', 'A', 'kWh' or 'm3'.
 
+Note: Telegram extends dictionary, which done for backwards compatibility. The use of keys (e.g. `telegram[obis_references.CURRENT_ELECTRICITY_USAGE]`) is deprecated.
+
 Below are some examples on how to get the meter data. Alternatively check out the following unit test for a complete example: TelegramParserV5Test.test_parse
 
 .. code-block:: python
@@ -233,17 +235,54 @@ Below are some examples on how to get the meter data. Alternatively check out th
     print(telegram.CURRENT_ELECTRICITY_USAGE.value)  # Decimal('2.027')
     print(telegram.CURRENT_ELECTRICITY_USAGE.unit)  # 'kW'
 
-    # All Mbus device readings like gas meters and water meters can be retrieved as follows:
-    mbus_devices = telegram.get_mbus_devices()
+    # All Mbus device readings like gas meters and water meters can be retrieved as follows. This
+    # returns a list of MbusDevice objects:
+    mbus_devices = telegram.MBUS_DEVICES
 
-    # A specific device based on the channel the device is connected to can be retrieved as follows:
+    # A specific MbusDevice based on the channel it's connected to, can be retrieved as follows:
     mbus_device = telegram.get_mbus_device_by_channel(1)
     print(mbus_device.DEVICE_TYPE.value)  # 3
     print(mbus_device.EQUIPMENT_IDENTIFIER_GAS.value)  # '4730303339303031393336393930363139'
     print(mbus_device.HOURLY_GAS_METER_READING.value)  # Decimal('246.138')
 
-    # A deprecated way of getting the values is by key
+    # DEPRECATED: the dictionary approach of getting the values by key or `.items()' or '.get() is deprecated
     telegram[obis_references.CURRENT_ELECTRICITY_USAGE]
+
+
+The telegram object has an iterator, can be used to find all the information elements in the current telegram:
+
+.. code-block:: python
+
+    [attr for attr, value in telegram]
+    Out[11]:
+    ['P1_MESSAGE_HEADER',
+     'P1_MESSAGE_TIMESTAMP',
+     'EQUIPMENT_IDENTIFIER',
+     'ELECTRICITY_USED_TARIFF_1',
+     'ELECTRICITY_USED_TARIFF_2',
+     'ELECTRICITY_DELIVERED_TARIFF_1',
+     'ELECTRICITY_DELIVERED_TARIFF_2',
+     'ELECTRICITY_ACTIVE_TARIFF',
+     'CURRENT_ELECTRICITY_USAGE',
+     'CURRENT_ELECTRICITY_DELIVERY',
+     'LONG_POWER_FAILURE_COUNT',
+     'VOLTAGE_SAG_L1_COUNT',
+     'VOLTAGE_SAG_L2_COUNT',
+     'VOLTAGE_SAG_L3_COUNT',
+     'VOLTAGE_SWELL_L1_COUNT',
+     'VOLTAGE_SWELL_L2_COUNT',
+     'VOLTAGE_SWELL_L3_COUNT',
+     'TEXT_MESSAGE_CODE',
+     'TEXT_MESSAGE',
+     'DEVICE_TYPE',
+     'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE',
+     'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE',
+     'EQUIPMENT_IDENTIFIER_GAS',
+     'HOURLY_GAS_METER_READING']
 
 Installation
 ------------

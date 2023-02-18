@@ -1,5 +1,4 @@
 from decimal import Decimal
-from operator import attrgetter
 
 import datetime
 import json
@@ -57,16 +56,15 @@ class Telegram(dict):
         mbus_device = self._mbus_channel_devices[channel_id]
         mbus_device.add(obis_reference, dsmr_object)
 
-    def get_mbus_devices(self):
-        """
-        Return MbusDevice objects which are used for water, heat and gas meters.
-        """
-        mbus_devices = self._mbus_channel_devices.values()
-        mbus_devices = sorted(mbus_devices, key=attrgetter('channel_id'))
-
-        return mbus_devices
+    @property
+    def MBUS_DEVICES(self):
+        """ Return MbusDevice objects which are used for water, heat and gas meters. """
+        return list(self._mbus_channel_devices.values())
 
     def get_mbus_device_by_channel(self, channel_id):
+        """
+        :rtype: MbusDevice|None
+        """
         return self._mbus_channel_devices.get(channel_id)
 
     def __len__(self):
