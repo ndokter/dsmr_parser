@@ -321,12 +321,6 @@ class TelegramTest(unittest.TestCase):
 
         assert item_names_tested_set == V4_name_set
 
-    def test_len(self):
-        parser = TelegramParser(telegram_specifications.V5)
-        telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
-
-        self.assertEqual(len(telegram._item_names), 35)
-
     def test_iter(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5)
@@ -373,12 +367,8 @@ class TelegramTest(unittest.TestCase):
         parser = TelegramParser(telegram_specifications.V5, apply_checksum_validation=False)
         telegram = parser.parse('')
 
-        self.assertEqual(telegram.MBUS_DEVICES, [])
+        self.assertFalse(hasattr(telegram, 'MBUS_DEVICES'))
         self.assertIsNone(telegram.get_mbus_device_by_channel(1))
-
-        # Because of a bug related to incorrect use of defaultdict,
-        # test again for unwanted side effects
-        self.assertEqual(telegram.MBUS_DEVICES, [])
 
     def test_to_json(self):
         parser = TelegramParser(telegram_specifications.V5)
@@ -474,6 +464,13 @@ class TelegramTest(unittest.TestCase):
                 'INSTANTANEOUS_CURRENT_L3: 	 0.86	[A]\n'
                 'TEXT_MESSAGE: 	 None	[None]\n'
                 'DEVICE_TYPE: 	 3	[None]\n'
+                'MBUS DEVICE (channel 1)\n'
+                '	DEVICE_TYPE: 	 3	[None]\n'
+                '	EQUIPMENT_IDENTIFIER_GAS: 	 3232323241424344313233343536373839	[None]\n'
+                '	HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00\n'
+                'MBUS DEVICE (channel 2)\n'
+                '	DEVICE_TYPE: 	 3	[None]\n'
+                '	EQUIPMENT_IDENTIFIER_GAS: 	 None	[None]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: 	 0.070	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: 	 0.032	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: 	 0.142	[kW]\n'
@@ -482,13 +479,6 @@ class TelegramTest(unittest.TestCase):
                 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000	[kW]\n'
                 'EQUIPMENT_IDENTIFIER_GAS: 	 None	[None]\n'
                 'HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00\n'
-                'MBUS DEVICE (channel: 1)\n'
-                '	DEVICE_TYPE: 	 3	[None] \n'
-                '	EQUIPMENT_IDENTIFIER_GAS: 	 3232323241424344313233343536373839	[None] \n'
-                '	HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00 \n'
-                'MBUS DEVICE (channel: 2)\n'
-                '	DEVICE_TYPE: 	 3	[None] \n'
-                '	EQUIPMENT_IDENTIFIER_GAS: 	 None	[None] \n'
             )
         )
 

@@ -19,22 +19,22 @@ class Telegram(dict):
         [k for k,v in telegram]
     yields:
     ['P1_MESSAGE_HEADER',  'P1_MESSAGE_TIMESTAMP', 'EQUIPMENT_IDENTIFIER', ...]
+
+    Note: Dict like usage is deprecated. The inheritance from dict is because of backwards compatibility.
     """
     def __init__(self, *args, **kwargs):
-        self._mbus_channel_devices = {}
         self._item_names = []
+        self._mbus_devices = []
         super().__init__(*args, **kwargs)
 
     def add(self, obis_reference, dsmr_object):
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
-        # Also keep track of the added names internally
         obis_name = obis_name_mapping.EN[obis_reference]
         setattr(self, obis_name, dsmr_object)
         if obis_name not in self._item_names:  # TODO solve issue with repeating obis references
             self._item_names.append(obis_name)
 
-        # Group Mbus related values into a MbusDevice object.
-        # TODO MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
+        # TODO isinstance check: MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
         if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
             self._add_mbus(obis_reference, dsmr_object)
 
@@ -49,26 +49,25 @@ class Telegram(dict):
         """
         channel_id = dsmr_object.obis_id_code[1]
 
-        # Create new MbusDevice for the first record on this channel_id
-        if channel_id not in self._mbus_channel_devices:
-            self._mbus_channel_devices[channel_id] = MbusDevice(channel_id=channel_id)
+        # Create new MbusDevice or update existing one as it's records are being added one by one.
+        mbus_device = self.get_mbus_device_by_channel(channel_id)
+        if not mbus_device:
+            mbus_device = MbusDevice(channel_id=channel_id)
+            self._mbus_devices.append(mbus_device)
 
-        mbus_device = self._mbus_channel_devices[channel_id]
         mbus_device.add(obis_reference, dsmr_object)
 
-    @property
-    def MBUS_DEVICES(self):
-        """ Return MbusDevice objects which are used for water, heat and gas meters. """
-        return list(self._mbus_channel_devices.values())
+        if not hasattr(self, 'MBUS_DEVICES'):
+            setattr(self, 'MBUS_DEVICES', self._mbus_devices)
+            self._item_names.append('MBUS_DEVICES')
 
     def get_mbus_device_by_channel(self, channel_id):
         """
         :rtype: MbusDevice|None
         """
-        return self._mbus_channel_devices.get(channel_id)
-
-    def __len__(self):
-        return len(self._item_names)
+        for mbus_device in self._mbus_devices:
+            if mbus_device.channel_id == channel_id:
+                return mbus_device
 
     def __iter__(self):
         for attr in self._item_names:
@@ -78,20 +77,22 @@ class Telegram(dict):
     def __str__(self):
         output = ""
         for attr, value in self:
-            output += "{}: \t {}\n".format(attr, str(value))
-
-        for channel_id, mbus_device in self._mbus_channel_devices.items():
-            output += f'MBUS DEVICE (channel: {channel_id})\n'
-            for obis_name, value in mbus_device:
-                output += f'\t{obis_name}: \t {value} \n'
+            if attr == 'MBUS_DEVICES':
+                # Mbus devices are in a list
+                for mbus_device in value:
+                    output += str(mbus_device)
+            else:
+                output += "{}: \t {}\n".format(attr, str(value))
 
         return output
 
     def to_json(self):
-        telegram_data = {obis_name: json.loads(value.to_json()) for obis_name, value in self}
+        telegram_data = {obis_name: json.loads(value.to_json())
+                         for obis_name, value in self
+                         if isinstance(value, DSMRObject)}
         telegram_data['MBUS_DEVICES'] = [
             json.loads(mbus_device.to_json())
-            for mbus_device in self._mbus_channel_devices.values()
+            for mbus_device in self._mbus_devices
         ]
 
         return json.dumps(telegram_data)
@@ -111,6 +112,9 @@ class DSMRObject(object):
         obis_id, channel_id = self.obis_id_code
 
         return obis_id == 0 and channel_id != 0
+
+    def to_json(self):
+        raise NotImplementedError
 
 
 class MBusObject(DSMRObject):
@@ -344,9 +348,9 @@ class MbusDevice:
             yield attr, value
 
     def __str__(self):
-        output = "CHANNEL_ID: \t {}\n".format(self.channel_id)
+        output = "MBUS DEVICE (channel {})\n".format(self.channel_id)
         for attr, value in self:
-            output += "{}: \t {}\n".format(attr, str(value))
+            output += "\t{}: \t {}\n".format(attr, str(value))
         return output
 
     def to_json(self):
