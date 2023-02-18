@@ -27,9 +27,6 @@ class Telegram(dict):
         super().__init__(*args, **kwargs)
 
     def add(self, obis_reference, dsmr_object):
-        if obis_reference not in self:
-            self[obis_reference] = dsmr_object
-
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         # Also keep track of the added names internally
         obis_name = obis_name_mapping.EN[obis_reference]
@@ -41,6 +38,10 @@ class Telegram(dict):
         # TODO MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
         if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
             self._add_mbus(obis_reference, dsmr_object)
+
+        # Fill dict which is only used for backwards compatibility
+        if obis_reference not in self:
+            self[obis_reference] = dsmr_object
 
     def _add_mbus(self, obis_reference, dsmr_object):
         """
@@ -67,7 +68,6 @@ class Telegram(dict):
 
     def get_mbus_device_by_channel(self, channel_id):
         return self._mbus_channel_devices.get(channel_id)
-
 
     def __len__(self):
         return len(self._item_names)
