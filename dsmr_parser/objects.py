@@ -1,4 +1,3 @@
-from collections import defaultdict
 from decimal import Decimal
 from operator import attrgetter
 
@@ -10,7 +9,7 @@ import pytz
 from dsmr_parser import obis_name_mapping
 
 
-class Telegram(object):
+class Telegram(dict):
     """
     Container for parsed telegram data.
 
@@ -22,13 +21,14 @@ class Telegram(object):
     yields:
     ['P1_MESSAGE_HEADER',  'P1_MESSAGE_TIMESTAMP', 'EQUIPMENT_IDENTIFIER', ...]
     """
-    def __init__(self):
-        self._telegram_data = defaultdict(list)
+    def __init__(self, *args, **kwargs):
         self._mbus_channel_devices = {}
         self._item_names = []
+        super().__init__(*args, **kwargs)
 
     def add(self, obis_reference, dsmr_object):
-        self._telegram_data[obis_reference].append(dsmr_object)
+        if obis_reference not in self:
+            self[obis_reference] = dsmr_object
 
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         # Also keep track of the added names internally
@@ -68,20 +68,6 @@ class Telegram(object):
     def get_mbus_device_by_channel(self, channel_id):
         return self._mbus_channel_devices.get(channel_id)
 
-    def __getitem__(self, obis_reference):
-        """
-        Deprecated method to get obis_reference by key. Exists for backwards compatibility
-
-        Example: telegram[obis_references.P1_MESSAGE_HEADER]
-        """
-        try:
-            # TODO use _telegram_data here or else TelegramParserFluviusTest.test_parse breaks
-            return self._telegram_data[obis_reference][0]
-            # obis_name = obis_name_mapping.EN[obis_reference]
-            # return getattr(self, obis_name)
-        except IndexError:
-            # The index error is an internal detail. The KeyError is expected as a user.
-            raise KeyError
 
     def __len__(self):
         return len(self._item_names)
