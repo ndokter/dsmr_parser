@@ -31,7 +31,7 @@ class Telegram(dict):
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         obis_name = obis_name_mapping.EN[obis_reference]
         setattr(self, obis_name, dsmr_object)
-        if obis_name not in self._item_names:  # TODO solve issue with repeating obis references
+        if obis_name not in self._item_names:  # TODO repeating obis references
             self._item_names.append(obis_name)
 
         # TODO isinstance check: MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
@@ -77,25 +77,24 @@ class Telegram(dict):
     def __str__(self):
         output = ""
         for attr, value in self:
-            if attr == 'MBUS_DEVICES':
-                # Mbus devices are in a list
-                for mbus_device in value:
-                    output += str(mbus_device)
+            if isinstance(value, list):
+                output += ''.join(map(str, value))
             else:
                 output += "{}: \t {}\n".format(attr, str(value))
 
         return output
 
     def to_json(self):
-        telegram_data = {obis_name: json.loads(value.to_json())
-                         for obis_name, value in self
-                         if isinstance(value, DSMRObject)}
-        telegram_data['MBUS_DEVICES'] = [
-            json.loads(mbus_device.to_json())
-            for mbus_device in self._mbus_devices
-        ]
+        json_data = {}
 
-        return json.dumps(telegram_data)
+        for attr, value in self:
+            if isinstance(value, list):
+                json_data[attr] = [json.loads(item.to_json() if hasattr(item, 'to_json') else item)
+                                   for item in value]
+            elif hasattr(value, 'to_json'):
+                json_data[attr] = json.loads(value.to_json())
+
+        return json.dumps(json_data)
 
 
 class DSMRObject(object):
