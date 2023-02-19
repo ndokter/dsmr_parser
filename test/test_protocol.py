@@ -4,7 +4,7 @@ import unittest
 
 from dsmr_parser import obis_references as obis
 from dsmr_parser.clients.protocol import create_dsmr_protocol
-
+from dsmr_parser.objects import Telegram
 
 TELEGRAM_V2_2 = (
     '/ISk5\2MT382-1004\r\n'
@@ -44,7 +44,7 @@ class ProtocolTest(unittest.TestCase):
         self.protocol.data_received(TELEGRAM_V2_2.encode('ascii'))
 
         telegram = self.protocol.telegram_callback.call_args_list[0][0][0]
-        assert isinstance(telegram, dict)
+        assert isinstance(telegram, Telegram)
 
         assert float(telegram[obis.CURRENT_ELECTRICITY_USAGE].value) == 1.01
         assert telegram[obis.CURRENT_ELECTRICITY_USAGE].unit == 'kW'

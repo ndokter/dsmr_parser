@@ -4,7 +4,6 @@ import tailer
 
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
-from dsmr_parser.objects import Telegram
 from dsmr_parser.parsers import TelegramParser
 
 logger = logging.getLogger(__name__)
@@ -72,7 +71,7 @@ class FileReader(object):
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
-                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                        yield self.telegram_parser.parse(telegram)
                     except InvalidChecksumError as e:
                         logger.warning(str(e))
                     except ParseError as e:
@@ -121,7 +120,7 @@ class FileInputReader(object):
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
-                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                        yield self.telegram_parser.parse(telegram)
                     except InvalidChecksumError as e:
                         logger.warning(str(e))
                     except ParseError as e:
@@ -167,7 +166,7 @@ class FileTailReader(object):
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
-                        yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
+                        yield self.telegram_parser.parse(telegram)
                     except InvalidChecksumError as e:
                         logger.warning(str(e))
                     except ParseError as e:

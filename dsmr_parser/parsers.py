@@ -8,7 +8,7 @@ from decimal import Decimal
 from dlms_cosem.connection import XDlmsApduFactory
 from dlms_cosem.protocol.xdlms import GeneralGlobalCipher
 
-from dsmr_parser.objects import MBusObject, MBusObjectPeak, CosemObject, ProfileGenericObject
+from dsmr_parser.objects import MBusObject, MBusObjectPeak, CosemObject, ProfileGenericObject, Telegram
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.value_types import timestamp
 
@@ -37,15 +37,7 @@ class TelegramParser(object):
             ('!ABCD') including line endings in between the telegram's lines
         :param str encryption_key: encryption key
         :param str authentication_key: authentication key
-        :rtype: dict
-        :returns: Shortened example:
-            {
-                ..
-                r'\d-\d:96\.1\.1.+?\r\n': <CosemObject>,  # EQUIPMENT_IDENTIFIER
-                r'\d-\d:1\.8\.1.+?\r\n': <CosemObject>,   # ELECTRICITY_USED_TARIFF_1
-                r'\d-\d:24\.3\.0.+?\r\n.+?\r\n': <MBusObject>,  # GAS_METER_READING
-                ..
-            }
+        :rtype: Telegram
         :raises ParseError:
         :raises InvalidChecksumError:
         """
@@ -82,23 +74,25 @@ class TelegramParser(object):
             except Exception:
                 pass
 
-        if self.apply_checksum_validation \
-                and self.telegram_specification['checksum_support']:
+        if self.apply_checksum_validation and self.telegram_specification['checksum_support']:
             self.validate_checksum(telegram_data)
 
-        telegram = {}
+        telegram = Telegram()
 
         for signature, parser in self.telegram_specification['objects'].items():
-            match = re.search(signature, telegram_data, re.DOTALL)
+            pattern = re.compile(signature, re.DOTALL)
+            matches = pattern.findall(telegram_data)
 
             # Some signatures are optional and may not be present,
             # so only parse lines that match
-            if match:
+            for match in matches:
                 try:
-                    telegram[signature] = parser.parse(match.group(0))
+                    dsmr_object = parser.parse(match)
                 except Exception:
                     logger.error("ignore line with signature {}, because parsing failed.".format(signature),
                                  exc_info=True)
+                else:
+                    telegram.add(obis_reference=signature, dsmr_object=dsmr_object)
 
         return telegram
 
@@ -180,6 +174,20 @@ class DSMRObjectParser(object):
         return [self.value_formats[i].parse(value)
                 for i, value in enumerate(values)]
 
+    def _parse_obis_id_code(self, line):
+        """
+        Get the OBIS ID code
+
+        Example line:
+        '0-2:24.2.1(200426223001S)(00246.138*m3)'
+
+        OBIS ID code = 0-2 returned as tuple
+        """
+        try:
+            return int(line[0]), int(line[2])
+        except ValueError:
+            raise ParseError("Invalid OBIS ID code for line '%s' in '%s'", line, self)
+
     def _parse(self, line):
         # Match value groups, but exclude the parentheses
         pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
@@ -213,7 +221,10 @@ class MBusParser(DSMRObjectParser):
     """
 
     def parse(self, line):
-        return MBusObject(self._parse(line))
+        return MBusObject(
+            obis_id_code=self._parse_obis_id_code(line),
+            values=self._parse(line)
+        )
 
 
 class MaxDemandParser(DSMRObjectParser):
@@ -241,6 +252,8 @@ class MaxDemandParser(DSMRObjectParser):
         pattern = re.compile(r'((?<=\()[0-9a-zA-Z\.\*\-\:]{0,}(?=\)))')
         values = re.findall(pattern, line)
 
+        obis_id_code = self._parse_obis_id_code(line)
+
         objects = []
 
         count = int(values[0])
@@ -248,7 +261,10 @@ class MaxDemandParser(DSMRObjectParser):
             timestamp_month = ValueParser(timestamp).parse(values[i * 3 + 1])
             timestamp_occurred = ValueParser(timestamp).parse(values[i * 3 + 1])
             value = ValueParser(Decimal).parse(values[i * 3 + 2])
-            objects.append(MBusObjectPeak([timestamp_month, timestamp_occurred, value]))
+            objects.append(MBusObjectPeak(
+                obis_id_code=obis_id_code,
+                values=[timestamp_month, timestamp_occurred, value]
+            ))
 
         return objects
 
@@ -274,7 +290,10 @@ class CosemParser(DSMRObjectParser):
     """
 
     def parse(self, line):
-        return CosemObject(self._parse(line))
+        return CosemObject(
+            obis_id_code=self._parse_obis_id_code(line),
+            values=self._parse(line)
+        )
 
 
 class ProfileGenericParser(DSMRObjectParser):
@@ -333,7 +352,10 @@ class ProfileGenericParser(DSMRObjectParser):
         return [self.value_formats[i].parse(value) for i, value in enumerate(values)]
 
     def parse(self, line):
-        return ProfileGenericObject(self._parse(line))
+        return ProfileGenericObject(
+            obis_id_code=self._parse_obis_id_code(line),
+            values=self._parse(line)
+        )
 
 
 class ValueParser(object):
@@ -341,7 +363,7 @@ class ValueParser(object):
     Parses a single value from DSMRObject's.
 
     Example with coerce_type being int:
-        (002*A) becomes {'value': 1, 'unit': 'A'}
+        (002*A) becomes {'value': 2, 'unit': 'A'}
 
     Example with coerce_type being str:
         (42) becomes {'value': '42', 'unit': None}

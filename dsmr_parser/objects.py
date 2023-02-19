@@ -1,20 +1,16 @@
-import dsmr_parser.obis_name_mapping
-import datetime
-import json
 from decimal import Decimal
 
+import datetime
+import json
 
-class Telegram(object):
+import pytz
+
+from dsmr_parser import obis_name_mapping
+
+
+class Telegram(dict):
     """
-    Container for raw and parsed telegram data.
-    Initializing:
-        from dsmr_parser import telegram_specifications
-        from dsmr_parser.exceptions import InvalidChecksumError, ParseError
-        from dsmr_parser.objects import CosemObject, MBusObject, Telegram
-        from dsmr_parser.parsers import TelegramParser
-        from test.example_telegrams import TELEGRAM_V4_2
-        parser = TelegramParser(telegram_specifications.V4)
-        telegram = Telegram(TELEGRAM_V4_2, parser, telegram_specifications.V4)
+    Container for parsed telegram data.
 
     Attributes can be accessed on a telegram object by addressing by their english name, for example:
         telegram.ELECTRICITY_USED_TARIFF_1
@@ -23,25 +19,55 @@ class Telegram(object):
         [k for k,v in telegram]
     yields:
     ['P1_MESSAGE_HEADER',  'P1_MESSAGE_TIMESTAMP', 'EQUIPMENT_IDENTIFIER', ...]
+
+    Note: Dict like usage is deprecated. The inheritance from dict is because of backwards compatibility.
     """
-    def __init__(self, telegram_data, telegram_parser, telegram_specification):
-        self._telegram_data = telegram_data
-        self._telegram_specification = telegram_specification
-        self._telegram_parser = telegram_parser
-        self._obis_name_mapping = dsmr_parser.obis_name_mapping.EN
-        self._reverse_obis_name_mapping = dsmr_parser.obis_name_mapping.REVERSE_EN
-        self._dictionary = self._telegram_parser.parse(telegram_data)
-        self._item_names = self._get_item_names()
+    def __init__(self, *args, **kwargs):
+        self._item_names = []
+        self._mbus_devices = []
+        super().__init__(*args, **kwargs)
 
-    def __getattr__(self, name):
-        ''' will only get called for undefined attributes '''
-        obis_reference = self._reverse_obis_name_mapping[name]
-        value = self._dictionary[obis_reference]
-        setattr(self, name, value)
-        return value
+    def add(self, obis_reference, dsmr_object):
+        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
+        obis_name = obis_name_mapping.EN[obis_reference]
+        setattr(self, obis_name, dsmr_object)
+        if obis_name not in self._item_names:  # TODO repeating obis references
+            self._item_names.append(obis_name)
 
-    def _get_item_names(self):
-        return [self._obis_name_mapping[k] for k, v in self._dictionary.items()]
+        # TODO isinstance check: MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
+        if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
+            self._add_mbus(obis_reference, dsmr_object)
+
+        # Fill dict which is only used for backwards compatibility
+        if obis_reference not in self:
+            self[obis_reference] = dsmr_object
+
+    def _add_mbus(self, obis_reference, dsmr_object):
+        """
+        The given DsmrObject is assumed to be Mbus related and will be grouped into a MbusDevice.
+        Grouping is done by the DsmrObject channel ID.
+        """
+        channel_id = dsmr_object.obis_id_code[1]
+
+        # Create new MbusDevice or update existing one as it's records are being added one by one.
+        mbus_device = self.get_mbus_device_by_channel(channel_id)
+        if not mbus_device:
+            mbus_device = MbusDevice(channel_id=channel_id)
+            self._mbus_devices.append(mbus_device)
+
+        mbus_device.add(obis_reference, dsmr_object)
+
+        if not hasattr(self, 'MBUS_DEVICES'):
+            setattr(self, 'MBUS_DEVICES', self._mbus_devices)
+            self._item_names.append('MBUS_DEVICES')
+
+    def get_mbus_device_by_channel(self, channel_id):
+        """
+        :rtype: MbusDevice|None
+        """
+        for mbus_device in self._mbus_devices:
+            if mbus_device.channel_id == channel_id:
+                return mbus_device
 
     def __iter__(self):
         for attr in self._item_names:
@@ -51,20 +77,43 @@ class Telegram(object):
     def __str__(self):
         output = ""
         for attr, value in self:
-            output += "{}: \t {}\n".format(attr, str(value))
+            if isinstance(value, list):
+                output += ''.join(map(str, value))
+            else:
+                output += "{}: \t {}\n".format(attr, str(value))
+
         return output
 
     def to_json(self):
-        return json.dumps(dict([[attr, json.loads(value.to_json())] for attr, value in self]))
+        json_data = {}
+
+        for attr, value in self:
+            if isinstance(value, list):
+                json_data[attr] = [json.loads(item.to_json() if hasattr(item, 'to_json') else item)
+                                   for item in value]
+            elif hasattr(value, 'to_json'):
+                json_data[attr] = json.loads(value.to_json())
+
+        return json.dumps(json_data)
 
 
 class DSMRObject(object):
     """
     Represents all data from a single telegram line.
     """
-
-    def __init__(self, values):
+    def __init__(self, obis_id_code, values):
+        self.obis_id_code = obis_id_code
         self.values = values
+
+    @property
+    def is_mbus_reading(self):
+        """ Detect Mbus related readings using obis id + channel. """
+        obis_id, channel_id = self.obis_id_code
+
+        return obis_id == 0 and channel_id != 0
+
+    def to_json(self):
+        raise NotImplementedError
 
 
 class MBusObject(DSMRObject):
@@ -94,16 +143,20 @@ class MBusObject(DSMRObject):
             return self.values[1]['unit']
 
     def __str__(self):
-        output = "{}\t[{}] at {}".format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()))
+        output = "{}\t[{}] at {}".format(
+            str(self.value),
+            str(self.unit),
+            str(self.datetime.astimezone().astimezone(pytz.utc).isoformat())
+        )
         return output
 
     def to_json(self):
         timestamp = self.datetime
         if isinstance(self.datetime, datetime.datetime):
-            timestamp = self.datetime.astimezone().isoformat()
+            timestamp = self.datetime.astimezone().astimezone(pytz.utc).isoformat()
         value = self.value
         if isinstance(self.value, datetime.datetime):
-            value = self.value.astimezone().isoformat()
+            value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         if isinstance(self.value, Decimal):
             value = float(self.value)
         output = {
@@ -134,20 +187,20 @@ class MBusObjectPeak(DSMRObject):
 
     def __str__(self):
         output = "{}\t[{}] at {} occurred {}"\
-            .format(str(self.value), str(self.unit), str(self.datetime.astimezone().isoformat()),
-                    str(self.occurred.astimezone().isoformat()))
+            .format(str(self.value), str(self.unit), str(self.datetime.astimezone().astimezone(pytz.utc).isoformat()),
+                    str(self.occurred.astimezone().astimezone(pytz.utc).isoformat()))
         return output
 
     def to_json(self):
         timestamp = self.datetime
         if isinstance(self.datetime, datetime.datetime):
-            timestamp = self.datetime.astimezone().isoformat()
+            timestamp = self.datetime.astimezone().astimezone(pytz.utc).isoformat()
         timestamp_occurred = self.occurred
         if isinstance(self.occurred, datetime.datetime):
-            timestamp_occurred = self.occurred.astimezone().isoformat()
+            timestamp_occurred = self.occurred.astimezone().astimezone(pytz.utc).isoformat()
         value = self.value
         if isinstance(self.value, datetime.datetime):
-            value = self.value.astimezone().isoformat()
+            value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         if isinstance(self.value, Decimal):
             value = float(self.value)
         output = {
@@ -172,14 +225,14 @@ class CosemObject(DSMRObject):
     def __str__(self):
         print_value = self.value
         if isinstance(self.value, datetime.datetime):
-            print_value = self.value.astimezone().isoformat()
+            print_value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         output = "{}\t[{}]".format(str(print_value), str(self.unit))
         return output
 
     def to_json(self):
         json_value = self.value
         if isinstance(self.value, datetime.datetime):
-            json_value = self.value.astimezone().isoformat()
+            json_value = self.value.astimezone().astimezone(pytz.utc).isoformat()
         if isinstance(self.value, Decimal):
             json_value = float(self.value)
         output = {
@@ -196,8 +249,8 @@ class ProfileGenericObject(DSMRObject):
     containing the datetime (timestamp) and the value.
     """
 
-    def __init__(self, values):
-        super().__init__(values)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._buffer_list = None
 
     @property
@@ -223,9 +276,16 @@ class ProfileGenericObject(DSMRObject):
         if self._buffer_list is None:
             self._buffer_list = []
             values_offset = 2
+
             for i in range(self.buffer_length):
                 offset = values_offset + i * 2
-                self._buffer_list.append(MBusObject([self.values[offset], self.values[offset + 1]]))
+                self._buffer_list.append(
+                    MBusObject(
+                        obis_id_code=self.obis_id_code,
+                        values=[self.values[offset], self.values[offset + 1]]
+                    )
+                )
+
         return self._buffer_list
 
     def __str__(self):
@@ -234,7 +294,7 @@ class ProfileGenericObject(DSMRObject):
         for buffer_value in self.buffer:
             timestamp = buffer_value.datetime
             if isinstance(timestamp, datetime.datetime):
-                timestamp = str(timestamp.astimezone().isoformat())
+                timestamp = str(timestamp.astimezone().astimezone(pytz.utc).isoformat())
             output += "\n\t event occured at: {}".format(timestamp)
             output += "\t for: {} [{}]".format(buffer_value.value, buffer_value.unit)
         return output
@@ -260,3 +320,40 @@ class ProfileGenericObject(DSMRObject):
         list.append(['buffer', buffer_repr])
         output = dict(list)
         return json.dumps(output)
+
+
+class MbusDevice:
+    """
+    This object is similar to the Telegram except that it only contains readings related to the same mbus device.
+    """
+
+    def __init__(self, channel_id):
+        self.channel_id = channel_id
+        self._item_names = []
+
+    def add(self, obis_reference, dsmr_object):
+        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
+        # Also keep track of the added names internally
+        obis_name = obis_name_mapping.EN[obis_reference]
+        setattr(self, obis_name, dsmr_object)
+        self._item_names.append(obis_name)
+
+    def __len__(self):
+        return len(self._item_names)
+
+    def __iter__(self):
+        for attr in self._item_names:
+            value = getattr(self, attr)
+            yield attr, value
+
+    def __str__(self):
+        output = "MBUS DEVICE (channel {})\n".format(self.channel_id)
+        for attr, value in self:
+            output += "\t{}: \t {}\n".format(attr, str(value))
+        return output
+
+    def to_json(self):
+        data = {obis_name: json.loads(value.to_json()) for obis_name, value in self}
+        data['CHANNEL_ID'] = self.channel_id
+
+        return json.dumps(data)
