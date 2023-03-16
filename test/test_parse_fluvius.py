@@ -37,7 +37,7 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert result[obis.P1_MESSAGE_TIMESTAMP].unit is None
         assert isinstance(result[obis.P1_MESSAGE_TIMESTAMP].value, datetime.datetime)
         assert result[obis.P1_MESSAGE_TIMESTAMP].value == \
-            datetime.datetime(2020, 5, 12, 11, 54, 9, tzinfo=pytz.UTC)
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 5, 12, 13, 54, 9))
 
         # ELECTRICITY_USED_TARIFF_1 (1-0:1.8.1)
         assert isinstance(result[obis.ELECTRICITY_USED_TARIFF_1], CosemObject)
@@ -80,22 +80,43 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_MONTH].unit == 'kW'
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_MONTH].value, Decimal)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_MONTH].value == Decimal('2.589')
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_MONTH].datetime, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_MONTH].datetime == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 5, 9, 13, 45, 58))
 
         # BELGIUM_MAXIMUM_DEMAND_13_MONTHS (0-0:98.1.0) Value 0
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0], MBusObjectPeak)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].unit == 'kW'
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].value, Decimal)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].value == Decimal('3.695')
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].datetime, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].datetime == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 5, 1, 0, 0, 0))
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].occurred, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][0].occurred == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 4, 23, 19, 25, 38))
         # BELGIUM_MAXIMUM_DEMAND_13_MONTHS (0-0:98.1.0) Value 1
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1], MBusObjectPeak)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].unit == 'kW'
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].value, Decimal)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].value == Decimal('5.980')
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].datetime, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].datetime == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 4, 1, 0, 0, 0))
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].occurred, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][1].occurred == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 3, 5, 12, 21, 39))
         # BELGIUM_MAXIMUM_DEMAND_13_MONTHS (0-0:98.1.0) Value 2
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2], MBusObjectPeak)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].unit == 'kW'
         assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].value, Decimal)
         assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].value == Decimal('4.318')
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].datetime, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].datetime == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 3, 1, 0, 0, 0))
+        assert isinstance(result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].occurred, datetime.datetime)
+        assert result[obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS][2].occurred == \
+            pytz.timezone("Europe/Brussels").localize(datetime.datetime(2020, 2, 10, 3, 54, 21))
 
         # CURRENT_ELECTRICITY_USAGE (1-0:1.7.0)
         assert isinstance(result[obis.CURRENT_ELECTRICITY_USAGE], CosemObject)
