@@ -4,6 +4,8 @@ Change Log
 **1.2.0** (2023-02-18)
 
 - Improved gas meter (mbus devices) support and replaced Telegram dictionary with backwards compatible object (`PR #121 <https://github.com/ndokter/dsmr_parser/pull/121>`_ by `ndokter <https://github.com/ndokter>`_)
+- Fix parsing with invalid timestamps (`PR #125 <https://github.com/ndokter/dsmr_parser/pull/125>`_ by `dupondje <https://github.com/dupondje>`_)
+- Add Iskra IE.x meters specification (`PR #126 <https://github.com/ndokter/dsmr_parser/pull/126>`_ by `jchevalier7 <https://github.com/jchevalier7>`_)
 
 **1.1.0** (2023-02-08)
 
