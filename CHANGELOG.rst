@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.2.1** (2023-04-05)
+
+- Bug/duplicate index BELGIUM_MAXIMUM_DEMAND_13_MONTHS (`PR #129 <https://github.com/ndokter/dsmr_parser/pull/129>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
+
 **1.2.0** (2023-02-18)
 
 - Improved gas meter (mbus devices) support and replaced Telegram dictionary with backwards compatible object (`PR #121 <https://github.com/ndokter/dsmr_parser/pull/121>`_ by `ndokter <https://github.com/ndokter>`_)
