@@ -1,5 +1,13 @@
 import re
 
+# - Match all characters after start of telegram except for the start
+# itself again '^\/]+', which eliminates incomplete preceding telegrams.
+# - Do non greedy match using '?' so start is matched up to the first
+# checksum that's found.
+# - The checksum is optional '{0,4}' because not all telegram versions
+# support it.
+_FIND_TELEGRAMS_REGEX = re.compile(r"\/[^\/]+?\![A-F0-9]{0,4}\0?\r\n", re.DOTALL)
+
 
 class TelegramBuffer(object):
     """
@@ -8,14 +16,14 @@ class TelegramBuffer(object):
     """
 
     def __init__(self):
-        self._buffer = ''
+        self._buffer = ""
 
     def get_all(self):
         """
         Remove complete telegrams from buffer and yield them.
         :rtype generator:
         """
-        for telegram in self._find_telegrams():
+        for telegram in _FIND_TELEGRAMS_REGEX.findall(self._buffer):
             self._remove(telegram)
             yield telegram
 
@@ -37,21 +45,3 @@ class TelegramBuffer(object):
         index = self._buffer.index(telegram) + len(telegram)
 
         self._buffer = self._buffer[index:]
-
-    def _find_telegrams(self):
-        """
-        Find complete telegrams in buffer from  start ('/') till ending
-        checksum ('!AB12\r\n').
-        :rtype: list
-        """
-        # - Match all characters after start of telegram except for the start
-        # itself again '^\/]+', which eliminates incomplete preceding telegrams.
-        # - Do non greedy match using '?' so start is matched up to the first
-        # checksum that's found.
-        # - The checksum is optional '{0,4}' because not all telegram versions
-        # support it.
-        return re.findall(
-            r'\/[^\/]+?\![A-F0-9]{0,4}\0?\r\n',
-            self._buffer,
-            re.DOTALL
-        )
