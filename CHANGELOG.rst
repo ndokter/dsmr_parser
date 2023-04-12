@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.2.2** (2023-04-12)
+
+- Improve performance. Thanks to `ejpalacios <https://github.com/bdraco>`_ (`PR #130 <https://github.com/ndokter/dsmr_parser/pull/130>`_ by `ndokter <https://github.com/ndokter>`_)
+
 **1.2.1** (2023-04-05)
 
 - Bug/duplicate index BELGIUM_MAXIMUM_DEMAND_13_MONTHS (`PR #129 <https://github.com/ndokter/dsmr_parser/pull/129>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
