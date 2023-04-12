@@ -29,7 +29,7 @@ class TelegramParser(object):
         self.telegram_specification = telegram_specification
         # Regexes are compiled once to improve performance
         self.telegram_specification_regexes = {
-            signature: re.compile(signature, re.DOTALL)
+            signature: re.compile(signature, re.DOTALL | re.MULTILINE)
             for signature in self.telegram_specification['objects'].keys()
         }
 
