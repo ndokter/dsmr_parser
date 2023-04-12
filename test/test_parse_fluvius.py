@@ -18,7 +18,10 @@ class TelegramParserFluviusTest(unittest.TestCase):
 
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
-        result = parser.parse(TELEGRAM_FLUVIUS_V171)
+        try:
+            result = parser.parse(TELEGRAM_FLUVIUS_V171, throw_ex=True)
+        except Exception as ex:
+            assert False, f"parse trigged an exception {ex}"
 
         # BELGIUM_VERSION_INFORMATION (0-0:96.1.4)
         assert isinstance(result[obis.BELGIUM_VERSION_INFORMATION], CosemObject)

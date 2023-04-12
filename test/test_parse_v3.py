@@ -14,7 +14,10 @@ class TelegramParserV3Test(unittest.TestCase):
 
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.V3)
-        result = parser.parse(TELEGRAM_V3)
+        try:
+            result = parser.parse(TELEGRAM_V3, throw_ex=True)
+        except Exception as ex:
+            assert False, f"parse trigged an exception {ex}"
 
         # ELECTRICITY_USED_TARIFF_1 (1-0:1.8.1)
         assert isinstance(result[obis.ELECTRICITY_USED_TARIFF_1], CosemObject)
