@@ -25,8 +25,13 @@ class TelegramParser(object):
             telegram DSMR version (v4 and up).
         :type telegram_specification: dict
         """
-        self.telegram_specification = telegram_specification
         self.apply_checksum_validation = apply_checksum_validation
+        self.telegram_specification = telegram_specification
+        # Regexes are compiled once to improve performance
+        self.telegram_specification_regexes = {
+            signature: re.compile(signature, re.DOTALL)
+            for signature in self.telegram_specification['objects'].keys()
+        }
 
     def parse(self, telegram_data, encryption_key="", authentication_key=""):  # noqa: C901
         """
@@ -80,7 +85,7 @@ class TelegramParser(object):
         telegram = Telegram()
 
         for signature, parser in self.telegram_specification['objects'].items():
-            pattern = re.compile(signature, re.DOTALL)
+            pattern = self.telegram_specification_regexes[signature]
             matches = pattern.findall(telegram_data)
 
             # Some signatures are optional and may not be present,
