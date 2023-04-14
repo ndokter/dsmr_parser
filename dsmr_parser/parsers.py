@@ -29,11 +29,11 @@ class TelegramParser(object):
         self.telegram_specification = telegram_specification
         # Regexes are compiled once to improve performance
         self.telegram_specification_regexes = {
-            signature: re.compile(signature, re.DOTALL)
+            signature: re.compile(signature, re.DOTALL | re.MULTILINE)
             for signature in self.telegram_specification['objects'].keys()
         }
 
-    def parse(self, telegram_data, encryption_key="", authentication_key=""):  # noqa: C901
+    def parse(self, telegram_data, encryption_key="", authentication_key="", throw_ex=False):  # noqa: C901
         """
         Parse telegram from string to dict.
         The telegram str type makes python 2.x integration easier.
@@ -93,9 +93,14 @@ class TelegramParser(object):
             for match in matches:
                 try:
                     dsmr_object = parser.parse(match)
-                except Exception:
+                except ParseError:
                     logger.error("ignore line with signature {}, because parsing failed.".format(signature),
                                  exc_info=True)
+                    if throw_ex:
+                        raise
+                except Exception as err:
+                    logger.error("Unexpected {}: {}".format(type(err), err))
+                    raise
                 else:
                     telegram.add(obis_reference=signature, dsmr_object=dsmr_object)
 

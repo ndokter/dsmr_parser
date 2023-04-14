@@ -17,7 +17,10 @@ class TelegramParserV4_2Test(unittest.TestCase):
 
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.V4)
-        result = parser.parse(TELEGRAM_V4_2)
+        try:
+            result = parser.parse(TELEGRAM_V4_2, throw_ex=True)
+        except Exception as ex:
+            assert False, f"parse trigged an exception {ex}"
 
         # P1_MESSAGE_HEADER (1-3:0.2.8)
         assert isinstance(result[obis.P1_MESSAGE_HEADER], CosemObject)

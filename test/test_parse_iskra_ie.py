@@ -15,7 +15,10 @@ class TelegramParserIskraIETest(unittest.TestCase):
 
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.ISKRA_IE)
-        result = parser.parse(TELEGRAM_ISKRA_IE)
+        try:
+            result = parser.parse(TELEGRAM_ISKRA_IE, throw_ex=True)
+        except Exception as ex:
+            assert False, f"parse trigged an exception {ex}"
 
         # EQUIPMENT_IDENTIFIER_GAS (0-0:96.1.0)
         assert isinstance(result[obis.EQUIPMENT_IDENTIFIER_GAS], CosemObject)
