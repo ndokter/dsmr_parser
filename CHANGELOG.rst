@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.2.3** (2023-04-18)
+
+- Fix parsing tests and line start matching (`PR #132 <https://github.com/ndokter/dsmr_parser/pull/132>`_ by `dupondje <https://github.com/dupondje>`_)
+
 **1.2.2** (2023-04-12)
 
 - Improve performance. Thanks to `ejpalacios <https://github.com/bdraco>`_ (`PR #130 <https://github.com/ndokter/dsmr_parser/pull/130>`_ by `ndokter <https://github.com/ndokter>`_)
