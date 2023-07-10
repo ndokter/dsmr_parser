@@ -5,7 +5,6 @@ import unittest
 
 import pytz
 
-from dsmr_parser import obis_references as obis
 from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
 from dsmr_parser.objects import CosemObject, MBusObject, MBusObjectPeak
