@@ -145,7 +145,7 @@ BELGIUM_FLUVIUS = {
     'checksum_support': True,
     'objects': {
         obis.BELGIUM_VERSION_INFORMATION: CosemParser(ValueParser(str)),
-        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
+        obis.BELGIUM_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
         obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
         obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
         obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
