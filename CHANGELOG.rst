@@ -1,6 +1,12 @@
 Change Log
 ----------
 
+**1.2.4** (2023-07-11)
+
+- EQUIPMENT IDENTIFIER is wrong for Fluvius meters when other mbus devices are present
+ (`PR #133 <https://github.com/ndokter/dsmr_parser/pull/133>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
+
+
 **1.2.3** (2023-04-18)
 
 - Fix parsing tests and line start matching (`PR #132 <https://github.com/ndokter/dsmr_parser/pull/132>`_ by `dupondje <https://github.com/dupondje>`_)
