@@ -339,3 +339,59 @@ ISKRA_IE = {
         obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
     }
 }
+
+HUNGARY_EON = {
+	# Revision: 2023.02.10
+	# Based on V5
+    'checksum_support': True,
+    'objects': {
+        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
+        obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)), # "COSEM logical equipment name"
+        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)), # This obis is already defined, so it is not possible to "rename" it to "EQUIPMENT_SERIAL_NUMBER"
+        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
+        obis.EON_HU_CIRCUIT_BREAKER_STATUS: CosemParser(ValueParser(str)), # Does not show up always
+        obis.ACTUAL_TRESHOLD_ELECTRICITY: CosemParser(ValueParser(Decimal)), # This obis is already duplicated, so it will show up as "BELGIUM_MAX_POWER_PER_PHASE"
+        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_USED_TARIFF_3: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_USED_TARIFF_4: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_DELIVERED_TARIFF_3: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_DELIVERED_TARIFF_4: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q1: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q2: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q3: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q4: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_ELECTRICITY_COMBINED: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_VOLTAGE_L1: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_VOLTAGE_L2: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.INSTANTANEOUS_VOLTAGE_L3: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
+        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_TOTAL: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_L1: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_L2: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_L3: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.EON_HU_FREQUENCY: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
+        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q1: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q4: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_MAX_POWER_ON_L1: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_MAX_POWER_ON_L2: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+        obis.EON_HU_MAX_POWER_ON_L3: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
+		# This is a list of last month data (on last day of last month @ 23:59:59),
+		# But it is not clear that what are the elements of the list.
+		# This is not well documented enough, so It is ignored for now.
+		# obis.EON_HU_LAST_MONTH_DATA: 
+        obis.TEXT_MESSAGE: CosemParser(ValueParser(str))
+    }
+}
