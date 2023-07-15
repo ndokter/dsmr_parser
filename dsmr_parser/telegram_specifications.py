@@ -388,10 +388,10 @@ EON_HUNGARY = {
         obis.EON_HU_MAX_POWER_ON_L1: CosemParser(ValueParser(Decimal)),
         obis.EON_HU_MAX_POWER_ON_L2: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
         obis.EON_HU_MAX_POWER_ON_L3: CosemParser(ValueParser(Decimal)), # Only with 3 phase meters
-		# This is a list of last month data (on last day of last month @ 23:59:59),
-		# But it is not clear that what are the elements of the list.
-		# This is not well documented enough, so It is ignored for now.
-		# obis.EON_HU_LAST_MONTH_DATA: 
+        # This is a list of last month data (on last day of last month @ 23:59:59),
+        # But it is not clear that what are the elements of the list.
+        # This is not well documented enough, so it is ignored for now.
+        # obis.EON_HU_LAST_MONTH_DATA: 
         obis.TEXT_MESSAGE: CosemParser(ValueParser(str))
     }
 }
