@@ -52,7 +52,7 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
         specification = telegram_specifications.ISKRA_IE
         serial_settings = SERIAL_SETTINGS_V5
     elif dsmr_version == '5EONHU':
-        specification = telegram_specifications.HUNGARY_EON
+        specification = telegram_specifications.EON_HUNGARY
         serial_settings = SERIAL_SETTINGS_V5
     else:
         raise NotImplementedError("No telegram parser found for version: %s",

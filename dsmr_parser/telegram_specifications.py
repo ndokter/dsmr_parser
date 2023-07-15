@@ -340,7 +340,7 @@ ISKRA_IE = {
     }
 }
 
-HUNGARY_EON = {
+EON_HUNGARY = {
 	# Revision: 2023.02.10
 	# Based on V5
     'checksum_support': True,
