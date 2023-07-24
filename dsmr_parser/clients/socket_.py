@@ -48,7 +48,7 @@ class SocketReader(object):
                     except UnicodeDecodeError:
                         # Some garbage came through the channel
                         # E.g.: Happens at EON_HUNGARY, but only once at the start of the socket.
-                        pass
+                        logger.error('Failed to parse telegram due to unicode decode error')
 
                 for telegram in self.telegram_buffer.get_all():
                     try:

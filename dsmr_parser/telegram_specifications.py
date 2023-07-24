@@ -343,13 +343,14 @@ ISKRA_IE = {
 EON_HUNGARY = {
 	# Revision: 2023.02.10
 	# Based on V5
+	# Reference: https://www.eon.hu/content/dam/eon/eon-hungary/documents/Lakossagi/aram/muszaki-ugyek/p1_port%20felhaszn_interfesz_taj_%2020230210.pdf
     'checksum_support': True,
     'objects': {
         obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
         obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)), # "COSEM logical equipment name"
         obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)), # This obis is already defined, so it is not possible to "rename" it to "EQUIPMENT_SERIAL_NUMBER"
         obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.EON_HU_CIRCUIT_BREAKER_STATUS: CosemParser(ValueParser(str)), # Does not show up always
+        obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)), # This seems to be wrong in documentation, it's not 0-0:96.50.68, but 0-0:96.3.10
         obis.ACTUAL_TRESHOLD_ELECTRICITY: CosemParser(ValueParser(Decimal)), # This obis is already duplicated, so it will show up as "BELGIUM_MAX_POWER_PER_PHASE"
         obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
         obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
@@ -382,7 +383,7 @@ EON_HUNGARY = {
         obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
         obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
         obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q1: CosemParser(ValueParser(Decimal)),
-        obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3: CosemParser(ValueParser(Decimal)),
+        obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q2: CosemParser(ValueParser(Decimal)),
         obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3: CosemParser(ValueParser(Decimal)),
         obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q4: CosemParser(ValueParser(Decimal)),
         obis.EON_HU_MAX_POWER_ON_L1: CosemParser(ValueParser(Decimal)),
