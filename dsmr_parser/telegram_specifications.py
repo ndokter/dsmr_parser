@@ -623,7 +623,7 @@ EON_HUNGARY = {
 			'value_name': 'EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q4'
 		},
 		{
-			'obis_reference': obis.EON_HU_MAX_POWER_ON_L1,
+			'obis_reference': obis.BELGIUM_MAX_CURRENT_PER_PHASE,
 			'value_parser': CosemParser(ValueParser(Decimal)),
 			'value_name': 'EON_HU_MAX_POWER_ON_L1'
 		},
