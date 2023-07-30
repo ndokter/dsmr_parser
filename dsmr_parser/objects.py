@@ -5,6 +5,7 @@ import json
 
 import pytz
 
+
 class Telegram(dict):
     """
     Container for parsed telegram data.

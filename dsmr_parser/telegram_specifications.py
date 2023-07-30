@@ -775,9 +775,9 @@ LUXEMBOURG_SMARTY['objects'].extend([
     },
     # This is already presented in V5, with the same data
     # {
-        # 'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
-        # 'value_parser': CosemParser(ValueParser(Decimal)),
-        # 'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+    #     'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+    #     'value_parser': CosemParser(ValueParser(Decimal)),
+    #     'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
     # },
     {
         'obis_reference': obis.ELECTRICITY_EXPORTED_TOTAL,
@@ -1349,7 +1349,7 @@ EON_HUNGARY = {
             'value_parser': CosemParser(ValueParser(Decimal)),
             'value_name': 'INSTANTANEOUS_CURRENT_L2'
             # Only with 3 phase meters
-        }, 
+        },
         {
             'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
             'value_parser': CosemParser(ValueParser(Decimal)),
@@ -1432,30 +1432,30 @@ EON_HUNGARY = {
         },
         # I'm not sure which datas does this line containes. It should be the data of last minute of last month.
         # {
-            # 'obis_reference': obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS,
-            # 'value_parser': NonExistingParser(
-                # ValueParser(timestamp),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal),
-                # ValueParser(Decimal)
-            # ),
-            # 'value_name': 'LAST_MONTH_DATA'
+        #    'obis_reference': obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS,
+        #    'value_parser': NonExistingParser(
+        #        ValueParser(timestamp),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal)
+        #    ),
+        #    'value_name': 'LAST_MONTH_DATA'
         # },
         {
             'obis_reference': obis.TEXT_MESSAGE,

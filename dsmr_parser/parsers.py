@@ -102,7 +102,11 @@ class TelegramParser(object):
                     logger.error("Unexpected {}: {}".format(type(err), err))
                     raise
                 else:
-                    telegram.add(obis_reference=object["obis_reference"], dsmr_object=dsmr_object, obis_name=object["value_name"])
+                    telegram.add(
+                        obis_reference=object["obis_reference"],
+                        dsmr_object=dsmr_object,
+                        obis_name=object["value_name"]
+                    )
 
         return telegram
 

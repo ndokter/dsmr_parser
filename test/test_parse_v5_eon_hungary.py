@@ -7,7 +7,7 @@ import pytz
 
 from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
-from dsmr_parser.objects import CosemObject, MBusObject
+from dsmr_parser.objects import CosemObject
 from dsmr_parser.parsers import TelegramParser
 from test.example_telegrams import TELEGRAM_V5_EON_HU
 
