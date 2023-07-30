@@ -2,6 +2,7 @@ from decimal import Decimal
 
 import datetime
 import json
+import sys;
 
 import pytz
 
@@ -27,9 +28,13 @@ class Telegram(dict):
         self._mbus_devices = []
         super().__init__(*args, **kwargs)
 
-    def add(self, obis_reference, dsmr_object):
-        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
-        obis_name = obis_name_mapping.EN[obis_reference]
+    def add(self, obis_reference, dsmr_object, obis_name=None):
+        # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER.
+		# For backwards compatibility
+        if obis_name is not None:
+            obis_name = obis_name_mapping.EN[obis_name]
+        else:
+            obis_name = obis_reference
         setattr(self, obis_name, dsmr_object)
         if obis_name not in self._item_names:  # TODO repeating obis references
             self._item_names.append(obis_name)
