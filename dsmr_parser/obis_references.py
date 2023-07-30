@@ -10,8 +10,12 @@ P1_MESSAGE_HEADER = r'^\d-\d:0\.2\.8.+?\r\n'
 P1_MESSAGE_TIMESTAMP = r'^\d-\d:1\.0\.0.+?\r\n'
 ELECTRICITY_USED_TARIFF_1 = r'^\d-\d:1\.8\.1.+?\r\n'
 ELECTRICITY_USED_TARIFF_2 = r'^\d-\d:1\.8\.2.+?\r\n'
+ELECTRICITY_USED_TARIFF_3 = r'^\d-\d:1\.8\.3.+?\r\n'
+ELECTRICITY_USED_TARIFF_4 = r'^\d-\d:1\.8\.4.+?\r\n'
 ELECTRICITY_DELIVERED_TARIFF_1 = r'^\d-\d:2\.8\.1.+?\r\n'
 ELECTRICITY_DELIVERED_TARIFF_2 = r'^\d-\d:2\.8\.2.+?\r\n'
+ELECTRICITY_DELIVERED_TARIFF_3 = r'^\d-\d:2\.8\.3.+?\r\n'
+ELECTRICITY_DELIVERED_TARIFF_4 = r'^\d-\d:2\.8\.4.+?\r\n'
 CURRENT_REACTIVE_IMPORTED = r'^\d-\d:3\.7\.0.+?\r\n'
 ELECTRICITY_REACTIVE_IMPORTED_TOTAL = r'^\d-\d:3\.8\.0.+?\r\n'
 ELECTRICITY_REACTIVE_IMPORTED_TARIFF_1 = r'^\d-\d:3\.8\.1.+?\r\n'
@@ -124,10 +128,6 @@ Q3D_EQUIPMENT_STATE = r'^\d-\d:96\.5\.5.+?\r\n'  # Device state (hexadecimal)
 Q3D_EQUIPMENT_SERIALNUMBER = r'^\d-\d:96\.1\.255.+?\r\n'  # Device Serialnumber
 
 # EON Hungary
-EON_HU_ELECTRICITY_USED_TARIFF_3 = r'^\d-\d:1\.8\.3.+?\r\n'
-EON_HU_ELECTRICITY_USED_TARIFF_4 = r'^\d-\d:1\.8\.4.+?\r\n'
-EON_HU_ELECTRICITY_DELIVERED_TARIFF_3 = r'^\d-\d:2\.8\.3.+?\r\n'
-EON_HU_ELECTRICITY_DELIVERED_TARIFF_4 = r'^\d-\d:2\.8\.4.+?\r\n'
 EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q1 = r'^\d-\d:5\.8\.0.+?\r\n'
 EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q2 = r'^\d-\d:6\.8\.0.+?\r\n'
 EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q3 = r'^\d-\d:7\.8\.0.+?\r\n'

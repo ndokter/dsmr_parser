@@ -4,7 +4,7 @@ import datetime
 import pytz
 
 from dsmr_parser import telegram_specifications, obis_references
-from dsmr_parser import obis_name_mapping
+
 from dsmr_parser.objects import CosemObject
 from dsmr_parser.objects import MBusObject
 from dsmr_parser.objects import ProfileGenericObject
@@ -314,8 +314,8 @@ class TelegramTest(unittest.TestCase):
         self.item_names_tested.append(testitem_name)
 
         # check if all items in telegram V4 specification are covered
-        V4_name_list = [obis_name_mapping.EN[signature] for signature, parser in
-                        telegram_specifications.V4['objects'].items()]
+        V4_name_list = [object["value_name"] for object in
+                        telegram_specifications.V4['objects']]
         V4_name_set = set(V4_name_list)
         item_names_tested_set = set(self.item_names_tested)
 
@@ -329,7 +329,7 @@ class TelegramTest(unittest.TestCase):
             break
 
         # Verify that the iterator works for at least one value
-        self.assertEqual(obis_name, obis_name_mapping.EN[obis_references.P1_MESSAGE_HEADER])
+        self.assertEqual(obis_name, "P1_MESSAGE_HEADER")
         self.assertEqual(dsmr_object.value, '50')
 
     def test_mbus_devices(self):
