@@ -94,8 +94,10 @@ class TelegramParser(object):
                 try:
                     dsmr_object = object["value_parser"].parse(match)
                 except ParseError:
-                    logger.error("ignore line with signature {}, because parsing failed.".format(object["obis_reference"]),
-                                 exc_info=True)
+                    logger.error(
+                        "ignore line with signature {}, because parsing failed.".format(object["obis_reference"]),
+                        exc_info=True
+                    )
                     if throw_ex:
                         raise
                 except Exception as err:

@@ -1203,7 +1203,7 @@ ISKRA_IE = {
 EON_HUNGARY = {
     # Revision: 2023.02.10
     # Based on V5
-    # Reference: https://www.eon.hu/content/dam/eon/eon-hungary/documents/Lakossagi/aram/muszaki-ugyek/p1_port%20felhaszn_interfesz_taj_%2020230210.pdf
+    # Reference: https://www.eon.hu/content/dam/eon/eon-hungary/documents/Lakossagi/aram/muszaki-ugyek/p1_port%20felhaszn_interfesz_taj_%2020230210.pdf # noqa
     'checksum_support': True,
     'objects': [
         {

@@ -21,7 +21,9 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     return protocol
 
 
-def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, **kwargs):
+# pylama noqa - because of "complex" (too long) if-elif-else.
+# Match - case might be a solution but it is not available in <3.10
+def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, **kwargs): #noqa
     """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
