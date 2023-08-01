@@ -1,6 +1,11 @@
 Change Log
 ----------
 
+**1.3.0** (2023-08-01)
+
+- added E.ON Hungary; refactored DSMR specifications to fix obis reference conflicts
+ (`PR #137 <https://github.com/ndokter/dsmr_parser/pull/137>`_ by `balazs92117 <https://github.com/balazs92117>`_)
+
 **1.2.4** (2023-07-11)
 
 - EQUIPMENT IDENTIFIER is wrong for Fluvius meters when other mbus devices are present
