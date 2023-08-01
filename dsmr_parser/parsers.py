@@ -29,8 +29,8 @@ class TelegramParser(object):
         self.telegram_specification = telegram_specification
         # Regexes are compiled once to improve performance
         self.telegram_specification_regexes = {
-            signature: re.compile(signature, re.DOTALL | re.MULTILINE)
-            for signature in self.telegram_specification['objects'].keys()
+            object["obis_reference"]: re.compile(object["obis_reference"], re.DOTALL | re.MULTILINE)
+            for object in self.telegram_specification['objects']
         }
 
     def parse(self, telegram_data, encryption_key="", authentication_key="", throw_ex=False):  # noqa: C901
@@ -84,25 +84,31 @@ class TelegramParser(object):
 
         telegram = Telegram()
 
-        for signature, parser in self.telegram_specification['objects'].items():
-            pattern = self.telegram_specification_regexes[signature]
+        for object in self.telegram_specification['objects']:
+            pattern = self.telegram_specification_regexes[object["obis_reference"]]
             matches = pattern.findall(telegram_data)
 
             # Some signatures are optional and may not be present,
             # so only parse lines that match
             for match in matches:
                 try:
-                    dsmr_object = parser.parse(match)
+                    dsmr_object = object["value_parser"].parse(match)
                 except ParseError:
-                    logger.error("ignore line with signature {}, because parsing failed.".format(signature),
-                                 exc_info=True)
+                    logger.error(
+                        "ignore line with signature {}, because parsing failed.".format(object["obis_reference"]),
+                        exc_info=True
+                    )
                     if throw_ex:
                         raise
                 except Exception as err:
                     logger.error("Unexpected {}: {}".format(type(err), err))
                     raise
                 else:
-                    telegram.add(obis_reference=signature, dsmr_object=dsmr_object)
+                    telegram.add(
+                        obis_reference=object["obis_reference"],
+                        dsmr_object=dsmr_object,
+                        obis_name=object["value_name"]
+                    )
 
         return telegram
 

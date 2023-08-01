@@ -16,326 +16,1451 @@ how the telegram lines are parsed.
 
 V2_2 = {
     'checksum_support': False,
-    'objects': {
-        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.ACTUAL_TRESHOLD_ELECTRICITY: CosemParser(ValueParser(Decimal)),
-        obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)),
-        obis.TEXT_MESSAGE_CODE: CosemParser(ValueParser(int)),
-        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
-        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
-        obis.DEVICE_TYPE: CosemParser(ValueParser(str)),
-        obis.VALVE_POSITION_GAS: CosemParser(ValueParser(str)),
-        obis.GAS_METER_READING: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(str),  # changed to str see issue60
-            ValueParser(int),
-            ValueParser(int),
-            ValueParser(str),  # obis ref
-            ValueParser(str),  # unit, position 5
-            ValueParser(Decimal),  # meter reading, position 6
-        ),
-    }
+    'objects': [
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_ACTIVE_TARIFF,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ELECTRICITY_ACTIVE_TARIFF'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.ACTUAL_TRESHOLD_ELECTRICITY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
+        },
+        {
+            'obis_reference': obis.ACTUAL_SWITCH_POSITION,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ACTUAL_SWITCH_POSITION'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE_CODE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'TEXT_MESSAGE_CODE'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER_GAS,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER_GAS'
+        },
+        {
+            'obis_reference': obis.DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.VALVE_POSITION_GAS,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'VALVE_POSITION_GAS'
+        },
+        {
+            'obis_reference': obis.GAS_METER_READING,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(str),  # changed to str see issue60
+                ValueParser(int),
+                ValueParser(int),
+                ValueParser(str),  # obis ref
+                ValueParser(str),  # unit, position 5
+                ValueParser(Decimal),  # meter reading, position 6
+            ),
+            'value_name': 'GAS_METER_READING'
+        },
+    ]
 }
 
 V3 = V2_2
 
 V4 = {
     'checksum_support': True,
-    'objects': {
-        obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
-        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.SHORT_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
-        obis.LONG_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
-        obis.POWER_EVENT_FAILURE_LOG:
-            ProfileGenericParser(BUFFER_TYPES,
-                                 PG_HEAD_PARSERS,
-                                 PG_UNIDENTIFIED_BUFFERTYPE_PARSERS),
-        obis.VOLTAGE_SAG_L1_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SAG_L2_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SAG_L3_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SWELL_L1_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SWELL_L2_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SWELL_L3_COUNT: CosemParser(ValueParser(int)),
-        obis.TEXT_MESSAGE_CODE: CosemParser(ValueParser(int)),
-        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
-        obis.DEVICE_TYPE: CosemParser(ValueParser(int)),
-        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
-        obis.HOURLY_GAS_METER_READING: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        )
-    }
+    'objects': [
+        {
+            'obis_reference': obis.P1_MESSAGE_HEADER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'P1_MESSAGE_HEADER'
+        },
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_ACTIVE_TARIFF,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ELECTRICITY_ACTIVE_TARIFF'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.SHORT_POWER_FAILURE_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'SHORT_POWER_FAILURE_COUNT'
+        },
+        {
+            'obis_reference': obis.LONG_POWER_FAILURE_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'LONG_POWER_FAILURE_COUNT'
+        },
+        {
+            'obis_reference': obis.POWER_EVENT_FAILURE_LOG,
+            'value_parser': ProfileGenericParser(
+                BUFFER_TYPES,
+                PG_HEAD_PARSERS,
+                PG_UNIDENTIFIED_BUFFERTYPE_PARSERS
+            ),
+            'value_name': 'POWER_EVENT_FAILURE_LOG'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SAG_L1_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SAG_L1_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SAG_L2_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SAG_L2_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SAG_L3_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SAG_L3_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SWELL_L1_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SWELL_L1_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SWELL_L2_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SWELL_L2_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SWELL_L3_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SWELL_L3_COUNT'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE_CODE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'TEXT_MESSAGE_CODE'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE'
+        },
+        {
+            'obis_reference': obis.DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L3'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER_GAS,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER_GAS'
+        },
+        {
+            'obis_reference': obis.HOURLY_GAS_METER_READING,
+            'value_parser':  MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'HOURLY_GAS_METER_READING'
+        },
+    ]
 }
 
 V5 = {
     'checksum_support': True,
-    'objects': {
-        obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
-        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.LONG_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
-        obis.SHORT_POWER_FAILURE_COUNT: CosemParser(ValueParser(int)),
-        obis.POWER_EVENT_FAILURE_LOG:
-            ProfileGenericParser(BUFFER_TYPES,
-                                 PG_HEAD_PARSERS,
-                                 PG_UNIDENTIFIED_BUFFERTYPE_PARSERS),
-        obis.VOLTAGE_SAG_L1_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SAG_L2_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SAG_L3_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SWELL_L1_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SWELL_L2_COUNT: CosemParser(ValueParser(int)),
-        obis.VOLTAGE_SWELL_L3_COUNT: CosemParser(ValueParser(int)),
-        obis.INSTANTANEOUS_VOLTAGE_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L3: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
-        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
-        obis.DEVICE_TYPE: CosemParser(ValueParser(int)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
-        obis.HOURLY_GAS_METER_READING: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        )
-    }
+    'objects': [
+        {
+            'obis_reference': obis.P1_MESSAGE_HEADER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'P1_MESSAGE_HEADER'
+        },
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_ACTIVE_TARIFF,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ELECTRICITY_ACTIVE_TARIFF'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.LONG_POWER_FAILURE_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'LONG_POWER_FAILURE_COUNT'
+        },
+        {
+            'obis_reference': obis.SHORT_POWER_FAILURE_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'SHORT_POWER_FAILURE_COUNT'
+        },
+        {
+            'obis_reference': obis.POWER_EVENT_FAILURE_LOG,
+            'value_parser': ProfileGenericParser(
+                BUFFER_TYPES,
+                PG_HEAD_PARSERS,
+                PG_UNIDENTIFIED_BUFFERTYPE_PARSERS
+            ),
+            'value_name': 'POWER_EVENT_FAILURE_LOG'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SAG_L1_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SAG_L1_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SAG_L2_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SAG_L2_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SAG_L3_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SAG_L3_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SWELL_L1_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SWELL_L1_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SWELL_L2_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SWELL_L2_COUNT'
+        },
+        {
+            'obis_reference': obis.VOLTAGE_SWELL_L3_COUNT,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'VOLTAGE_SWELL_L3_COUNT'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L3'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L3'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE'
+        },
+        {
+            'obis_reference': obis.DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER_GAS,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER_GAS'
+        },
+        {
+            'obis_reference': obis.HOURLY_GAS_METER_READING,
+            'value_parser':  MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'HOURLY_GAS_METER_READING'
+        },
+    ]
 }
 
 ALL = (V2_2, V3, V4, V5)
 
 BELGIUM_FLUVIUS = {
     'checksum_support': True,
-    'objects': {
-        obis.BELGIUM_VERSION_INFORMATION: CosemParser(ValueParser(str)),
-        obis.BELGIUM_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.BELGIUM_CURRENT_AVERAGE_DEMAND: CosemParser(ValueParser(Decimal)),
-        obis.BELGIUM_MAXIMUM_DEMAND_MONTH: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS: MaxDemandParser(),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L3: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
-        obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(int)),
-        obis.ACTUAL_TRESHOLD_ELECTRICITY: CosemParser(ValueParser(Decimal)),
-        obis.BELGIUM_MAX_POWER_PER_PHASE: CosemParser(ValueParser(Decimal)),
-        obis.BELGIUM_MAX_CURRENT_PER_PHASE: CosemParser(ValueParser(Decimal)),
-        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
-        obis.BELGIUM_MBUS1_DEVICE_TYPE: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.BELGIUM_MBUS1_VALVE_POSITION: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS1_METER_READING1: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS1_METER_READING2: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS2_DEVICE_TYPE: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.BELGIUM_MBUS2_VALVE_POSITION: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS2_METER_READING1: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS2_METER_READING2: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS3_DEVICE_TYPE: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS3_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.BELGIUM_MBUS3_VALVE_POSITION: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS3_METER_READING1: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS3_METER_READING2: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS4_DEVICE_TYPE: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS4_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.BELGIUM_MBUS4_VALVE_POSITION: CosemParser(ValueParser(int)),
-        obis.BELGIUM_MBUS4_METER_READING1: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-        obis.BELGIUM_MBUS4_METER_READING2: MBusParser(
-            ValueParser(timestamp),
-            ValueParser(Decimal)
-        ),
-    }
+    'objects': [
+        {
+            'obis_reference': obis.BELGIUM_VERSION_INFORMATION,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_VERSION_INFORMATION'
+        },
+        {
+            'obis_reference': obis.BELGIUM_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_ACTIVE_TARIFF,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ELECTRICITY_ACTIVE_TARIFF'
+        },
+        {
+            'obis_reference': obis.BELGIUM_CURRENT_AVERAGE_DEMAND,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'BELGIUM_CURRENT_AVERAGE_DEMAND'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MAXIMUM_DEMAND_MONTH,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MAXIMUM_DEMAND_MONTH'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS,
+            'value_parser': MaxDemandParser(),
+            'value_name': 'BELGIUM_MAXIMUM_DEMAND_13_MONTHS'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L3'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L3'
+        },
+        {
+            'obis_reference': obis.ACTUAL_SWITCH_POSITION,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'ACTUAL_SWITCH_POSITION'
+        },
+        {
+            'obis_reference': obis.ACTUAL_TRESHOLD_ELECTRICITY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MAX_POWER_PER_PHASE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'BELGIUM_MAX_POWER_PER_PHASE'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MAX_CURRENT_PER_PHASE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'BELGIUM_MAX_CURRENT_PER_PHASE'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS1_DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS1_DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS1_VALVE_POSITION,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS1_VALVE_POSITION'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS1_METER_READING1,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS1_METER_READING1'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS1_METER_READING2,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS1_METER_READING2'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS2_DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS2_DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS2_VALVE_POSITION,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS2_VALVE_POSITION'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS2_METER_READING1,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS2_METER_READING1'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS2_METER_READING2,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS2_METER_READING2'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS3_DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS3_DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS3_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_MBUS3_EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS3_VALVE_POSITION,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS3_VALVE_POSITION'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS3_METER_READING1,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS3_METER_READING1'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS3_METER_READING2,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS3_METER_READING2'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS4_DEVICE_TYPE,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS4_DEVICE_TYPE'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS4_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_MBUS4_EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS4_VALVE_POSITION,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_MBUS4_VALVE_POSITION'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS4_METER_READING1,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS4_METER_READING1'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MBUS4_METER_READING2,
+            'value_parser': MBusParser(
+                ValueParser(timestamp),
+                ValueParser(Decimal)
+            ),
+            'value_name': 'BELGIUM_MBUS4_METER_READING2'
+        },
+    ]
 }
 
 LUXEMBOURG_SMARTY = deepcopy(V5)
-LUXEMBOURG_SMARTY['objects'].update({
-    obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-    obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-    obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-})
+LUXEMBOURG_SMARTY['objects'].extend([
+    {
+        'obis_reference': obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER,
+        'value_parser': CosemParser(ValueParser(str)),
+        'value_name': 'LUXEMBOURG_EQUIPMENT_IDENTIFIER'
+    },
+    # This is already presented in V5, with the same data
+    # {
+    #     'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+    #     'value_parser': CosemParser(ValueParser(Decimal)),
+    #     'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+    # },
+    {
+        'obis_reference': obis.ELECTRICITY_EXPORTED_TOTAL,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'ELECTRICITY_EXPORTED_TOTAL'
+    }
+])
 
 # Source: https://www.energiforetagen.se/globalassets/energiforetagen/det-erbjuder-vi/kurser-och-konferenser/elnat/
 #         branschrekommendation-lokalt-granssnitt-v2_0-201912.pdf
 SWEDEN = {
     'checksum_support': True,
-    'objects': {
-        obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
-        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_REACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_REACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_REACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_REACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_REACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_REACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L3: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
-    }
+    'objects': [
+        {
+            'obis_reference': obis.P1_MESSAGE_HEADER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'P1_MESSAGE_HEADER'
+        },
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L1_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L1_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L2_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L2_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L3_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L3_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L3'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L3'
+        }
+    ]
 }
 
 Q3D = {
     "checksum_support": False,
-    "objects": {
-        obis.Q3D_EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.Q3D_EQUIPMENT_STATE: CosemParser(ValueParser(str)),
-        obis.Q3D_EQUIPMENT_SERIALNUMBER: CosemParser(ValueParser(str)),
-    },
+    "objects": [
+        {
+            'obis_reference': obis.Q3D_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'Q3D_EQUIPMENT_IDENTIFIER'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.Q3D_EQUIPMENT_STATE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'Q3D_EQUIPMENT_STATE'
+        },
+        {
+            'obis_reference': obis.Q3D_EQUIPMENT_SERIALNUMBER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'Q3D_EQUIPMENT_SERIALNUMBER'
+        },
+    ]
 }
 
 
 SAGEMCOM_T210_D_R = {
     "general_global_cipher": True,
     "checksum_support": True,
-    'objects': {
-        obis.P1_MESSAGE_HEADER: CosemParser(ValueParser(str)),
-        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.ELECTRICITY_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-
-        obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_REACTIVE_EXPORTED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_REACTIVE_EXPORTED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_REACTIVE_IMPORTED: CosemParser(ValueParser(Decimal)),
-
-        obis.ELECTRICITY_EXPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-
-        obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_REACTIVE_IMPORTED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_REACTIVE_IMPORTED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_REACTIVE_EXPORTED: CosemParser(ValueParser(Decimal)),
-    }
+    'objects': [
+        {
+            'obis_reference': obis.P1_MESSAGE_HEADER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'P1_MESSAGE_HEADER'
+        },
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_EXPORTED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_EXPORTED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_EXPORTED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_EXPORTED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.CURRENT_REACTIVE_IMPORTED,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_REACTIVE_IMPORTED'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_IMPORTED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_IMPORTED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_IMPORTED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_IMPORTED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.CURRENT_REACTIVE_EXPORTED,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_REACTIVE_EXPORTED'
+        }
+    ]
 }
 AUSTRIA_ENERGIENETZE_STEIERMARK = SAGEMCOM_T210_D_R
 
 ISKRA_IE = {
     "checksum_support": False,
-    'objects': {
-        obis.EQUIPMENT_IDENTIFIER_GAS: CosemParser(ValueParser(str)),
-        obis.P1_MESSAGE_TIMESTAMP: CosemParser(ValueParser(timestamp)),
-        obis.ELECTRICITY_USED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_USED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_1: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_DELIVERED_TARIFF_2: CosemParser(ValueParser(Decimal)),
-        obis.ELECTRICITY_ACTIVE_TARIFF: CosemParser(ValueParser(str)),
-        obis.CURRENT_ELECTRICITY_USAGE: CosemParser(ValueParser(Decimal)),
-        obis.CURRENT_ELECTRICITY_DELIVERY: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_VOLTAGE_L3: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L1: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L2: CosemParser(ValueParser(Decimal)),
-        obis.INSTANTANEOUS_CURRENT_L3: CosemParser(ValueParser(Decimal)),
-        obis.ACTUAL_SWITCH_POSITION: CosemParser(ValueParser(str)),
-        obis.TEXT_MESSAGE: CosemParser(ValueParser(str)),
-        obis.EQUIPMENT_IDENTIFIER: CosemParser(ValueParser(str)),
-    }
+    'objects': [
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER_GAS,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER_GAS'
+        },
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_ACTIVE_TARIFF,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ELECTRICITY_ACTIVE_TARIFF'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L3'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L2'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L3'
+        },
+        {
+            'obis_reference': obis.ACTUAL_SWITCH_POSITION,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ACTUAL_SWITCH_POSITION'
+        },
+        {
+            'obis_reference': obis.TEXT_MESSAGE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_IDENTIFIER'
+        },
+    ]
+}
+
+EON_HUNGARY = {
+    # Revision: 2023.02.10
+    # Based on V5
+    # Reference: https://www.eon.hu/content/dam/eon/eon-hungary/documents/Lakossagi/aram/muszaki-ugyek/p1_port%20felhaszn_interfesz_taj_%2020230210.pdf # noqa
+    'checksum_support': True,
+    'objects': [
+        {
+            'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
+            'value_parser': CosemParser(ValueParser(timestamp)),
+            'value_name': 'P1_MESSAGE_TIMESTAMP'
+        },
+        {
+            'obis_reference': obis.LUXEMBOURG_EQUIPMENT_IDENTIFIER,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'COSEM_LOGICAL_DEVICE_NAME'
+        },
+        {
+            'obis_reference': obis.EQUIPMENT_IDENTIFIER_GAS,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'EQUIPMENT_SERIAL_NUMBER'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_ACTIVE_TARIFF,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ELECTRICITY_ACTIVE_TARIFF'
+        },
+        {
+            'obis_reference': obis.ACTUAL_SWITCH_POSITION,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'ACTUAL_SWITCH_POSITION'
+            # This seems to be wrong in documentation, it's not 0-0:96.50.68, but 0-0:96.3.10
+        },
+        {
+            'obis_reference': obis.BELGIUM_MAX_POWER_PER_PHASE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_3'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_USED_TARIFF_4,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_USED_TARIFF_4'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_1'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_2'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_3'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_DELIVERED_TARIFF_4,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_DELIVERED_TARIFF_4'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_IMPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_EXPORTED_TOTAL'
+        },
+        {
+            'obis_reference': obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_TOTAL_Q1'
+        },
+        {
+            'obis_reference': obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_TOTAL_Q2'
+        },
+        {
+            'obis_reference': obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_TOTAL_Q3'
+        },
+        {
+            'obis_reference': obis.EON_HU_ELECTRICITY_REACTIVE_TOTAL_Q4,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_REACTIVE_TOTAL_Q4'
+        },
+        {
+            'obis_reference': obis.EON_HU_ELECTRICITY_COMBINED,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'ELECTRICITY_COMBINED'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L2'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_VOLTAGE_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_VOLTAGE_L3'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L1'
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L2'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.INSTANTANEOUS_CURRENT_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_CURRENT_L3'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_TOTAL,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_POWER_FACTOR_TOTAL'
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_L1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_POWER_FACTOR_L1'
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_POWER_FACTOR_L2'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_POWER_FACTOR_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_POWER_FACTOR_L3'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.EON_HU_FREQUENCY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'FREQUENCY'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_USAGE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_USAGE'
+        },
+        {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q1,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_Q1'
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_Q2'
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_Q3'
+        },
+        {
+            'obis_reference': obis.EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q4,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'INSTANTANEOUS_REACTIVE_POWER_Q4'
+        },
+        {
+            'obis_reference': obis.BELGIUM_MAX_CURRENT_PER_PHASE,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'MAX_POWER_ON_L1'
+        },
+        {
+            'obis_reference': obis.EON_HU_MAX_POWER_ON_L2,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'MAX_POWER_ON_L2'
+            # Only with 3 phase meters
+        },
+        {
+            'obis_reference': obis.EON_HU_MAX_POWER_ON_L3,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'MAX_POWER_ON_L3'
+            # Only with 3 phase meters
+        },
+        # I'm not sure which datas does this line containes. It should be the data of last minute of last month.
+        # {
+        #    'obis_reference': obis.BELGIUM_MAXIMUM_DEMAND_13_MONTHS,
+        #    'value_parser': NonExistingParser(
+        #        ValueParser(timestamp),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal),
+        #        ValueParser(Decimal)
+        #    ),
+        #    'value_name': 'LAST_MONTH_DATA'
+        # },
+        {
+            'obis_reference': obis.TEXT_MESSAGE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE'
+        }
+    ]
 }

@@ -12,19 +12,31 @@ class MbusDeviceTest(unittest.TestCase):
     def setUp(self):
         v5_objects = telegram_specifications.V5['objects']
 
-        device_type_parser = v5_objects[obis_references.DEVICE_TYPE]
+        device_type_parser = [
+            object["value_parser"]
+            for object in v5_objects
+            if object["obis_reference"] == obis_references.DEVICE_TYPE
+        ][0]
         device_type = device_type_parser.parse('0-2:24.1.0(003)\r\n')
 
-        equipment_parser = v5_objects[obis_references.EQUIPMENT_IDENTIFIER_GAS]
+        equipment_parser = [
+            object["value_parser"]
+            for object in v5_objects
+            if object["obis_reference"] == obis_references.EQUIPMENT_IDENTIFIER_GAS
+        ][0]
         equipment = equipment_parser.parse('0-2:96.1.0(4730303339303031393336393930363139)\r\n')
 
-        gas_reading_parser = v5_objects[obis_references.HOURLY_GAS_METER_READING]
+        gas_reading_parser = [
+            object["value_parser"]
+            for object in v5_objects
+            if object["obis_reference"] == obis_references.HOURLY_GAS_METER_READING
+        ][0]
         gas_reading = gas_reading_parser.parse('0-2:24.2.1(200426223001S)(00246.138*m3)\r\n')
 
         mbus_device = MbusDevice(channel_id=1)
-        mbus_device.add(obis_references.DEVICE_TYPE, device_type)
-        mbus_device.add(obis_references.EQUIPMENT_IDENTIFIER_GAS, equipment)
-        mbus_device.add(obis_references.HOURLY_GAS_METER_READING, gas_reading)
+        mbus_device.add(obis_references.DEVICE_TYPE, device_type, "DEVICE_TYPE")
+        mbus_device.add(obis_references.EQUIPMENT_IDENTIFIER_GAS, equipment, "EQUIPMENT_IDENTIFIER_GAS")
+        mbus_device.add(obis_references.HOURLY_GAS_METER_READING, gas_reading, "HOURLY_GAS_METER_READING")
 
         self.mbus_device = mbus_device
 
