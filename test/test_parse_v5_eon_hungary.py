@@ -263,23 +263,23 @@ class TelegramParserV5EONHUTest(unittest.TestCase):
         assert isinstance(telegram.INSTANTANEOUS_REACTIVE_POWER_Q4.value, Decimal)
         assert telegram.INSTANTANEOUS_REACTIVE_POWER_Q4.value == Decimal('00.000')
 
-        # EON_HU_MAX_POWER_ON_L1 (1-0:31.4.0)
-        assert isinstance(telegram.MAX_POWER_ON_L1, CosemObject)
-        assert telegram.MAX_POWER_ON_L1.unit == 'A'
-        assert isinstance(telegram.MAX_POWER_ON_L1.value, Decimal)
-        assert telegram.MAX_POWER_ON_L1.value == Decimal('200.00')
+        # FUSE_THRESHOLD_L1 (1-0:31.4.0)
+        assert isinstance(telegram.FUSE_THRESHOLD_L1, CosemObject)
+        assert telegram.FUSE_THRESHOLD_L1.unit == 'A'
+        assert isinstance(telegram.FUSE_THRESHOLD_L1.value, Decimal)
+        assert telegram.FUSE_THRESHOLD_L1.value == Decimal('200.00')
 
-        # EON_HU_MAX_POWER_ON_L2 (1-0:31.4.0)
-        assert isinstance(telegram.MAX_POWER_ON_L2, CosemObject)
-        assert telegram.MAX_POWER_ON_L2.unit == 'A'
-        assert isinstance(telegram.MAX_POWER_ON_L2.value, Decimal)
-        assert telegram.MAX_POWER_ON_L2.value == Decimal('200.00')
+        # FUSE_THRESHOLD_L2 (1-0:31.4.0)
+        assert isinstance(telegram.FUSE_THRESHOLD_L2, CosemObject)
+        assert telegram.FUSE_THRESHOLD_L2.unit == 'A'
+        assert isinstance(telegram.FUSE_THRESHOLD_L2.value, Decimal)
+        assert telegram.FUSE_THRESHOLD_L2.value == Decimal('200.00')
 
-        # EON_HU_MAX_POWER_ON_L3 (1-0:31.4.0)
-        assert isinstance(telegram.MAX_POWER_ON_L3, CosemObject)
-        assert telegram.MAX_POWER_ON_L3.unit == 'A'
-        assert isinstance(telegram.MAX_POWER_ON_L3.value, Decimal)
-        assert telegram.MAX_POWER_ON_L3.value == Decimal('200.00')
+        # FUSE_THRESHOLD_L3 (1-0:31.4.0)
+        assert isinstance(telegram.FUSE_THRESHOLD_L3, CosemObject)
+        assert telegram.FUSE_THRESHOLD_L3.unit == 'A'
+        assert isinstance(telegram.FUSE_THRESHOLD_L3.value, Decimal)
+        assert telegram.FUSE_THRESHOLD_L3.value == Decimal('200.00')
 
         # TEXT_MESSAGE (0-0:96.13.0)
         assert isinstance(telegram.TEXT_MESSAGE, CosemObject)

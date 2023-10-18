@@ -43,6 +43,9 @@ INSTANTANEOUS_VOLTAGE_L3 = r'^\d-\d:72\.7\.0.+?\r\n'
 INSTANTANEOUS_CURRENT_L1 = r'^\d-\d:31\.7\.0.+?\r\n'
 INSTANTANEOUS_CURRENT_L2 = r'^\d-\d:51\.7\.0.+?\r\n'
 INSTANTANEOUS_CURRENT_L3 = r'^\d-\d:71\.7\.0.+?\r\n'
+FUSE_THRESHOLD_L1 = r'^\d-\d:31\.4\.0.+?\r\n'  # Applicable when current limitation is active
+FUSE_THRESHOLD_L2 = r'^\d-\d:51\.4\.0.+?\r\n'  # Applicable when current limitation is active
+FUSE_THRESHOLD_L3 = r'^\d-\d:71\.4\.0.+?\r\n'  # Applicable when current limitation is active
 TEXT_MESSAGE_CODE = r'^\d-\d:96\.13\.1.+?\r\n'
 TEXT_MESSAGE = r'^\d-\d:96\.13\.0.+?\r\n'
 DEVICE_TYPE = r'^\d-\d:24\.1\.0.+?\r\n'
@@ -89,7 +92,6 @@ BELGIUM_CURRENT_AVERAGE_DEMAND = r'^\d-\d:1\.4\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_MONTH = r'^\d-\d:1\.6\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_13_MONTHS = r'^\d-\d:98\.1\.0.+?\r\n'
 BELGIUM_MAX_POWER_PER_PHASE = r'^\d-\d:17\.0\.0.+?\r\n'  # Applicable when power limitation is active
-BELGIUM_MAX_CURRENT_PER_PHASE = r'^\d-\d:31\.4\.0.+?\r\n'  # Applicable when current limitation is active
 
 # Multiple 'slaves' can be linked to the main device.
 # Mostly MBUS1 = GAS METER with values on 24.2.3
@@ -142,5 +144,3 @@ EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q1 = r'^\d-\d:5\.7\.0.+?\r\n'
 EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q2 = r'^\d-\d:6\.7\.0.+?\r\n'
 EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3 = r'^\d-\d:7\.7\.0.+?\r\n'
 EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q4 = r'^\d-\d:8\.7\.0.+?\r\n'
-EON_HU_MAX_POWER_ON_L2 = r'^\d-\d:51\.4\.0.+?\r\n'
-EON_HU_MAX_POWER_ON_L3 = r'^\d-\d:71\.4\.0.+?\r\n'

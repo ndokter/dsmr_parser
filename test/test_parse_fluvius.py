@@ -217,11 +217,11 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert isinstance(result.BELGIUM_MAX_POWER_PER_PHASE.value, Decimal)
         assert result.BELGIUM_MAX_POWER_PER_PHASE.value == Decimal('999.9')
 
-        # BELGIUM_MAX_POWER_PER_PHASE (1-0:31.4.0)
-        assert isinstance(result.BELGIUM_MAX_CURRENT_PER_PHASE, CosemObject)
-        assert result.BELGIUM_MAX_CURRENT_PER_PHASE.unit == 'A'
-        assert isinstance(result.BELGIUM_MAX_CURRENT_PER_PHASE.value, Decimal)
-        assert result.BELGIUM_MAX_CURRENT_PER_PHASE.value == Decimal('999')
+        # FUSE_THRESHOLD_L1 (1-0:31.4.0)
+        assert isinstance(result.FUSE_THRESHOLD_L1, CosemObject)
+        assert result.FUSE_THRESHOLD_L1.unit == 'A'
+        assert isinstance(result.FUSE_THRESHOLD_L1.value, Decimal)
+        assert result.FUSE_THRESHOLD_L1.value == Decimal('999')
 
         # TEXT_MESSAGE (0-0:96.13.0)
         assert isinstance(result.TEXT_MESSAGE, CosemObject)
