@@ -630,9 +630,9 @@ BELGIUM_FLUVIUS = {
             'value_name': 'BELGIUM_MAX_POWER_PER_PHASE'
         },
         {
-            'obis_reference': obis.BELGIUM_MAX_CURRENT_PER_PHASE,
+            'obis_reference': obis.FUSE_THRESHOLD_L1,
             'value_parser': CosemParser(ValueParser(Decimal)),
-            'value_name': 'BELGIUM_MAX_CURRENT_PER_PHASE'
+            'value_name': 'FUSE_THRESHOLD_L1'
         },
         {
             'obis_reference': obis.TEXT_MESSAGE,
@@ -1414,20 +1414,20 @@ EON_HUNGARY = {
             'value_name': 'INSTANTANEOUS_REACTIVE_POWER_Q4'
         },
         {
-            'obis_reference': obis.BELGIUM_MAX_CURRENT_PER_PHASE,
+            'obis_reference': obis.FUSE_THRESHOLD_L1,
             'value_parser': CosemParser(ValueParser(Decimal)),
-            'value_name': 'MAX_POWER_ON_L1'
+            'value_name': 'FUSE_THRESHOLD_L1'
         },
         {
-            'obis_reference': obis.EON_HU_MAX_POWER_ON_L2,
+            'obis_reference': obis.FUSE_THRESHOLD_L2,
             'value_parser': CosemParser(ValueParser(Decimal)),
-            'value_name': 'MAX_POWER_ON_L2'
+            'value_name': 'FUSE_THRESHOLD_L2'
             # Only with 3 phase meters
         },
         {
-            'obis_reference': obis.EON_HU_MAX_POWER_ON_L3,
+            'obis_reference': obis.FUSE_THRESHOLD_L3,
             'value_parser': CosemParser(ValueParser(Decimal)),
-            'value_name': 'MAX_POWER_ON_L3'
+            'value_name': 'FUSE_THRESHOLD_L3'
             # Only with 3 phase meters
         },
         # I'm not sure which datas does this line containes. It should be the data of last minute of last month.
