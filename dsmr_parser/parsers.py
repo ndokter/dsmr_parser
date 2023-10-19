@@ -276,6 +276,8 @@ class MaxDemandParser(DSMRObjectParser):
         for i in range(1, count + 1):
             timestamp_month = ValueParser(timestamp).parse(values[i * 3 + 0])
             timestamp_occurred = ValueParser(timestamp).parse(values[i * 3 + 1])
+            if timestamp_occurred["value"] is None:
+                timestamp_occurred["value"] = timestamp_month["value"]
             value = ValueParser(Decimal).parse(values[i * 3 + 2])
             objects.append(MBusObjectPeak(
                 obis_id_code=obis_id_code,
