@@ -28,12 +28,12 @@ class Telegram(dict):
     def add(self, obis_reference, dsmr_object, obis_name):
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         setattr(self, obis_name, dsmr_object)
-        if obis_name not in self._item_names:  # TODO repeating obis references
-            self._item_names.append(obis_name)
 
         # TODO isinstance check: MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
         if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
             self._add_mbus(obis_reference, dsmr_object, obis_name)
+        elif obis_name not in self._item_names:  # TODO repeating obis references
+            self._item_names.append(obis_name)
 
         # Fill dict which is only used for backwards compatibility
         if obis_reference not in self:

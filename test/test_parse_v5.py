@@ -172,12 +172,6 @@ class TelegramParserV5Test(unittest.TestCase):
         assert telegram.TEXT_MESSAGE.unit is None
         assert telegram.TEXT_MESSAGE.value is None
 
-        # DEVICE_TYPE (0-x:24.1.0)
-        assert isinstance(telegram.DEVICE_TYPE, CosemObject)
-        assert telegram.DEVICE_TYPE.unit is None
-        assert isinstance(telegram.DEVICE_TYPE.value, int)
-        assert telegram.DEVICE_TYPE.value == 3
-
         # INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE (1-0:21.7.0)
         assert isinstance(telegram.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE, CosemObject)
         assert telegram.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE.unit == 'kW'
@@ -215,27 +209,27 @@ class TelegramParserV5Test(unittest.TestCase):
         assert telegram.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE.value == Decimal('0')
 
         # There's only one Mbus device (gas meter) in this case. Alternatively
-        # use get_mbget_mbus_device_by_channel
+        # use get_mbus_device_by_channel
         gas_meter_devices = telegram.MBUS_DEVICES
         gas_meter_device = gas_meter_devices[0]
 
-        # EQUIPMENT_IDENTIFIER_GAS (0-x:96.1.0)
-        assert isinstance(gas_meter_device.DEVICE_TYPE, CosemObject)
-        assert gas_meter_device.DEVICE_TYPE.unit is None
-        assert isinstance(gas_meter_device.DEVICE_TYPE.value, int)
-        assert gas_meter_device.DEVICE_TYPE.value == 3
+        # MBUS_DEVICE_TYPE (0-1:96.1.0)
+        assert isinstance(gas_meter_device.MBUS_DEVICE_TYPE, CosemObject)
+        assert gas_meter_device.MBUS_DEVICE_TYPE.unit is None
+        assert isinstance(gas_meter_device.MBUS_DEVICE_TYPE.value, int)
+        assert gas_meter_device.MBUS_DEVICE_TYPE.value == 3
 
-        # EQUIPMENT_IDENTIFIER_GAS (0-x:96.1.0)
-        assert isinstance(gas_meter_device.EQUIPMENT_IDENTIFIER_GAS, CosemObject)
-        assert gas_meter_device.EQUIPMENT_IDENTIFIER_GAS.unit is None
-        assert isinstance(gas_meter_device.EQUIPMENT_IDENTIFIER_GAS.value, str)
-        assert gas_meter_device.EQUIPMENT_IDENTIFIER_GAS.value == '3232323241424344313233343536373839'
+        # MBUS_EQUIPMENT_IDENTIFIER (0-1:96.1.0)
+        assert isinstance(gas_meter_device.MBUS_EQUIPMENT_IDENTIFIER, CosemObject)
+        assert gas_meter_device.MBUS_EQUIPMENT_IDENTIFIER.unit is None
+        assert isinstance(gas_meter_device.MBUS_EQUIPMENT_IDENTIFIER.value, str)
+        assert gas_meter_device.MBUS_EQUIPMENT_IDENTIFIER.value == '3232323241424344313233343536373839'
 
-        # HOURLY_GAS_METER_READING (0-1:24.2.1)
-        assert isinstance(gas_meter_device.HOURLY_GAS_METER_READING, MBusObject)
-        assert gas_meter_device.HOURLY_GAS_METER_READING.unit == 'm3'
-        assert isinstance(telegram.HOURLY_GAS_METER_READING.value, Decimal)
-        assert gas_meter_device.HOURLY_GAS_METER_READING.value == Decimal('0.107')
+        # MBUS_METER_READING (0-1:24.2.1)
+        assert isinstance(gas_meter_device.MBUS_METER_READING, MBusObject)
+        assert gas_meter_device.MBUS_METER_READING.unit == 'm3'
+        assert isinstance(telegram.MBUS_METER_READING.value, Decimal)
+        assert gas_meter_device.MBUS_METER_READING.value == Decimal('0.107')
 
     def test_checksum_valid(self):
         # No exception is raised.
@@ -270,8 +264,11 @@ class TelegramParserV5Test(unittest.TestCase):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(invalid_date_telegram)
 
-        # HOURLY_GAS_METER_READING (0-1:24.2.1)
-        assert isinstance(telegram.HOURLY_GAS_METER_READING, MBusObject)
-        assert telegram.HOURLY_GAS_METER_READING.unit is None
-        assert isinstance(telegram.HOURLY_GAS_METER_READING.value, Decimal)
-        assert telegram.HOURLY_GAS_METER_READING.value == Decimal('0.000')
+        # MBUS DEVICE 1
+        mbus1 = telegram.get_mbus_device_by_channel(1)
+
+        # MBUS_METER_READING (0-1:24.2.1)
+        assert isinstance(mbus1.MBUS_METER_READING, MBusObject)
+        assert mbus1.MBUS_METER_READING.unit is None
+        assert isinstance(mbus1.MBUS_METER_READING.value, Decimal)
+        assert mbus1.MBUS_METER_READING.value == Decimal('0.000')

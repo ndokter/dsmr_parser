@@ -69,8 +69,25 @@ ACTUAL_TRESHOLD_ELECTRICITY = r'^\d-\d:17\.0\.0.+?\r\n'
 ACTUAL_SWITCH_POSITION = r'^\d-\d:96\.3\.10.+?\r\n'
 VALVE_POSITION_GAS = r'^\d-\d:24\.4\.0.+?\r\n'
 
+# Multiple 'slaves' can be linked to the main device.
+# The type is reported on 24.1.0
+# Specifications are in EN 13757-3
+# For example: Water mater = 7, Gas meter = 3
+# Identifier is on 96.1.0 (in NL for ex) or
+# on 96.1.1 (in BE for ex)
+# The values are reported on 24.2.1
+# With an exception in Belgium for the GAS meter
+# Be aware that for the gas volume, another OBIS-code is published
+# than the one listed in section 7 of DSMR P1.
+# This is due to the fact that in Belgium the not-temperature
+# corrected gas volume is used while in the Netherlands,
+# the temperature corrected gas volume is used.
+MBUS_DEVICE_TYPE = r'^\d-[1-9]:24\.1\.0.+?\r\n'
+MBUS_EQUIPMENT_IDENTIFIER = r'^\d-[1-9]:96\.1\.[01].+?\r\n'
+MBUS_VALVE_POSITION = r'^\d-[1-9]:24\.4\.0.+?\r\n'
+MBUS_METER_READING = r'^\d-[1-9]:24\.2\.[13].+?\r\n'
+
 # TODO 17.0.0
-# TODO 96.3.10
 
 ELECTRICITY_USED_TARIFF_ALL = (
     ELECTRICITY_USED_TARIFF_1,
@@ -91,36 +108,6 @@ BELGIUM_EQUIPMENT_IDENTIFIER = r'^\d-0:96\.1\.1.+?\r\n'
 BELGIUM_CURRENT_AVERAGE_DEMAND = r'^\d-\d:1\.4\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_MONTH = r'^\d-\d:1\.6\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_13_MONTHS = r'^\d-\d:98\.1\.0.+?\r\n'
-
-# Multiple 'slaves' can be linked to the main device.
-# Mostly MBUS1 = GAS METER with values on 24.2.3
-# While WATER METER reports it's values on 24.2.1
-# The GAS METER also reports its valve state on 24.4.0
-# Dev type for gas = 7 and water = 8
-BELGIUM_MBUS1_DEVICE_TYPE = r'^\d-1:24\.1\.0.+?\r\n'
-BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER = r'^\d-1:96\.1\.1.+?\r\n'
-BELGIUM_MBUS1_VALVE_POSITION = r'^\d-1:24\.4\.0.+?\r\n'
-BELGIUM_MBUS1_METER_READING1 = r'^\d-1:24\.2\.1.+?\r\n'
-BELGIUM_MBUS1_METER_READING2 = r'^\d-1:24\.2\.3.+?\r\n'
-
-BELGIUM_MBUS2_DEVICE_TYPE = r'^\d-2:24\.1\.0.+?\r\n'
-BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER = r'^\d-2:96\.1\.1.+?\r\n'
-BELGIUM_MBUS2_VALVE_POSITION = r'^\d-2:24\.4\.0.+?\r\n'
-BELGIUM_MBUS2_METER_READING1 = r'^\d-2:24\.2\.1.+?\r\n'
-BELGIUM_MBUS2_METER_READING2 = r'^\d-2:24\.2\.3.+?\r\n'
-
-BELGIUM_MBUS3_DEVICE_TYPE = r'^\d-3:24\.1\.0.+?\r\n'
-BELGIUM_MBUS3_EQUIPMENT_IDENTIFIER = r'^\d-3:96\.1\.1.+?\r\n'
-BELGIUM_MBUS3_VALVE_POSITION = r'^\d-3:24\.4\.0.+?\r\n'
-BELGIUM_MBUS3_METER_READING1 = r'^\d-3:24\.2\.1.+?\r\n'
-BELGIUM_MBUS3_METER_READING2 = r'^\d-3:24\.2\.3.+?\r\n'
-
-BELGIUM_MBUS4_DEVICE_TYPE = r'^\d-4:24\.1\.0.+?\r\n'
-BELGIUM_MBUS4_EQUIPMENT_IDENTIFIER = r'^\d-4:96\.1\.1.+?\r\n'
-BELGIUM_MBUS4_VALVE_POSITION = r'^\d-4:24\.4\.0.+?\r\n'
-BELGIUM_MBUS4_METER_READING1 = r'^\d-4:24\.2\.1.+?\r\n'
-BELGIUM_MBUS4_METER_READING2 = r'^\d-4:24\.2\.3.+?\r\n'
-
 
 LUXEMBOURG_EQUIPMENT_IDENTIFIER = r'^\d-\d:42\.0\.0.+?\r\n'  # Logical device name
 
