@@ -210,11 +210,11 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert isinstance(result.ACTUAL_SWITCH_POSITION.value, int)
         assert result.ACTUAL_SWITCH_POSITION.value == 1
 
-        # BELGIUM_MAX_POWER_PER_PHASE (0-0:17.0.0)
-        assert isinstance(result.BELGIUM_MAX_POWER_PER_PHASE, CosemObject)
-        assert result.BELGIUM_MAX_POWER_PER_PHASE.unit == 'kW'
-        assert isinstance(result.BELGIUM_MAX_POWER_PER_PHASE.value, Decimal)
-        assert result.BELGIUM_MAX_POWER_PER_PHASE.value == Decimal('999.9')
+        # ACTUAL_TRESHOLD_ELECTRICITY (0-0:17.0.0)
+        assert isinstance(result.ACTUAL_TRESHOLD_ELECTRICITY, CosemObject)
+        assert result.ACTUAL_TRESHOLD_ELECTRICITY.unit == 'kW'
+        assert isinstance(result.ACTUAL_TRESHOLD_ELECTRICITY.value, Decimal)
+        assert result.ACTUAL_TRESHOLD_ELECTRICITY.value == Decimal('999.9')
 
         # FUSE_THRESHOLD_L1 (1-0:31.4.0)
         assert isinstance(result.FUSE_THRESHOLD_L1, CosemObject)
@@ -227,47 +227,47 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert result.TEXT_MESSAGE.unit is None
         assert result.TEXT_MESSAGE.value is None
 
-        # BELGIUM_MBUS1_DEVICE_TYPE (0-1:24.1.0)
-        assert isinstance(result.BELGIUM_MBUS1_DEVICE_TYPE, CosemObject)
-        assert result.BELGIUM_MBUS1_DEVICE_TYPE.unit is None
-        assert isinstance(result.BELGIUM_MBUS1_DEVICE_TYPE.value, int)
-        assert result.BELGIUM_MBUS1_DEVICE_TYPE.value == 3
+        # MBUS1_DEVICE_TYPE (0-1:24.1.0)
+        assert isinstance(result.MBUS1_DEVICE_TYPE, CosemObject)
+        assert result.MBUS1_DEVICE_TYPE.unit is None
+        assert isinstance(result.MBUS1_DEVICE_TYPE.value, int)
+        assert result.MBUS1_DEVICE_TYPE.value == 3
 
-        # BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER (0-1:96.1.1)
-        assert isinstance(result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER, CosemObject)
-        assert result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER.unit is None
-        assert isinstance(result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER.value, str)
-        assert result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER.value == '37464C4F32313139303333373333'
+        # MBUS1_EQUIPMENT_IDENTIFIER_ALT (0-1:96.1.1)
+        assert isinstance(result.MBUS1_EQUIPMENT_IDENTIFIER_ALT, CosemObject)
+        assert result.MBUS1_EQUIPMENT_IDENTIFIER_ALT.unit is None
+        assert isinstance(result.MBUS1_EQUIPMENT_IDENTIFIER_ALT.value, str)
+        assert result.MBUS1_EQUIPMENT_IDENTIFIER_ALT.value == '37464C4F32313139303333373333'
 
-        # BELGIUM_MBUS1_VALVE_POSITION (0-1:24.4.0)
-        assert isinstance(result.BELGIUM_MBUS1_VALVE_POSITION, CosemObject)
-        assert result.BELGIUM_MBUS1_VALVE_POSITION.unit is None
-        assert isinstance(result.BELGIUM_MBUS1_VALVE_POSITION.value, int)
-        assert result.BELGIUM_MBUS1_VALVE_POSITION.value == 1
+        # MBUS1_VALVE_POSITION (0-1:24.4.0)
+        assert isinstance(result.MBUS1_VALVE_POSITION, CosemObject)
+        assert result.MBUS1_VALVE_POSITION.unit is None
+        assert isinstance(result.MBUS1_VALVE_POSITION.value, int)
+        assert result.MBUS1_VALVE_POSITION.value == 1
 
-        # BELGIUM_MBUS1_METER_READING2 (0-1:24.2.3)
-        assert isinstance(result.BELGIUM_MBUS1_METER_READING2, MBusObject)
-        assert result.BELGIUM_MBUS1_METER_READING2.unit == 'm3'
-        assert isinstance(result.BELGIUM_MBUS1_METER_READING2.value, Decimal)
-        assert result.BELGIUM_MBUS1_METER_READING2.value == Decimal('112.384')
+        # MBUS1_METER_READING_ALT (0-1:24.2.3)
+        assert isinstance(result.MBUS1_METER_READING_ALT, MBusObject)
+        assert result.MBUS1_METER_READING_ALT.unit == 'm3'
+        assert isinstance(result.MBUS1_METER_READING_ALT.value, Decimal)
+        assert result.MBUS1_METER_READING_ALT.value == Decimal('112.384')
 
-        # BELGIUM_MBUS2_DEVICE_TYPE (0-2:24.1.0)
-        assert isinstance(result.BELGIUM_MBUS2_DEVICE_TYPE, CosemObject)
-        assert result.BELGIUM_MBUS2_DEVICE_TYPE.unit is None
-        assert isinstance(result.BELGIUM_MBUS2_DEVICE_TYPE.value, int)
-        assert result.BELGIUM_MBUS2_DEVICE_TYPE.value == 7
+        # MBUS2_DEVICE_TYPE (0-2:24.1.0)
+        assert isinstance(result.MBUS2_DEVICE_TYPE, CosemObject)
+        assert result.MBUS2_DEVICE_TYPE.unit is None
+        assert isinstance(result.MBUS2_DEVICE_TYPE.value, int)
+        assert result.MBUS2_DEVICE_TYPE.value == 7
 
-        # BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER (0-2:96.1.1)
-        assert isinstance(result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER, CosemObject)
-        assert result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER.unit is None
-        assert isinstance(result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER.value, str)
-        assert result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER.value == '3853414731323334353637383930'
+        # MBUS2_EQUIPMENT_IDENTIFIER_ALT (0-2:96.1.1)
+        assert isinstance(result.MBUS2_EQUIPMENT_IDENTIFIER_ALT, CosemObject)
+        assert result.MBUS2_EQUIPMENT_IDENTIFIER_ALT.unit is None
+        assert isinstance(result.MBUS2_EQUIPMENT_IDENTIFIER_ALT.value, str)
+        assert result.MBUS2_EQUIPMENT_IDENTIFIER_ALT.value == '3853414731323334353637383930'
 
-        # BELGIUM_MBUS2_METER_READING1 (0-1:24.2.1)
-        assert isinstance(result.BELGIUM_MBUS2_METER_READING1, MBusObject)
-        assert result.BELGIUM_MBUS2_METER_READING1.unit == 'm3'
-        assert isinstance(result.BELGIUM_MBUS2_METER_READING1.value, Decimal)
-        assert result.BELGIUM_MBUS2_METER_READING1.value == Decimal('872.234')
+        # MBUS2_METER_READING (0-1:24.2.1)
+        assert isinstance(result.MBUS2_METER_READING, MBusObject)
+        assert result.MBUS2_METER_READING.unit == 'm3'
+        assert isinstance(result.MBUS2_METER_READING.value, Decimal)
+        assert result.MBUS2_METER_READING.value == Decimal('872.234')
 
     def test_checksum_valid(self):
         # No exception is raised.
