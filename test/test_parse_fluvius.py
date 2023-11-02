@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import datetime
+import json
 import unittest
 
 import pytz
@@ -9,7 +10,7 @@ from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
 from dsmr_parser.objects import CosemObject, MBusObject, MBusObjectPeak
 from dsmr_parser.parsers import TelegramParser
-from test.example_telegrams import TELEGRAM_FLUVIUS_V171
+from test.example_telegrams import TELEGRAM_FLUVIUS_V171, TELEGRAM_FLUVIUS_V171_ALT
 
 
 class TelegramParserFluviusTest(unittest.TestCase):
@@ -286,6 +287,135 @@ class TelegramParserFluviusTest(unittest.TestCase):
 
     def test_checksum_missing(self):
         # Remove the checksum value causing a ParseError.
-        corrupted_telegram = TELEGRAM_FLUVIUS_V171.replace('!911C\r\n', '')
+        corrupted_telegram = TELEGRAM_FLUVIUS_V171.replace('!3AD7\r\n', '')
         with self.assertRaises(ParseError):
             TelegramParser.validate_checksum(corrupted_telegram)
+
+    def test_to_json(self):
+        parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
+        telegram = parser.parse(TELEGRAM_FLUVIUS_V171_ALT)
+        json_data = json.loads(telegram.to_json())
+
+        self.assertEqual(
+            json_data,
+            {'BELGIUM_VERSION_INFORMATION': {'value': '50217', 'unit': None},
+             'BELGIUM_EQUIPMENT_IDENTIFIER': {'value': '3153414733313030373231333236', 'unit': None},
+             'P1_MESSAGE_TIMESTAMP': {'value': '2023-11-02T11:15:48+00:00', 'unit': None},
+             'ELECTRICITY_USED_TARIFF_1': {'value': 301.548, 'unit': 'kWh'},
+             'ELECTRICITY_USED_TARIFF_2': {'value': 270.014, 'unit': 'kWh'},
+             'ELECTRICITY_DELIVERED_TARIFF_1': {'value': 0.005, 'unit': 'kWh'},
+             'ELECTRICITY_DELIVERED_TARIFF_2': {'value': 0.0, 'unit': 'kWh'},
+             'ELECTRICITY_ACTIVE_TARIFF': {'value': '0001', 'unit': None},
+             'BELGIUM_CURRENT_AVERAGE_DEMAND': {'value': 0.052, 'unit': 'kW'},
+             'BELGIUM_MAXIMUM_DEMAND_MONTH': {'datetime': '2023-11-02T10:45:00+00:00',
+                                              'value': 3.064, 'unit': 'kW'},
+             'BELGIUM_MAXIMUM_DEMAND_13_MONTHS': [{'datetime': '2023-07-31T22:00:00+00:00',
+                                                   'occurred': None, 'value': 0.0, 'unit': 'kW'},
+                                                  {'datetime': '2023-08-31T22:00:00+00:00',
+                                                   'occurred': '2023-08-31T16:15:00+00:00',
+                                                   'value': 1.862, 'unit': 'kW'},
+                                                  {'datetime': '2023-09-30T22:00:00+00:00',
+                                                   'occurred': '2023-09-10T16:30:00+00:00',
+                                                   'value': 4.229, 'unit': 'kW'},
+                                                  {'datetime': '2023-10-31T23:00:00+00:00',
+                                                   'occurred': '2023-10-16T11:00:00+00:00',
+                                                   'value': 4.927, 'unit': 'kW'}],
+             'CURRENT_ELECTRICITY_USAGE': {'value': 0.338, 'unit': 'kW'},
+             'CURRENT_ELECTRICITY_DELIVERY': {'value': 0.0, 'unit': 'kW'},
+             'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE': {'value': 0.047, 'unit': 'kW'},
+             'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE': {'value': 0.179, 'unit': 'kW'},
+             'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE': {'value': 0.111, 'unit': 'kW'},
+             'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE': {'value': 0.0, 'unit': 'kW'},
+             'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE': {'value': 0.0, 'unit': 'kW'},
+             'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE': {'value': 0.0, 'unit': 'kW'},
+             'INSTANTANEOUS_VOLTAGE_L1': {'value': 232.9, 'unit': 'V'},
+             'INSTANTANEOUS_VOLTAGE_L2': {'value': 228.1, 'unit': 'V'},
+             'INSTANTANEOUS_VOLTAGE_L3': {'value': 228.1, 'unit': 'V'},
+             'INSTANTANEOUS_CURRENT_L1': {'value': 0.27, 'unit': 'A'},
+             'INSTANTANEOUS_CURRENT_L2': {'value': 0.88, 'unit': 'A'},
+             'INSTANTANEOUS_CURRENT_L3': {'value': 0.52, 'unit': 'A'},
+             'ACTUAL_SWITCH_POSITION': {'value': 1, 'unit': None},
+             'ACTUAL_TRESHOLD_ELECTRICITY': {'value': 999.9, 'unit': 'kW'},
+             'BELGIUM_MAX_POWER_PER_PHASE': {'value': 999.9, 'unit': 'kW'},
+             'BELGIUM_MAX_CURRENT_PER_PHASE': {'value': 999.0, 'unit': 'A'},
+             'TEXT_MESSAGE': {'value': None, 'unit': None},
+             'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
+             'MBUS_DEVICES': [{'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
+                               'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER': {'value': '37464C4F32313233303838303237',
+                                                                      'unit': None},
+                               'BELGIUM_MBUS1_VALVE_POSITION': {'value': 1, 'unit': None},
+                               'BELGIUM_MBUS1_METER_READING2': {'datetime': '2023-11-02T11:10:02+00:00',
+                                                                'value': 92.287, 'unit': 'm3'},
+                               'CHANNEL_ID': 1},
+                              {'BELGIUM_MBUS2_DEVICE_TYPE': {'value': 7, 'unit': None},
+                               'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER': {'value': '3853455430303030393631313733',
+                                                                      'unit': None},
+                               'BELGIUM_MBUS2_METER_READING1': {'datetime': '2023-11-02T11:15:32+00:00',
+                                                                'value': 8.579, 'unit': 'm3'},
+                               'CHANNEL_ID': 2}],
+             'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER': {'value': '37464C4F32313233303838303237', 'unit': None},
+             'BELGIUM_MBUS1_VALVE_POSITION': {'value': 1, 'unit': None},
+             'BELGIUM_MBUS1_METER_READING2': {'datetime': '2023-11-02T11:10:02+00:00', 'value': 92.287, 'unit': 'm3'},
+             'BELGIUM_MBUS2_DEVICE_TYPE': {'value': 7, 'unit': None},
+             'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER': {'value': '3853455430303030393631313733', 'unit': None},
+             'BELGIUM_MBUS2_METER_READING1': {'datetime': '2023-11-02T11:15:32+00:00', 'value': 8.579, 'unit': 'm3'}}
+        )
+
+    def test_to_str(self):
+        parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
+        telegram = parser.parse(TELEGRAM_FLUVIUS_V171_ALT)
+
+        self.assertEqual(
+            str(telegram),
+            (
+                'BELGIUM_VERSION_INFORMATION: 	 50217	[None]\n'
+                'BELGIUM_EQUIPMENT_IDENTIFIER: 	 3153414733313030373231333236	[None]\n'
+                'P1_MESSAGE_TIMESTAMP: 	 2023-11-02T11:15:48+00:00	[None]\n'
+                'ELECTRICITY_USED_TARIFF_1: 	 301.548	[kWh]\n'
+                'ELECTRICITY_USED_TARIFF_2: 	 270.014	[kWh]\n'
+                'ELECTRICITY_DELIVERED_TARIFF_1: 	 0.005	[kWh]\n'
+                'ELECTRICITY_DELIVERED_TARIFF_2: 	 0.000	[kWh]\n'
+                'ELECTRICITY_ACTIVE_TARIFF: 	 0001	[None]\n'
+                'BELGIUM_CURRENT_AVERAGE_DEMAND: 	 0.052	[kW]\n'
+                'BELGIUM_MAXIMUM_DEMAND_MONTH: 	 3.064	[kW] at 2023-11-02T10:45:00+00:00\n'
+                '0.0	[kW] at 2023-07-31T22:00:00+00:00 occurred None'
+                '1.862	[kW] at 2023-08-31T22:00:00+00:00 occurred 2023-08-31T16:15:00+00:00'
+                '4.229	[kW] at 2023-09-30T22:00:00+00:00 occurred 2023-09-10T16:30:00+00:00'
+                '4.927	[kW] at 2023-10-31T23:00:00+00:00 occurred 2023-10-16T11:00:00+00:00'
+                'CURRENT_ELECTRICITY_USAGE: 	 0.338	[kW]\n'
+                'CURRENT_ELECTRICITY_DELIVERY: 	 0.000	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: 	 0.047	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: 	 0.179	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: 	 0.111	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: 	 0.000	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: 	 0.000	[kW]\n'
+                'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000	[kW]\n'
+                'INSTANTANEOUS_VOLTAGE_L1: 	 232.9	[V]\n'
+                'INSTANTANEOUS_VOLTAGE_L2: 	 228.1	[V]\n'
+                'INSTANTANEOUS_VOLTAGE_L3: 	 228.1	[V]\n'
+                'INSTANTANEOUS_CURRENT_L1: 	 0.27	[A]\n'
+                'INSTANTANEOUS_CURRENT_L2: 	 0.88	[A]\n'
+                'INSTANTANEOUS_CURRENT_L3: 	 0.52	[A]\n'
+                'ACTUAL_SWITCH_POSITION: 	 1	[None]\n'
+                'ACTUAL_TRESHOLD_ELECTRICITY: 	 999.9	[kW]\n'
+                'BELGIUM_MAX_POWER_PER_PHASE: 	 999.9	[kW]\n'
+                'BELGIUM_MAX_CURRENT_PER_PHASE: 	 999	[A]\n'
+                'TEXT_MESSAGE: 	 None	[None]\n'
+                'BELGIUM_MBUS1_DEVICE_TYPE: 	 3	[None]\n'
+                'MBUS DEVICE (channel 1)\n'
+                '	BELGIUM_MBUS1_DEVICE_TYPE: 	 3	[None]\n'
+                '	BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER: 	 37464C4F32313233303838303237	[None]\n'
+                '	BELGIUM_MBUS1_VALVE_POSITION: 	 1	[None]\n'
+                '	BELGIUM_MBUS1_METER_READING2: 	 92.287	[m3] at 2023-11-02T11:10:02+00:00\n'
+                'MBUS DEVICE (channel 2)\n'
+                '	BELGIUM_MBUS2_DEVICE_TYPE: 	 7	[None]\n'
+                '	BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER: 	 3853455430303030393631313733	[None]\n'
+                '	BELGIUM_MBUS2_METER_READING1: 	 8.579	[m3] at 2023-11-02T11:15:32+00:00\n'
+                'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER: 	 37464C4F32313233303838303237	[None]\n'
+                'BELGIUM_MBUS1_VALVE_POSITION: 	 1	[None]\n'
+                'BELGIUM_MBUS1_METER_READING2: 	 92.287	[m3] at 2023-11-02T11:10:02+00:00\n'
+                'BELGIUM_MBUS2_DEVICE_TYPE: 	 7	[None]\n'
+                'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER: 	 3853455430303030393631313733	[None]\n'
+                'BELGIUM_MBUS2_METER_READING1: 	 8.579	[m3] at 2023-11-02T11:15:32+00:00\n'
+            )
+        )
