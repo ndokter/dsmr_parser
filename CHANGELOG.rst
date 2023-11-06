@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.3.1** (2023-11-06)
+- Fix parsing peak usage with invalid timestamps
+ (`PR #143 <https://github.com/ndokter/dsmr_parser/pull/143>`_ by `dupondje <https://github.com/dupondje>`_)
+
 **1.3.0** (2023-08-01)
 
 - added E.ON Hungary; refactored DSMR specifications to fix obis reference conflicts
