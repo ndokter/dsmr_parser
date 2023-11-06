@@ -140,22 +140,25 @@ class MBusObject(DSMRObject):
             return self.values[1]['unit']
 
     def __str__(self):
+        timestamp = self.datetime
+        if isinstance(timestamp, datetime.datetime):
+            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
         output = "{}\t[{}] at {}".format(
             str(self.value),
             str(self.unit),
-            str(self.datetime.astimezone().astimezone(pytz.utc).isoformat())
+            str(timestamp)
         )
         return output
 
     def to_json(self):
         timestamp = self.datetime
-        if isinstance(self.datetime, datetime.datetime):
-            timestamp = self.datetime.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp, datetime.datetime):
+            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
         value = self.value
-        if isinstance(self.value, datetime.datetime):
-            value = self.value.astimezone().astimezone(pytz.utc).isoformat()
-        if isinstance(self.value, Decimal):
-            value = float(self.value)
+        if isinstance(value, datetime.datetime):
+            value = value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(value, Decimal):
+            value = float(value)
         output = {
             'datetime': timestamp,
             'value': value,
@@ -183,23 +186,33 @@ class MBusObjectPeak(DSMRObject):
         return self.values[2]['unit']
 
     def __str__(self):
+        timestamp = self.datetime
+        if isinstance(timestamp, datetime.datetime):
+            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
+        timestamp_occurred = self.occurred
+        if isinstance(timestamp_occurred, datetime.datetime):
+            timestamp_occurred = timestamp_occurred.astimezone().astimezone(pytz.utc).isoformat()
+        value = self.value
+        if isinstance(value, datetime.datetime):
+            value = value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(value, Decimal):
+            value = float(value)
         output = "{}\t[{}] at {} occurred {}"\
-            .format(str(self.value), str(self.unit), str(self.datetime.astimezone().astimezone(pytz.utc).isoformat()),
-                    str(self.occurred.astimezone().astimezone(pytz.utc).isoformat()))
+            .format(str(value), str(self.unit), str(timestamp), str(timestamp_occurred))
         return output
 
     def to_json(self):
         timestamp = self.datetime
-        if isinstance(self.datetime, datetime.datetime):
-            timestamp = self.datetime.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp, datetime.datetime):
+            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
         timestamp_occurred = self.occurred
-        if isinstance(self.occurred, datetime.datetime):
-            timestamp_occurred = self.occurred.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp_occurred, datetime.datetime):
+            timestamp_occurred = timestamp_occurred.astimezone().astimezone(pytz.utc).isoformat()
         value = self.value
-        if isinstance(self.value, datetime.datetime):
-            value = self.value.astimezone().astimezone(pytz.utc).isoformat()
-        if isinstance(self.value, Decimal):
-            value = float(self.value)
+        if isinstance(value, datetime.datetime):
+            value = value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(value, Decimal):
+            value = float(value)
         output = {
             'datetime': timestamp,
             'occurred': timestamp_occurred,
