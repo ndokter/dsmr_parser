@@ -337,7 +337,7 @@ class TelegramParserFluviusTest(unittest.TestCase):
              'ACTUAL_SWITCH_POSITION': {'value': 1, 'unit': None},
              'ACTUAL_TRESHOLD_ELECTRICITY': {'value': 999.9, 'unit': 'kW'},
              'BELGIUM_MAX_POWER_PER_PHASE': {'value': 999.9, 'unit': 'kW'},
-             'BELGIUM_MAX_CURRENT_PER_PHASE': {'value': 999.0, 'unit': 'A'},
+             'FUSE_THRESHOLD_L1': {'value': 999.0, 'unit': 'A'},
              'TEXT_MESSAGE': {'value': None, 'unit': None},
              'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
              'MBUS_DEVICES': [{'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
@@ -399,7 +399,7 @@ class TelegramParserFluviusTest(unittest.TestCase):
                 'ACTUAL_SWITCH_POSITION: 	 1	[None]\n'
                 'ACTUAL_TRESHOLD_ELECTRICITY: 	 999.9	[kW]\n'
                 'BELGIUM_MAX_POWER_PER_PHASE: 	 999.9	[kW]\n'
-                'BELGIUM_MAX_CURRENT_PER_PHASE: 	 999	[A]\n'
+                'FUSE_THRESHOLD_L1: 	 999	[A]\n'
                 'TEXT_MESSAGE: 	 None	[None]\n'
                 'BELGIUM_MBUS1_DEVICE_TYPE: 	 3	[None]\n'
                 'MBUS DEVICE (channel 1)\n'
