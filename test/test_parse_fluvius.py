@@ -211,11 +211,11 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert isinstance(result.ACTUAL_SWITCH_POSITION.value, int)
         assert result.ACTUAL_SWITCH_POSITION.value == 1
 
-        # BELGIUM_MAX_POWER_PER_PHASE (0-0:17.0.0)
-        assert isinstance(result.BELGIUM_MAX_POWER_PER_PHASE, CosemObject)
-        assert result.BELGIUM_MAX_POWER_PER_PHASE.unit == 'kW'
-        assert isinstance(result.BELGIUM_MAX_POWER_PER_PHASE.value, Decimal)
-        assert result.BELGIUM_MAX_POWER_PER_PHASE.value == Decimal('999.9')
+        # ACTUAL_TRESHOLD_ELECTRICITY (0-0:17.0.0)
+        assert isinstance(result.ACTUAL_TRESHOLD_ELECTRICITY, CosemObject)
+        assert result.ACTUAL_TRESHOLD_ELECTRICITY.unit == 'kW'
+        assert isinstance(result.ACTUAL_TRESHOLD_ELECTRICITY.value, Decimal)
+        assert result.ACTUAL_TRESHOLD_ELECTRICITY.value == Decimal('999.9')
 
         # FUSE_THRESHOLD_L1 (1-0:31.4.0)
         assert isinstance(result.FUSE_THRESHOLD_L1, CosemObject)
@@ -336,7 +336,6 @@ class TelegramParserFluviusTest(unittest.TestCase):
              'INSTANTANEOUS_CURRENT_L3': {'value': 0.52, 'unit': 'A'},
              'ACTUAL_SWITCH_POSITION': {'value': 1, 'unit': None},
              'ACTUAL_TRESHOLD_ELECTRICITY': {'value': 999.9, 'unit': 'kW'},
-             'BELGIUM_MAX_POWER_PER_PHASE': {'value': 999.9, 'unit': 'kW'},
              'FUSE_THRESHOLD_L1': {'value': 999.0, 'unit': 'A'},
              'TEXT_MESSAGE': {'value': None, 'unit': None},
              'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
@@ -398,7 +397,6 @@ class TelegramParserFluviusTest(unittest.TestCase):
                 'INSTANTANEOUS_CURRENT_L3: 	 0.52	[A]\n'
                 'ACTUAL_SWITCH_POSITION: 	 1	[None]\n'
                 'ACTUAL_TRESHOLD_ELECTRICITY: 	 999.9	[kW]\n'
-                'BELGIUM_MAX_POWER_PER_PHASE: 	 999.9	[kW]\n'
                 'FUSE_THRESHOLD_L1: 	 999	[A]\n'
                 'TEXT_MESSAGE: 	 None	[None]\n'
                 'BELGIUM_MBUS1_DEVICE_TYPE: 	 3	[None]\n'

@@ -91,7 +91,6 @@ BELGIUM_EQUIPMENT_IDENTIFIER = r'^\d-0:96\.1\.1.+?\r\n'
 BELGIUM_CURRENT_AVERAGE_DEMAND = r'^\d-\d:1\.4\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_MONTH = r'^\d-\d:1\.6\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_13_MONTHS = r'^\d-\d:98\.1\.0.+?\r\n'
-BELGIUM_MAX_POWER_PER_PHASE = r'^\d-\d:17\.0\.0.+?\r\n'  # Applicable when power limitation is active
 
 # Multiple 'slaves' can be linked to the main device.
 # Mostly MBUS1 = GAS METER with values on 24.2.3

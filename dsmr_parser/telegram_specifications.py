@@ -625,9 +625,9 @@ BELGIUM_FLUVIUS = {
             'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
         },
         {
-            'obis_reference': obis.BELGIUM_MAX_POWER_PER_PHASE,
+            'obis_reference': obis.ACTUAL_TRESHOLD_ELECTRICITY,
             'value_parser': CosemParser(ValueParser(Decimal)),
-            'value_name': 'BELGIUM_MAX_POWER_PER_PHASE'
+            'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
         },
         {
             'obis_reference': obis.FUSE_THRESHOLD_L1,
@@ -1233,7 +1233,7 @@ EON_HUNGARY = {
             # This seems to be wrong in documentation, it's not 0-0:96.50.68, but 0-0:96.3.10
         },
         {
-            'obis_reference': obis.BELGIUM_MAX_POWER_PER_PHASE,
+            'obis_reference': obis.ACTUAL_TRESHOLD_ELECTRICITY,
             'value_parser': CosemParser(ValueParser(Decimal)),
             'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
         },
