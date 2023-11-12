@@ -49,8 +49,8 @@ class TelegramParser(object):
 
         if "general_global_cipher" in self.telegram_specification:
             if self.telegram_specification["general_global_cipher"]:
-                enc_key = unhexlify(encryption_key)
-                auth_key = unhexlify(authentication_key)
+                enc_key = unhexlify(self.telegram_specification["encryption_key"] if "encryption_key" in self.telegram_specification else encryption_key)
+                auth_key = unhexlify(self.telegram_specification["authentication_key"] if "authentication_key" in self.telegram_specification else authentication_key)
                 telegram_data = unhexlify(telegram_data)
                 apdu = XDlmsApduFactory.apdu_from_bytes(apdu_bytes=telegram_data)
                 if apdu.security_control.security_suite != 0:

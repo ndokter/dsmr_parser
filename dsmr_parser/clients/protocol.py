@@ -3,6 +3,7 @@
 from functools import partial
 import asyncio
 import logging
+import copy
 
 from serial_asyncio import create_serial_connection
 
@@ -14,16 +15,16 @@ from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
     SERIAL_SETTINGS_V4, SERIAL_SETTINGS_V5
 
 
-def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
+def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, encryption_key="", authentication_key="", **kwargs):
     """Creates a DSMR asyncio protocol."""
     protocol = _create_dsmr_protocol(dsmr_version, telegram_callback,
-                                     DSMRProtocol, loop, **kwargs)
+                                     DSMRProtocol, loop, encryption_key, authentication_key, **kwargs)
     return protocol
 
 
 # pylama noqa - because of "complex" (too long) if-elif-else.
 # Match - case might be a solution but it is not available in <3.10
-def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, **kwargs): #noqa
+def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, encryption_key="", authentication_key="", **kwargs): #noqa
     """Creates a DSMR asyncio protocol."""
 
     if dsmr_version == '2.2':
@@ -50,6 +51,9 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
     elif dsmr_version == "Q3D":
         specification = telegram_specifications.Q3D
         serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == "SAGEMCOM_T210_D_R":
+        specification = telegram_specifications.SAGEMCOM_T210_D_R
+        serial_settings = SERIAL_SETTINGS_V5
     elif dsmr_version == 'ISKRA_IE':
         specification = telegram_specifications.ISKRA_IE
         serial_settings = SERIAL_SETTINGS_V5
@@ -60,16 +64,21 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
 
+    if "general_global_cipher" in specification and specification["general_global_cipher"]:
+        specification = copy.deepcopy(specification)
+        specification["encryption_key"] = encryption_key
+        specification["authentication_key"] = authentication_key
+
     protocol = partial(protocol, loop, TelegramParser(specification),
                        telegram_callback=telegram_callback, **kwargs)
 
     return protocol, serial_settings
 
 
-def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
+def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None, encryption_key="", authentication_key=""):
     """Creates a DSMR asyncio protocol coroutine using serial port."""
     protocol, serial_settings = create_dsmr_protocol(
-        dsmr_version, telegram_callback, loop=None)
+        dsmr_version, telegram_callback, loop=None, encryption_key=encryption_key, authentication_key=authentication_key)
     serial_settings['url'] = port
 
     conn = create_serial_connection(loop, protocol, **serial_settings)
