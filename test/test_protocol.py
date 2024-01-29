@@ -68,6 +68,6 @@ class ProtocolTest(unittest.TestCase):
 
         # 2nd call of keep_alive should close the transport
         self.protocol.keep_alive()
-        assert mock_transport.close.called_once()
+        mock_transport.close.assert_called_once()
 
         self.protocol.connection_lost(None)
