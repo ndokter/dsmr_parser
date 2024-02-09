@@ -963,6 +963,11 @@ Q3D = {
             'value_name': 'CURRENT_ELECTRICITY_USAGE'
         },
         {
+            'obis_reference': obis.CURRENT_ELECTRICITY_DELIVERY,
+            'value_parser': CosemParser(ValueParser(Decimal)),
+            'value_name': 'CURRENT_ELECTRICITY_DELIVERY'
+        },
+        {
             'obis_reference': obis.Q3D_EQUIPMENT_STATE,
             'value_parser': CosemParser(ValueParser(str)),
             'value_name': 'Q3D_EQUIPMENT_STATE'
