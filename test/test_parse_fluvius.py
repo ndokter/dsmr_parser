@@ -228,47 +228,53 @@ class TelegramParserFluviusTest(unittest.TestCase):
         assert result.TEXT_MESSAGE.unit is None
         assert result.TEXT_MESSAGE.value is None
 
-        # BELGIUM_MBUS1_DEVICE_TYPE (0-1:24.1.0)
-        assert isinstance(result.BELGIUM_MBUS1_DEVICE_TYPE, CosemObject)
-        assert result.BELGIUM_MBUS1_DEVICE_TYPE.unit is None
-        assert isinstance(result.BELGIUM_MBUS1_DEVICE_TYPE.value, int)
-        assert result.BELGIUM_MBUS1_DEVICE_TYPE.value == 3
+        # MBUS DEVICE 1
+        mbus1 = result.get_mbus_device_by_channel(1)
 
-        # BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER (0-1:96.1.1)
-        assert isinstance(result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER, CosemObject)
-        assert result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER.unit is None
-        assert isinstance(result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER.value, str)
-        assert result.BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER.value == '37464C4F32313139303333373333'
+        # MBUS_DEVICE_TYPE (0-1:24.1.0)
+        assert isinstance(mbus1.MBUS_DEVICE_TYPE, CosemObject)
+        assert mbus1.MBUS_DEVICE_TYPE.unit is None
+        assert isinstance(mbus1.MBUS_DEVICE_TYPE.value, int)
+        assert mbus1.MBUS_DEVICE_TYPE.value == 3
 
-        # BELGIUM_MBUS1_VALVE_POSITION (0-1:24.4.0)
-        assert isinstance(result.BELGIUM_MBUS1_VALVE_POSITION, CosemObject)
-        assert result.BELGIUM_MBUS1_VALVE_POSITION.unit is None
-        assert isinstance(result.BELGIUM_MBUS1_VALVE_POSITION.value, int)
-        assert result.BELGIUM_MBUS1_VALVE_POSITION.value == 1
+        # MBUS_EQUIPMENT_IDENTIFIER (0-1:96.1.1)
+        assert isinstance(mbus1.MBUS_EQUIPMENT_IDENTIFIER, CosemObject)
+        assert mbus1.MBUS_EQUIPMENT_IDENTIFIER.unit is None
+        assert isinstance(mbus1.MBUS_EQUIPMENT_IDENTIFIER.value, str)
+        assert mbus1.MBUS_EQUIPMENT_IDENTIFIER.value == '37464C4F32313139303333373333'
 
-        # BELGIUM_MBUS1_METER_READING2 (0-1:24.2.3)
-        assert isinstance(result.BELGIUM_MBUS1_METER_READING2, MBusObject)
-        assert result.BELGIUM_MBUS1_METER_READING2.unit == 'm3'
-        assert isinstance(result.BELGIUM_MBUS1_METER_READING2.value, Decimal)
-        assert result.BELGIUM_MBUS1_METER_READING2.value == Decimal('112.384')
+        # MBUS_VALVE_POSITION (0-1:24.4.0)
+        assert isinstance(result.MBUS_VALVE_POSITION, CosemObject)
+        assert result.MBUS_VALVE_POSITION.unit is None
+        assert isinstance(result.MBUS_VALVE_POSITION.value, int)
+        assert result.MBUS_VALVE_POSITION.value == 1
 
-        # BELGIUM_MBUS2_DEVICE_TYPE (0-2:24.1.0)
-        assert isinstance(result.BELGIUM_MBUS2_DEVICE_TYPE, CosemObject)
-        assert result.BELGIUM_MBUS2_DEVICE_TYPE.unit is None
-        assert isinstance(result.BELGIUM_MBUS2_DEVICE_TYPE.value, int)
-        assert result.BELGIUM_MBUS2_DEVICE_TYPE.value == 7
+        # MBUS_METER_READING (0-1:24.2.3)
+        assert isinstance(mbus1.MBUS_METER_READING, MBusObject)
+        assert mbus1.MBUS_METER_READING.unit == 'm3'
+        assert isinstance(mbus1.MBUS_METER_READING.value, Decimal)
+        assert mbus1.MBUS_METER_READING.value == Decimal('112.384')
 
-        # BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER (0-2:96.1.1)
-        assert isinstance(result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER, CosemObject)
-        assert result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER.unit is None
-        assert isinstance(result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER.value, str)
-        assert result.BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER.value == '3853414731323334353637383930'
+        # MBUS DEVICE 2
+        mbus2 = result.get_mbus_device_by_channel(2)
 
-        # BELGIUM_MBUS2_METER_READING1 (0-1:24.2.1)
-        assert isinstance(result.BELGIUM_MBUS2_METER_READING1, MBusObject)
-        assert result.BELGIUM_MBUS2_METER_READING1.unit == 'm3'
-        assert isinstance(result.BELGIUM_MBUS2_METER_READING1.value, Decimal)
-        assert result.BELGIUM_MBUS2_METER_READING1.value == Decimal('872.234')
+        # MBUS_DEVICE_TYPE (0-2:24.1.0)
+        assert isinstance(mbus2.MBUS_DEVICE_TYPE, CosemObject)
+        assert mbus2.MBUS_DEVICE_TYPE.unit is None
+        assert isinstance(mbus2.MBUS_DEVICE_TYPE.value, int)
+        assert mbus2.MBUS_DEVICE_TYPE.value == 7
+
+        # MBUS_EQUIPMENT_IDENTIFIER (0-2:96.1.1)
+        assert isinstance(mbus2.MBUS_EQUIPMENT_IDENTIFIER, CosemObject)
+        assert mbus2.MBUS_EQUIPMENT_IDENTIFIER.unit is None
+        assert isinstance(mbus2.MBUS_EQUIPMENT_IDENTIFIER.value, str)
+        assert mbus2.MBUS_EQUIPMENT_IDENTIFIER.value == '3853414731323334353637383930'
+
+        # MBUS_METER_READING (0-1:24.2.1)
+        assert isinstance(mbus2.MBUS_METER_READING, MBusObject)
+        assert mbus2.MBUS_METER_READING.unit == 'm3'
+        assert isinstance(mbus2.MBUS_METER_READING.value, Decimal)
+        assert mbus2.MBUS_METER_READING.value == Decimal('872.234')
 
     def test_checksum_valid(self):
         # No exception is raised.
@@ -295,6 +301,8 @@ class TelegramParserFluviusTest(unittest.TestCase):
         parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
         telegram = parser.parse(TELEGRAM_FLUVIUS_V171_ALT)
         json_data = json.loads(telegram.to_json())
+
+        self.maxDiff = None
 
         self.assertEqual(
             json_data,
@@ -338,26 +346,19 @@ class TelegramParserFluviusTest(unittest.TestCase):
              'ACTUAL_TRESHOLD_ELECTRICITY': {'value': 999.9, 'unit': 'kW'},
              'FUSE_THRESHOLD_L1': {'value': 999.0, 'unit': 'A'},
              'TEXT_MESSAGE': {'value': None, 'unit': None},
-             'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
-             'MBUS_DEVICES': [{'BELGIUM_MBUS1_DEVICE_TYPE': {'value': 3, 'unit': None},
-                               'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER': {'value': '37464C4F32313233303838303237',
+             'MBUS_DEVICES': [{'MBUS_DEVICE_TYPE': {'value': 3, 'unit': None},
+                               'MBUS_EQUIPMENT_IDENTIFIER': {'value': '37464C4F32313233303838303237',
                                                                       'unit': None},
-                               'BELGIUM_MBUS1_VALVE_POSITION': {'value': 1, 'unit': None},
-                               'BELGIUM_MBUS1_METER_READING2': {'datetime': '2023-11-02T11:10:02+00:00',
-                                                                'value': 92.287, 'unit': 'm3'},
+                               'MBUS_VALVE_POSITION': {'value': 1, 'unit': None},
+                               'MBUS_METER_READING': {'datetime': '2023-11-02T11:10:02+00:00',
+                                                                  'value': 92.287, 'unit': 'm3'},
                                'CHANNEL_ID': 1},
-                              {'BELGIUM_MBUS2_DEVICE_TYPE': {'value': 7, 'unit': None},
-                               'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER': {'value': '3853455430303030393631313733',
+                              {'MBUS_DEVICE_TYPE': {'value': 7, 'unit': None},
+                               'MBUS_EQUIPMENT_IDENTIFIER': {'value': '3853455430303030393631313733',
                                                                       'unit': None},
-                               'BELGIUM_MBUS2_METER_READING1': {'datetime': '2023-11-02T11:15:32+00:00',
-                                                                'value': 8.579, 'unit': 'm3'},
-                               'CHANNEL_ID': 2}],
-             'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER': {'value': '37464C4F32313233303838303237', 'unit': None},
-             'BELGIUM_MBUS1_VALVE_POSITION': {'value': 1, 'unit': None},
-             'BELGIUM_MBUS1_METER_READING2': {'datetime': '2023-11-02T11:10:02+00:00', 'value': 92.287, 'unit': 'm3'},
-             'BELGIUM_MBUS2_DEVICE_TYPE': {'value': 7, 'unit': None},
-             'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER': {'value': '3853455430303030393631313733', 'unit': None},
-             'BELGIUM_MBUS2_METER_READING1': {'datetime': '2023-11-02T11:15:32+00:00', 'value': 8.579, 'unit': 'm3'}}
+                               'MBUS_METER_READING': {'datetime': '2023-11-02T11:15:32+00:00',
+                                                                  'value': 8.579, 'unit': 'm3'},
+                               'CHANNEL_ID': 2}]}
         )
 
     def test_to_str(self):
@@ -399,21 +400,14 @@ class TelegramParserFluviusTest(unittest.TestCase):
                 'ACTUAL_TRESHOLD_ELECTRICITY: 	 999.9	[kW]\n'
                 'FUSE_THRESHOLD_L1: 	 999	[A]\n'
                 'TEXT_MESSAGE: 	 None	[None]\n'
-                'BELGIUM_MBUS1_DEVICE_TYPE: 	 3	[None]\n'
                 'MBUS DEVICE (channel 1)\n'
-                '	BELGIUM_MBUS1_DEVICE_TYPE: 	 3	[None]\n'
-                '	BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER: 	 37464C4F32313233303838303237	[None]\n'
-                '	BELGIUM_MBUS1_VALVE_POSITION: 	 1	[None]\n'
-                '	BELGIUM_MBUS1_METER_READING2: 	 92.287	[m3] at 2023-11-02T11:10:02+00:00\n'
+                '	MBUS_DEVICE_TYPE: 	 3	[None]\n'
+                '	MBUS_EQUIPMENT_IDENTIFIER: 	 37464C4F32313233303838303237	[None]\n'
+                '	MBUS_VALVE_POSITION: 	 1	[None]\n'
+                '	MBUS_METER_READING: 	 92.287	[m3] at 2023-11-02T11:10:02+00:00\n'
                 'MBUS DEVICE (channel 2)\n'
-                '	BELGIUM_MBUS2_DEVICE_TYPE: 	 7	[None]\n'
-                '	BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER: 	 3853455430303030393631313733	[None]\n'
-                '	BELGIUM_MBUS2_METER_READING1: 	 8.579	[m3] at 2023-11-02T11:15:32+00:00\n'
-                'BELGIUM_MBUS1_EQUIPMENT_IDENTIFIER: 	 37464C4F32313233303838303237	[None]\n'
-                'BELGIUM_MBUS1_VALVE_POSITION: 	 1	[None]\n'
-                'BELGIUM_MBUS1_METER_READING2: 	 92.287	[m3] at 2023-11-02T11:10:02+00:00\n'
-                'BELGIUM_MBUS2_DEVICE_TYPE: 	 7	[None]\n'
-                'BELGIUM_MBUS2_EQUIPMENT_IDENTIFIER: 	 3853455430303030393631313733	[None]\n'
-                'BELGIUM_MBUS2_METER_READING1: 	 8.579	[m3] at 2023-11-02T11:15:32+00:00\n'
+                '	MBUS_DEVICE_TYPE: 	 7	[None]\n'
+                '	MBUS_EQUIPMENT_IDENTIFIER: 	 3853455430303030393631313733	[None]\n'
+                '	MBUS_METER_READING: 	 8.579	[m3] at 2023-11-02T11:15:32+00:00\n'
             )
         )

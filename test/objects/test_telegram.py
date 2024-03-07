@@ -216,14 +216,6 @@ class TelegramTest(unittest.TestCase):
                                   value_type=Decimal,
                                   value_val=Decimal('2'))
 
-        # DEVICE_TYPE (0-x:24.1.0)
-        self.verify_telegram_item(telegram,
-                                  'DEVICE_TYPE',
-                                  object_type=CosemObject,
-                                  unit_val=None,
-                                  value_type=int,
-                                  value_val=3)
-
         # INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE (1-0:21.7.0)
         self.verify_telegram_item(telegram,
                                   'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE',
@@ -272,7 +264,15 @@ class TelegramTest(unittest.TestCase):
                                   value_type=Decimal,
                                   value_val=Decimal('0'))
 
-        # EQUIPMENT_IDENTIFIER_GAS (0-x:96.1.0)
+        # DEVICE_TYPE (0-1:24.1.0)
+        self.verify_telegram_item(telegram,
+                                  'DEVICE_TYPE',
+                                  object_type=CosemObject,
+                                  unit_val=None,
+                                  value_type=int,
+                                  value_val=3)
+
+        # EQUIPMENT_IDENTIFIER_GAS (0-1:96.1.0)
         self.verify_telegram_item(telegram,
                                   'EQUIPMENT_IDENTIFIER_GAS',
                                   object_type=CosemObject,
@@ -340,28 +340,28 @@ class TelegramTest(unittest.TestCase):
         self.assertEqual(len(mbus_devices), 2)
 
         mbus_device_1 = mbus_devices[0]
-        self.assertEqual(mbus_device_1.DEVICE_TYPE.value, 3)
-        self.assertEqual(mbus_device_1.EQUIPMENT_IDENTIFIER_GAS.value, None)
-        self.assertEqual(mbus_device_1.HOURLY_GAS_METER_READING.value, Decimal('0'))
+        self.assertEqual(mbus_device_1.MBUS_DEVICE_TYPE.value, 3)
+        self.assertEqual(mbus_device_1.MBUS_EQUIPMENT_IDENTIFIER.value, None)
+        self.assertEqual(mbus_device_1.MBUS_METER_READING.value, Decimal('0'))
 
         mbus_device_2 = mbus_devices[1]
-        self.assertEqual(mbus_device_2.DEVICE_TYPE.value, 3)
-        self.assertEqual(mbus_device_2.EQUIPMENT_IDENTIFIER_GAS.value, '4730303339303031393336393930363139')
-        self.assertEqual(mbus_device_2.HOURLY_GAS_METER_READING.value, Decimal('246.138'))
+        self.assertEqual(mbus_device_2.MBUS_DEVICE_TYPE.value, 3)
+        self.assertEqual(mbus_device_2.MBUS_EQUIPMENT_IDENTIFIER.value, '4730303339303031393336393930363139')
+        self.assertEqual(mbus_device_2.MBUS_METER_READING.value, Decimal('246.138'))
 
     def test_get_mbus_device_by_channel(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5_TWO_MBUS)
 
         mbus_device_1 = telegram.get_mbus_device_by_channel(1)
-        self.assertEqual(mbus_device_1.DEVICE_TYPE.value, 3)
-        self.assertEqual(mbus_device_1.EQUIPMENT_IDENTIFIER_GAS.value, None)
-        self.assertEqual(mbus_device_1.HOURLY_GAS_METER_READING.value, Decimal('0'))
+        self.assertEqual(mbus_device_1.MBUS_DEVICE_TYPE.value, 3)
+        self.assertEqual(mbus_device_1.MBUS_EQUIPMENT_IDENTIFIER.value, None)
+        self.assertEqual(mbus_device_1.MBUS_METER_READING.value, Decimal('0'))
 
         mbus_device_2 = telegram.get_mbus_device_by_channel(2)
-        self.assertEqual(mbus_device_2.DEVICE_TYPE.value, 3)
-        self.assertEqual(mbus_device_2.EQUIPMENT_IDENTIFIER_GAS.value, '4730303339303031393336393930363139')
-        self.assertEqual(mbus_device_2.HOURLY_GAS_METER_READING.value, Decimal('246.138'))
+        self.assertEqual(mbus_device_2.MBUS_DEVICE_TYPE.value, 3)
+        self.assertEqual(mbus_device_2.MBUS_EQUIPMENT_IDENTIFIER.value, '4730303339303031393336393930363139')
+        self.assertEqual(mbus_device_2.MBUS_METER_READING.value, Decimal('246.138'))
 
     def test_without_mbus_devices(self):
         parser = TelegramParser(telegram_specifications.V5, apply_checksum_validation=False)
@@ -375,11 +375,12 @@ class TelegramTest(unittest.TestCase):
         telegram = parser.parse(TELEGRAM_V5)
         json_data = json.loads(telegram.to_json())
 
+        self.maxDiff = None
+
         self.assertEqual(
             json_data,
             {'CURRENT_ELECTRICITY_DELIVERY': {'unit': 'kW', 'value': 0.0},
              'CURRENT_ELECTRICITY_USAGE': {'unit': 'kW', 'value': 0.244},
-             'DEVICE_TYPE': {'unit': None, 'value': 3},
              'ELECTRICITY_ACTIVE_TARIFF': {'unit': None, 'value': '0002'},
              'ELECTRICITY_DELIVERED_TARIFF_1': {'unit': 'kWh', 'value': 2.444},
              'ELECTRICITY_DELIVERED_TARIFF_2': {'unit': 'kWh', 'value': 0.0},
@@ -387,10 +388,6 @@ class TelegramTest(unittest.TestCase):
              'ELECTRICITY_USED_TARIFF_2': {'unit': 'kWh', 'value': 2.399},
              'EQUIPMENT_IDENTIFIER': {'unit': None,
                                       'value': '4B384547303034303436333935353037'},
-             'EQUIPMENT_IDENTIFIER_GAS': {'unit': None, 'value': None},
-             'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T15:10:05+00:00',
-                                          'unit': 'm3',
-                                          'value': 0.107},
              'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE': {'unit': 'kW', 'value': 0.0},
              'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE': {'unit': 'kW', 'value': 0.07},
              'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE': {'unit': 'kW', 'value': 0.0},
@@ -405,15 +402,16 @@ class TelegramTest(unittest.TestCase):
              'INSTANTANEOUS_VOLTAGE_L3': {'unit': 'V', 'value': 229.0},
              'LONG_POWER_FAILURE_COUNT': {'unit': None, 'value': 0},
              'MBUS_DEVICES': [{'CHANNEL_ID': 1,
-                               'DEVICE_TYPE': {'unit': None, 'value': 3},
-                               'EQUIPMENT_IDENTIFIER_GAS': {'unit': None,
-                                                            'value': '3232323241424344313233343536373839'},
-                               'HOURLY_GAS_METER_READING': {'datetime': '2017-01-02T15:10:05+00:00',
-                                                            'unit': 'm3',
-                                                            'value': 0.107}},
+                               'MBUS_DEVICE_TYPE': {'unit': None, 'value': 3},
+                               'MBUS_EQUIPMENT_IDENTIFIER': {'unit': None,
+                                                             'value': '3232323241424344313233343536373839'},
+                               'MBUS_METER_READING': {'datetime': '2017-01-02T15:10:05+00:00',
+                                                      'unit': 'm3',
+                                                      'value': 0.107}},
                               {'CHANNEL_ID': 2,
-                               'DEVICE_TYPE': {'unit': None, 'value': 3},
-                               'EQUIPMENT_IDENTIFIER_GAS': {'unit': None, 'value': None}}],
+                               'MBUS_DEVICE_TYPE': {'unit': None, 'value': 3},
+                               'MBUS_EQUIPMENT_IDENTIFIER': {'unit': None,
+                                                             'value': None}}],
              'P1_MESSAGE_HEADER': {'unit': None, 'value': '50'},
              'P1_MESSAGE_TIMESTAMP': {'unit': None, 'value': '2017-01-02T18:20:02+00:00'},
              'POWER_EVENT_FAILURE_LOG': {'buffer': [],
@@ -432,6 +430,8 @@ class TelegramTest(unittest.TestCase):
     def test_to_str(self):
         parser = TelegramParser(telegram_specifications.V5)
         telegram = parser.parse(TELEGRAM_V5)
+
+        self.maxDiff = None
 
         self.assertEqual(
             str(telegram),
@@ -463,22 +463,19 @@ class TelegramTest(unittest.TestCase):
                 'INSTANTANEOUS_CURRENT_L2: 	 0.44	[A]\n'
                 'INSTANTANEOUS_CURRENT_L3: 	 0.86	[A]\n'
                 'TEXT_MESSAGE: 	 None	[None]\n'
-                'DEVICE_TYPE: 	 3	[None]\n'
-                'MBUS DEVICE (channel 1)\n'
-                '	DEVICE_TYPE: 	 3	[None]\n'
-                '	EQUIPMENT_IDENTIFIER_GAS: 	 3232323241424344313233343536373839	[None]\n'
-                '	HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00\n'
-                'MBUS DEVICE (channel 2)\n'
-                '	DEVICE_TYPE: 	 3	[None]\n'
-                '	EQUIPMENT_IDENTIFIER_GAS: 	 None	[None]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE: 	 0.070	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE: 	 0.032	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE: 	 0.142	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE: 	 0.000	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE: 	 0.000	[kW]\n'
                 'INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE: 	 0.000	[kW]\n'
-                'EQUIPMENT_IDENTIFIER_GAS: 	 None	[None]\n'
-                'HOURLY_GAS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00\n'
+                'MBUS DEVICE (channel 1)\n'
+                '	MBUS_DEVICE_TYPE: 	 3	[None]\n'
+                '	MBUS_EQUIPMENT_IDENTIFIER: 	 3232323241424344313233343536373839	[None]\n'
+                '	MBUS_METER_READING: 	 0.107	[m3] at 2017-01-02T15:10:05+00:00\n'
+                'MBUS DEVICE (channel 2)\n'
+                '	MBUS_DEVICE_TYPE: 	 3	[None]\n'
+                '	MBUS_EQUIPMENT_IDENTIFIER: 	 None	[None]\n'
             )
         )
 
