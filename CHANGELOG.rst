@@ -1,6 +1,13 @@
 Change Log
 ----------
 
+**1.4.0** (2024-03-12)
+- Q3D add CURRENT_ELECTRICITY_DELIVERY
+ (`PR #149 <https://github.com/ndokter/dsmr_parser/pull/149>`_ by `Aeroid <https://github.com/Aeroid>`_)
+- Copy head_parsers list on construct.
+ (`PR #150 <https://github.com/ndokter/dsmr_parser/pull/150>`_ by `dupondje <https://github.com/dupondje>`_)
+
+
 **1.3.2** (2024-01-29)
 - Fix unit test for pyton 3.12
  (`PR #148 <https://github.com/ndokter/dsmr_parser/pull/148>`_ by `ndokter <https://github.com/ndokter>`_)
