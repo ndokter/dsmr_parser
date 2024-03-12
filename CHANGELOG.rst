@@ -3,31 +3,25 @@ Change Log
 
 **1.4.0** (2024-03-12)
 
-- Q3D add CURRENT_ELECTRICITY_DELIVERY
- (`PR #149 <https://github.com/ndokter/dsmr_parser/pull/149>`_ by `Aeroid <https://github.com/Aeroid>`_)
-- Copy head_parsers list on construct.
- (`PR #150 <https://github.com/ndokter/dsmr_parser/pull/150>`_ by `dupondje <https://github.com/dupondje>`_)
+- Q3D add CURRENT_ELECTRICITY_DELIVERY (`PR #149 <https://github.com/ndokter/dsmr_parser/pull/149>`_ by `Aeroid <https://github.com/Aeroid>`_)
+- Copy head_parsers list on construct. (`PR #150 <https://github.com/ndokter/dsmr_parser/pull/150>`_ by `dupondje <https://github.com/dupondje>`_)
 
 
 **1.3.2** (2024-01-29)
 
-- Fix unit test for pyton 3.12
- (`PR #148 <https://github.com/ndokter/dsmr_parser/pull/148>`_ by `ndokter <https://github.com/ndokter>`_)
+- Fix unit test for pyton 3.12 (`PR #148 <https://github.com/ndokter/dsmr_parser/pull/148>`_ by `ndokter <https://github.com/ndokter>`_)
 
 **1.3.1** (2023-11-06)
 
-- Fix parsing peak usage with invalid timestamps
- (`PR #143 <https://github.com/ndokter/dsmr_parser/pull/143>`_ by `dupondje <https://github.com/dupondje>`_)
+- Fix parsing peak usage with invalid timestamps (`PR #143 <https://github.com/ndokter/dsmr_parser/pull/143>`_ by `dupondje <https://github.com/dupondje>`_)
 
 **1.3.0** (2023-08-01)
 
-- added E.ON Hungary; refactored DSMR specifications to fix obis reference conflicts
- (`PR #137 <https://github.com/ndokter/dsmr_parser/pull/137>`_ by `balazs92117 <https://github.com/balazs92117>`_)
+- added E.ON Hungary; refactored DSMR specifications to fix obis reference conflicts (`PR #137 <https://github.com/ndokter/dsmr_parser/pull/137>`_ by `balazs92117 <https://github.com/balazs92117>`_)
 
 **1.2.4** (2023-07-11)
 
-- EQUIPMENT IDENTIFIER is wrong for Fluvius meters when other mbus devices are present
- (`PR #133 <https://github.com/ndokter/dsmr_parser/pull/133>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
+- EQUIPMENT IDENTIFIER is wrong for Fluvius meters when other mbus devices are present (`PR #133 <https://github.com/ndokter/dsmr_parser/pull/133>`_ by `ejpalacios <https://github.com/ejpalacios>`_)
 
 
 **1.2.3** (2023-04-18)
