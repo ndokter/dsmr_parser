@@ -335,7 +335,7 @@ class ProfileGenericParser(DSMRObjectParser):
     """
 
     def __init__(self, buffer_types, head_parsers, parsers_for_unidentified):
-        self.value_formats = head_parsers
+        self.value_formats = head_parsers.copy()
         self.buffer_types = buffer_types
         self.parsers_for_unidentified = parsers_for_unidentified
 
