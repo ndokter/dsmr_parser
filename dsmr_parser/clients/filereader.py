@@ -74,7 +74,7 @@ class FileReader(object):
                     try:
                         yield Telegram(telegram, self.telegram_parser, self.telegram_specification)
                     except InvalidChecksumError as e:
-                        logger.warning(str(e))
+                        logger.info(str(e))
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
 
