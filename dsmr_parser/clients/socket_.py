@@ -50,7 +50,7 @@ class SocketReader(object):
                     try:
                         yield self.telegram_parser.parse(telegram)
                     except InvalidChecksumError as e:
-                        logger.infp(str(e))
+                        logger.info(str(e))
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
 
