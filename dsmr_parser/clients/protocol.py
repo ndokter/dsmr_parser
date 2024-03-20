@@ -150,7 +150,7 @@ class DSMRProtocol(asyncio.Protocol):
         try:
             parsed_telegram = self.telegram_parser.parse(telegram)
         except InvalidChecksumError as e:
-            self.log.warning(str(e))
+            self.log.info(str(e))
         except ParseError:
             self.log.exception("failed to parse telegram")
         else:
