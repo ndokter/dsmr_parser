@@ -1,9 +1,9 @@
 Change Log
 ----------
 
-**1.4.1** (2024-03-12)
+**1.4.1** (2024-06-04)
 
-- Avoid loading timezone at runtime (`PR #157 <https://github.com/ndokter/dsmr_parser/pull/157>`_ by `dupondje <https://github.com/elupus>`_)
+- Avoid loading timezone at runtime (`PR #157 <https://github.com/ndokter/dsmr_parser/pull/157>`_ by `elupus <https://github.com/elupus>`_)
 
 **1.4.0** (2024-03-12)
 
