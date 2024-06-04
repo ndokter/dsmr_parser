@@ -2,6 +2,10 @@ import datetime
 
 import pytz
 
+# TODO : Use system timezone
+# Preload timezone to avoid loading in event loop later
+local_tz = pytz.timezone('Europe/Amsterdam')
+
 
 def timestamp(value):
     try:
@@ -20,8 +24,6 @@ def timestamp(value):
     else:
         is_dst = False
 
-    # TODO : Use system timezone
-    local_tz = pytz.timezone('Europe/Amsterdam')
     localized_datetime = local_tz.localize(naive_datetime, is_dst=is_dst)
 
     return localized_datetime.astimezone(pytz.utc)
