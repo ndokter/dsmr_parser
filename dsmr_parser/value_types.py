@@ -6,6 +6,7 @@ import pytz
 # Preload timezone to avoid loading in event loop later
 local_tz = pytz.timezone('Europe/Amsterdam')
 
+
 def timestamp(value):
     try:
         naive_datetime = datetime.datetime.strptime(value[:-1], '%y%m%d%H%M%S')
