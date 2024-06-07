@@ -11,7 +11,7 @@ setup(
     packages=find_packages(exclude=('test', 'test.*')),
     install_requires=[
         'pyserial>=3,<4',
-        'pyserial-asyncio<1',
+        'pyserial-asyncio-fast>=0.11',
         'pytz',
         'Tailer==0.4.1',
         'dlms_cosem==21.3.2'
