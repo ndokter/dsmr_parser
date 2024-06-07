@@ -4,7 +4,7 @@ from functools import partial
 import asyncio
 import logging
 
-from serial_asyncio import create_serial_connection
+from serial_asyncio_fast import create_serial_connection
 
 from dsmr_parser import telegram_specifications
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
