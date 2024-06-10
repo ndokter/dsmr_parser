@@ -40,7 +40,7 @@ class SocketReader(object):
                 except socket.timeout:
                     logger.error("Socket timeout occurred, exiting")
                     break
-                    
+
                 lines = buffer.splitlines(keepends=True)
 
                 if len(lines) == 0:
