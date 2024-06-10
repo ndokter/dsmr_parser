@@ -37,7 +37,7 @@ class SocketReader(object):
             while True:
                 try:
                     buffer += socket_handle.recv(self.BUFFER_SIZE)
-                except socket.timeout::
+                except socket.timeout:
                     logger.error("Socket timeout occurred, exiting")
                     break
                     
