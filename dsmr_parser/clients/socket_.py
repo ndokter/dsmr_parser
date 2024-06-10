@@ -31,11 +31,15 @@ class SocketReader(object):
         buffer = b""
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_handle:
-
+            socket_handle.settimeout(60)
             socket_handle.connect((self.host, self.port))
 
             while True:
-                buffer += socket_handle.recv(self.BUFFER_SIZE)
+                try:
+                    buffer += socket_handle.recv(self.BUFFER_SIZE)
+                except socket.timeout:
+                    logger.error("Socket timeout occurred, exiting")
+                    break
 
                 lines = buffer.splitlines(keepends=True)
 
