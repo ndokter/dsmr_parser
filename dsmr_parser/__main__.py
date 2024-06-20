@@ -16,8 +16,12 @@ def console():
                         help='alternatively connect using TCP host.')
     parser.add_argument('--port', default=None,
                         help='TCP port to use for connection')
-    parser.add_argument('--version', default='2.2', choices=['2.2', '4', '5', '5B', '5L', '5S', 'Q3D'],
-                        help='DSMR version (2.2, 4, 5, 5B, 5L, 5S, Q3D)')
+    parser.add_argument('--version', default='2.2', choices=['2.2', '4', '5', '5B', '5L', '5S', 'Q3D', 'SAGEMCOM_T210_D_R'],
+                        help='DSMR version (2.2, 4, 5, 5B, 5L, 5S, Q3D, SAGEMCOM_T210_D_R)')
+    parser.add_argument('--encryption_key', default="",
+                        help='configure the global cipher encryption_key')
+    parser.add_argument('--authentication_key', default="",
+                        help='configure the global cipher authentication_key')
     parser.add_argument('--verbose', '-v', action='count')
 
     args = parser.parse_args()
@@ -45,7 +49,8 @@ def console():
     else:
         create_connection = partial(create_dsmr_reader,
                                     args.device, args.version,
-                                    print_callback, loop=loop)
+                                    print_callback, loop=loop,
+                                    encryption_key=args.encryption_key, authentication_key=args.authentication_key)
 
     try:
         # connect and keep connected until interrupted by ctrl-c
