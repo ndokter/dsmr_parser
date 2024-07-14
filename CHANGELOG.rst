@@ -1,6 +1,11 @@
 Change Log
 ----------
 
+**1.4.2** (2024-07-14)
+
+- Bump Github Actions to latest versions in favor of Node deprecations (`PR #159 <https://github.com/ndokter/dsmr_parser/pull/159>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)
+- Swap pyserial-asyncio for pyserial-asyncio-fast (`PR #158 <https://github.com/ndokter/dsmr_parser/pull/158>`_ by `bdraco <https://github.com/bdraco>`_)
+
 **1.4.1** (2024-06-04)
 
 - Avoid loading timezone at runtime (`PR #157 <https://github.com/ndokter/dsmr_parser/pull/157>`_ by `elupus <https://github.com/elupus>`_)
