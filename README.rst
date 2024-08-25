@@ -299,6 +299,7 @@ Development
 Create a virtualenv and activate it followed by the installation of the dsmr-parser:
 
 .. code-block:: bash
+
     python3 -m venv venv
     source venv/bin/activate
     pip install -e .
@@ -306,12 +307,14 @@ Create a virtualenv and activate it followed by the installation of the dsmr-par
 Install tox and run it:
 
 .. code-block:: bash
+
     pip install tox
     tox
 
 You should see that the tests have succeeded:
 
 .. code-block::
+
 ======================================================================================================== 59 passed in 0.91s ========================================================================================================
 py: commands[1]> pylama dsmr_parser test
   py: OK (11.55=setup[9.73]+cmd[1.29,0.53] seconds)
