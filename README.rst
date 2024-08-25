@@ -313,7 +313,7 @@ Install tox and run it:
 
 You should see that the tests have succeeded:
 
-.. code-block:: plaintext
+.. code-block:: text
 
 ======================================================================================================== 59 passed in 0.91s ========================================================================================================
 py: commands[1]> pylama dsmr_parser test
