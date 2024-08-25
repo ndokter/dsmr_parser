@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  push: ~
+  pull_request: ~
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10  # Don't run forever when stale
+
+    strategy:
+      matrix:
+        python-version:
+          - '3.7'
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+
+    name: Python ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cached PIP dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.tox/python/.pytest_cache
+          key: pip-${{ matrix.python-version }}-${{ hashFiles('setup.py', 'tox.ini') }}
+          restore-keys: pip-${{ matrix.python-version }}-
+
+      - name: Install dependencies
+        run: pip install tox
+
+      - name: Run tests
+        run: tox
+
+      - name: Code coverage upload
+        uses: codecov/codecov-action@v4

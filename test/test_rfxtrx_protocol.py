@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import unittest
 
 from dsmr_parser import obis_references as obis
-from dsmr_parser.clients.protocol import create_dsmr_protocol
+from dsmr_parser.clients.rfxtrx_protocol import create_rfxtrx_dsmr_protocol, PACKETTYPE_DSMR, SUBTYPE_P1
 from dsmr_parser.objects import Telegram
 
 TELEGRAM_V2_2 = (
@@ -29,19 +29,43 @@ TELEGRAM_V2_2 = (
     '!\r\n'
 )
 
+OTHER_RF_PACKET = b'\x03\x01\x02\x03'
 
-class ProtocolTest(unittest.TestCase):
+
+def encode_telegram_as_RF_packets(telegram):
+    data = b''
+
+    for line in telegram.split('\n'):
+        packet_data = (line + '\n').encode('ascii')
+        packet_header = bytes(bytearray([
+            len(packet_data) + 3,  # excluding length byte
+            PACKETTYPE_DSMR,
+            SUBTYPE_P1,
+            0  # seq num (ignored)
+        ]))
+
+        data += packet_header + packet_data
+        # other RF packets can pass by on the line
+        data += OTHER_RF_PACKET
+
+    return data
+
+
+class RFXtrxProtocolTest(unittest.TestCase):
 
     def setUp(self):
-        new_protocol, _ = create_dsmr_protocol('2.2',
-                                               telegram_callback=Mock(),
-                                               keep_alive_interval=1)
+        new_protocol, _ = create_rfxtrx_dsmr_protocol('2.2',
+                                                      telegram_callback=Mock(),
+                                                      keep_alive_interval=1)
         self.protocol = new_protocol()
 
     def test_complete_packet(self):
         """Protocol should assemble incoming lines into complete packet."""
 
-        self.protocol.data_received(TELEGRAM_V2_2.encode('ascii'))
+        data = encode_telegram_as_RF_packets(TELEGRAM_V2_2)
+        # send data broken up in two parts
+        self.protocol.data_received(data[0:200])
+        self.protocol.data_received(data[200:])
 
         telegram = self.protocol.telegram_callback.call_args_list[0][0][0]
         assert isinstance(telegram, Telegram)
@@ -51,23 +75,3 @@ class ProtocolTest(unittest.TestCase):
 
         assert float(telegram[obis.GAS_METER_READING].value) == 1.001
         assert telegram[obis.GAS_METER_READING].unit == 'm3'
-
-    def test_receive_packet(self):
-        """Protocol packet reception."""
-
-        mock_transport = Mock()
-        self.protocol.connection_made(mock_transport)
-        assert not self.protocol._active
-
-        self.protocol.data_received(TELEGRAM_V2_2.encode('ascii'))
-        assert self.protocol._active
-
-        # 1st call of keep_alive resets 'active' flag
-        self.protocol.keep_alive()
-        assert not self.protocol._active
-
-        # 2nd call of keep_alive should close the transport
-        self.protocol.keep_alive()
-        mock_transport.close.assert_called_once()
-
-        self.protocol.connection_lost(None)

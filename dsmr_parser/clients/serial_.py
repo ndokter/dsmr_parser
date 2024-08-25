@@ -1,10 +1,9 @@
-import asyncio
 import logging
 import serial
-import serial_asyncio
+import serial_asyncio_fast
 
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
-from dsmr_parser.exceptions import ParseError
+from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.parsers import TelegramParser
 
 
@@ -20,11 +19,31 @@ class SerialReader(object):
 
         self.telegram_parser = TelegramParser(telegram_specification)
         self.telegram_buffer = TelegramBuffer()
+        self.telegram_specification = telegram_specification
 
     def read(self):
         """
         Read complete DSMR telegram's from the serial interface and parse it
         into CosemObject's and MbusObject's
+
+        :rtype: generator
+        """
+        with serial.Serial(**self.serial_settings) as serial_handle:
+            while True:
+                data = serial_handle.read(max(1, min(1024, serial_handle.in_waiting)))
+                self.telegram_buffer.append(data.decode('ascii'))
+
+                for telegram in self.telegram_buffer.get_all():
+                    try:
+                        yield self.telegram_parser.parse(telegram)
+                    except InvalidChecksumError as e:
+                        logger.info(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
+
+    def read_as_object(self):
+        """
+        Read complete DSMR telegram's from the serial interface and return a Telegram object.
 
         :rtype: generator
         """
@@ -36,6 +55,8 @@ class SerialReader(object):
                 for telegram in self.telegram_buffer.get_all():
                     try:
                         yield self.telegram_parser.parse(telegram)
+                    except InvalidChecksumError as e:
+                        logger.warning(str(e))
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
 
@@ -45,8 +66,7 @@ class AsyncSerialReader(SerialReader):
 
     PORT_KEY = 'url'
 
-    @asyncio.coroutine
-    def read(self, queue):
+    async def read(self, queue):
         """
         Read complete DSMR telegram's from the serial interface and parse it
         into CosemObject's and MbusObject's.
@@ -57,13 +77,13 @@ class AsyncSerialReader(SerialReader):
         :rtype: None
         """
         # create Serial StreamReader
-        conn = serial_asyncio.open_serial_connection(**self.serial_settings)
-        reader, _ = yield from conn
+        conn = serial_asyncio_fast.open_serial_connection(**self.serial_settings)
+        reader, _ = await conn
 
         while True:
             # Read line if available or give control back to loop until new
             # data has arrived.
-            data = yield from reader.readline()
+            data = await reader.readline()
             self.telegram_buffer.append(data.decode('ascii'))
 
             for telegram in self.telegram_buffer.get_all():
@@ -74,3 +94,35 @@ class AsyncSerialReader(SerialReader):
                     )
                 except ParseError as e:
                     logger.warning('Failed to parse telegram: %s', e)
+
+    async def read_as_object(self, queue):
+        """
+        Read complete DSMR telegram's from the serial interface
+        and return a Telegram object.
+
+        Instead of being a generator, Telegram objects are pushed
+        to provided queue for asynchronous processing.
+
+        :rtype: None
+        """
+
+        # create Serial StreamReader
+        conn = serial_asyncio_fast.open_serial_connection(**self.serial_settings)
+        reader, _ = await conn
+
+        while True:
+
+            # Read line if available or give control back to loop until new
+            # data has arrived.
+            data = await reader.readline()
+            self.telegram_buffer.append(data.decode('ascii'))
+
+            for telegram in self.telegram_buffer.get_all():
+                try:
+                    queue.put_nowait(
+                        self.telegram_parser.parse(telegram)
+                    )
+                except InvalidChecksumError as e:
+                    logger.warning(str(e))
+                except ParseError as e:
+                    logger.error('Failed to parse telegram: %s', e)
