@@ -21,7 +21,7 @@ class TelegramParserV5Test(unittest.TestCase):
             telegram = parser.parse(TELEGRAM_V5, throw_ex=True)
         except Exception as ex:
             assert False, f"parse trigged an exception {ex}"
-        print('test: ', type(telegram.P1_MESSAGE_HEADER), telegram.P1_MESSAGE_HEADER.__dict__)
+
         # P1_MESSAGE_HEADER (1-3:0.2.8)
         assert isinstance(telegram.P1_MESSAGE_HEADER, CosemObject)
         assert telegram.P1_MESSAGE_HEADER.unit is None
