@@ -1,5 +1,4 @@
 import logging
-from importlib.metadata import pass_none
 
 import serial
 import serial_asyncio_fast
