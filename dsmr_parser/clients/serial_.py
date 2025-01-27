@@ -1,4 +1,6 @@
 import logging
+from importlib.metadata import pass_none
+
 import serial
 import serial_asyncio_fast
 
@@ -31,15 +33,20 @@ class SerialReader(object):
         with serial.Serial(**self.serial_settings) as serial_handle:
             while True:
                 data = serial_handle.read(max(1, min(1024, serial_handle.in_waiting)))
-                self.telegram_buffer.append(data.decode('ascii'))
+                try:
+                    decoded_data = data.decode('ascii')
+                except:
+                    yield None
+                else:
+                    self.telegram_buffer.append(decoded_data)
 
-                for telegram in self.telegram_buffer.get_all():
-                    try:
-                        yield self.telegram_parser.parse(telegram)
-                    except InvalidChecksumError as e:
-                        logger.info(str(e))
-                    except ParseError as e:
-                        logger.error('Failed to parse telegram: %s', e)
+                    for telegram in self.telegram_buffer.get_all():
+                        try:
+                            yield self.telegram_parser.parse(telegram)
+                        except InvalidChecksumError as e:
+                            logger.info(str(e))
+                        except ParseError as e:
+                            logger.error('Failed to parse telegram: %s', e)
 
     def read_as_object(self):
         """
@@ -50,15 +57,20 @@ class SerialReader(object):
         with serial.Serial(**self.serial_settings) as serial_handle:
             while True:
                 data = serial_handle.readline()
-                self.telegram_buffer.append(data.decode('ascii'))
+                try:
+                    decoded_data = data.decode('ascii')
+                except:
+                    yield None
+                else:
+                    self.telegram_buffer.append(decoded_data)
 
-                for telegram in self.telegram_buffer.get_all():
-                    try:
-                        yield self.telegram_parser.parse(telegram)
-                    except InvalidChecksumError as e:
-                        logger.warning(str(e))
-                    except ParseError as e:
-                        logger.error('Failed to parse telegram: %s', e)
+                    for telegram in self.telegram_buffer.get_all():
+                        try:
+                            yield self.telegram_parser.parse(telegram)
+                        except InvalidChecksumError as e:
+                            logger.warning(str(e))
+                        except ParseError as e:
+                            logger.error('Failed to parse telegram: %s', e)
 
 
 class AsyncSerialReader(SerialReader):
@@ -84,16 +96,21 @@ class AsyncSerialReader(SerialReader):
             # Read line if available or give control back to loop until new
             # data has arrived.
             data = await reader.readline()
-            self.telegram_buffer.append(data.decode('ascii'))
+            try:
+                decoded_data = data.decode('ascii')
+            except:
+                yield None
+            else:
+                self.telegram_buffer.append(decoded_data)
 
-            for telegram in self.telegram_buffer.get_all():
-                try:
-                    # Push new parsed telegram onto queue.
-                    queue.put_nowait(
-                        self.telegram_parser.parse(telegram)
-                    )
-                except ParseError as e:
-                    logger.warning('Failed to parse telegram: %s', e)
+                for telegram in self.telegram_buffer.get_all():
+                    try:
+                        # Push new parsed telegram onto queue.
+                        queue.put_nowait(
+                            self.telegram_parser.parse(telegram)
+                        )
+                    except ParseError as e:
+                        logger.warning('Failed to parse telegram: %s', e)
 
     async def read_as_object(self, queue):
         """
@@ -115,14 +132,19 @@ class AsyncSerialReader(SerialReader):
             # Read line if available or give control back to loop until new
             # data has arrived.
             data = await reader.readline()
-            self.telegram_buffer.append(data.decode('ascii'))
+            try:
+                decoded_data = data.decode('ascii')
+            except:
+                yield None
+            else:
+                self.telegram_buffer.append(decoded_data)
 
-            for telegram in self.telegram_buffer.get_all():
-                try:
-                    queue.put_nowait(
-                        self.telegram_parser.parse(telegram)
-                    )
-                except InvalidChecksumError as e:
-                    logger.warning(str(e))
-                except ParseError as e:
-                    logger.error('Failed to parse telegram: %s', e)
+                for telegram in self.telegram_buffer.get_all():
+                    try:
+                        queue.put_nowait(
+                            self.telegram_parser.parse(telegram)
+                        )
+                    except InvalidChecksumError as e:
+                        logger.warning(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
