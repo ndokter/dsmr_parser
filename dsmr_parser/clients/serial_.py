@@ -35,7 +35,7 @@ class SerialReader(object):
                 try:
                     decoded_data = data.decode('ascii')
                 except:
-                    pass
+                    logger.warning('Failed to decode telegram data: %s', data)
                 else:
                     self.telegram_buffer.append(decoded_data)
 
@@ -59,7 +59,7 @@ class SerialReader(object):
                 try:
                     decoded_data = data.decode('ascii')
                 except:
-                    pass
+                    logger.warning('Failed to decode telegram data: %s', data)
                 else:
                     self.telegram_buffer.append(decoded_data)
 
@@ -98,7 +98,7 @@ class AsyncSerialReader(SerialReader):
             try:
                 decoded_data = data.decode('ascii')
             except:
-                pass
+                logger.warning('Failed to decode telegram data: %s', data)
             else:
                 self.telegram_buffer.append(decoded_data)
 
@@ -134,7 +134,7 @@ class AsyncSerialReader(SerialReader):
             try:
                 decoded_data = data.decode('ascii')
             except:
-                pass
+                logger.warning('Failed to decode telegram data: %s', data)
             else:
                 self.telegram_buffer.append(decoded_data)
 
