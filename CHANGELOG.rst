@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.4.3** (2025-02-08)
+
+- Don't throw an error when string can't be decoded to ascii (`PR #170 <https://github.com/ndokter/dsmr_parser/pull/170>`_ by `ekaats <https://github.com/ekaats>`_)
+
 **1.4.2** (2024-07-14)
 
 - Bump Github Actions to latest versions in favor of Node deprecations (`PR #159 <https://github.com/ndokter/dsmr_parser/pull/159>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)
