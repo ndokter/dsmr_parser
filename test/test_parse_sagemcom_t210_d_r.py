@@ -54,6 +54,14 @@ class TelegramParserEncryptedTest(unittest.TestCase):
 
         return full_frame
 
+    def test_parsing_encryption_key_within_specification(self):
+        specification = deepcopy(telegram_specifications.SAGEMCOM_T210_D_R)
+        specification['encryption_key'] = self.DUMMY_ENCRYPTION_KEY
+        specification['authentication_key'] = self.DUMMY_AUTHENTICATION_KEY
+        parser = TelegramParser(specification)
+        result = parser.parse(self.__generate_encrypted().hex())
+        self.assertEqual(len(result), 18)
+
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.SAGEMCOM_T210_D_R)
         result = parser.parse(self.__generate_encrypted().hex(),

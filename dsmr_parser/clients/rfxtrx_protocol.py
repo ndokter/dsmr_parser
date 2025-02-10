@@ -6,17 +6,17 @@ from serial_asyncio_fast import create_serial_connection
 from .protocol import DSMRProtocol, _create_dsmr_protocol
 
 
-def create_rfxtrx_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
+def create_rfxtrx_dsmr_protocol(dsmr_version, telegram_callback, loop=None, encryption_key="", authentication_key="", **kwargs):
     """Creates a RFXtrxDSMR asyncio protocol."""
     protocol = _create_dsmr_protocol(dsmr_version, telegram_callback,
-                                     RFXtrxDSMRProtocol, loop, **kwargs)
+                                     RFXtrxDSMRProtocol, loop, encryption_key, authentication_key,**kwargs)
     return protocol
 
 
-def create_rfxtrx_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
+def create_rfxtrx_dsmr_reader(port, dsmr_version, telegram_callback, loop=None, encryption_key="", authentication_key=""):
     """Creates a DSMR asyncio protocol coroutine using a RFXtrx serial port."""
     protocol, serial_settings = create_rfxtrx_dsmr_protocol(
-        dsmr_version, telegram_callback, loop=None)
+        dsmr_version, telegram_callback, loop=None, encryption_key=encryption_key, authentication_key=authentication_key)
     serial_settings['url'] = port
 
     conn = create_serial_connection(loop, protocol, **serial_settings)
