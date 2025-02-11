@@ -32,6 +32,7 @@ class TelegramParser(object):
             object["obis_reference"]: re.compile(object["obis_reference"], re.DOTALL | re.MULTILINE)
             for object in self.telegram_specification['objects']
         }
+        self._telegram_encryption_active = None
 
     def parse(self, telegram_data, encryption_key="", authentication_key="", throw_ex=False):  # noqa: C901
         """
@@ -46,38 +47,11 @@ class TelegramParser(object):
         :raises ParseError:
         :raises InvalidChecksumError:
         """
-
-        if "general_global_cipher" in self.telegram_specification:
-            if self.telegram_specification["general_global_cipher"]:
-                enc_key = unhexlify(encryption_key)
-                auth_key = unhexlify(authentication_key)
-                telegram_data = unhexlify(telegram_data)
-                apdu = XDlmsApduFactory.apdu_from_bytes(apdu_bytes=telegram_data)
-                if apdu.security_control.security_suite != 0:
-                    logger.warning("Untested security suite")
-                if apdu.security_control.authenticated and not apdu.security_control.encrypted:
-                    logger.warning("Untested authentication only")
-                if not apdu.security_control.authenticated and not apdu.security_control.encrypted:
-                    logger.warning("Untested not encrypted or authenticated")
-                if apdu.security_control.compressed:
-                    logger.warning("Untested compression")
-                if apdu.security_control.broadcast_key:
-                    logger.warning("Untested broadcast key")
-                telegram_data = apdu.to_plain_apdu(enc_key, auth_key).decode("ascii")
-            else:
-                try:
-                    if unhexlify(telegram_data[0:2])[0] == GeneralGlobalCipher.TAG:
-                        raise RuntimeError("Looks like a general_global_cipher frame "
-                                           "but telegram specification is not matching!")
-                except Exception:
-                    pass
-        else:
-            try:
-                if unhexlify(telegram_data[0:2])[0] == GeneralGlobalCipher.TAG:
-                    raise RuntimeError(
-                        "Looks like a general_global_cipher frame but telegram specification is not matching!")
-            except Exception:
-                pass
+        telegram_data = self.decrypt_telegram_data(
+            telegram_data=telegram_data,
+            encryption_key=encryption_key,
+            authentication_key=authentication_key
+        )
 
         if self.apply_checksum_validation and self.telegram_specification['checksum_support']:
             self.validate_checksum(telegram_data)
@@ -111,6 +85,42 @@ class TelegramParser(object):
                     )
 
         return telegram
+
+    def decrypt_telegram_data(self, encryption_key, authentication_key, telegram_data):
+        """
+        Check if telegram data is encrypted and decrypt if applicable.
+        """
+        # if self._telegram_encryption_active is False:
+        #     # If encryption is not working, stop trying and logging warnings.
+        #     return telegram_data
+
+        if self.telegram_specification.get("general_global_cipher"):
+            enc_key = unhexlify(encryption_key)
+            auth_key = unhexlify(authentication_key)
+            telegram_data = unhexlify(telegram_data)
+            apdu = XDlmsApduFactory.apdu_from_bytes(apdu_bytes=telegram_data)
+            if apdu.security_control.security_suite != 0:
+                logger.warning("Untested security suite")
+            if apdu.security_control.authenticated and not apdu.security_control.encrypted:
+                logger.warning("Untested authentication only")
+            if not apdu.security_control.authenticated and not apdu.security_control.encrypted:
+                logger.warning("Untested not encrypted or authenticated")
+            if apdu.security_control.compressed:
+                logger.warning("Untested compression")
+            if apdu.security_control.broadcast_key:
+                logger.warning("Untested broadcast key")
+            telegram_data = apdu.to_plain_apdu(enc_key, auth_key).decode("ascii")
+            self._telegram_encryption_active = True
+        else:
+            try:
+                if unhexlify(telegram_data[0:2])[0] == GeneralGlobalCipher.TAG:
+                    logger.warning("Looks like a general_global_cipher frame "
+                                   "but telegram specification is not matching!")
+            except Exception:
+                pass
+            self._telegram_encryption_active = False
+
+        return telegram_data
 
     @staticmethod
     def validate_checksum(telegram):
