@@ -125,7 +125,7 @@ class TelegramParser(object):
 
         # Extract the hexadecimal checksum value itself.
         # The line ending '\r\n' for the checksum line can be ignored.
-        checksum_hex = re.search(r'((?<=\!)[0-9A-Z]{4})+', telegram)
+        checksum_hex = re.search(r'((?<=\!)[0-9A-Z]{1,4})+', telegram)
 
         if not checksum_contents or not checksum_hex:
             raise ParseError(
