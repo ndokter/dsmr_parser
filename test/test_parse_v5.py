@@ -9,7 +9,7 @@ from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
 from dsmr_parser.objects import CosemObject, MBusObject
 from dsmr_parser.parsers import TelegramParser
-from test.example_telegrams import TELEGRAM_V5
+from test.example_telegrams import TELEGRAM_V5, TELEGRAM_UNPADDED_CRC
 
 
 class TelegramParserV5Test(unittest.TestCase):
@@ -251,6 +251,16 @@ class TelegramParserV5Test(unittest.TestCase):
         corrupted_telegram = TELEGRAM_V5.replace('!6EEE\r\n', '')
         with self.assertRaises(ParseError):
             TelegramParser.validate_checksum(corrupted_telegram)
+
+    def test_checksum_missing_crc_byte(self):
+
+        parser = TelegramParser(telegram_specifications.V5)
+
+        try:
+            # Some devices apparently forget to pad the crc, leaving us without zeroes on the right
+            parser.parse(TELEGRAM_UNPADDED_CRC, throw_ex=True)
+        except Exception as ex:
+            assert False, f"parse trigged an exception {ex}"
 
     def test_gas_timestamp_invalid(self):
         # Issue 120
