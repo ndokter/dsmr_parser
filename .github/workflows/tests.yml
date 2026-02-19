@@ -39,8 +39,8 @@ jobs:
 
       - name: Export coverage from container
         run: |
-          docker cp test-test-container:/app/coverage.xml coverage.xml
-          docker rm test-test-container
+          docker cp test-container:/app/coverage.xml coverage.xml
+          docker rm test-container
 
       - name: Code coverage upload
         uses: codecov/codecov-action@v5
