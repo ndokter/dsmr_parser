@@ -29,18 +29,18 @@ jobs:
           docker build \
             --build-arg PYTHON_VERSION=${{ matrix.python-version }} \
             -f .github/container/Containerfile-CI \
-            -t dsmr-parser-test:${{ matrix.python-version }} \
+            -t dsmr-parser-test \
             .
 
       - name: Run tests in container
         run: |
-          docker run --name test-${{ matrix.python-version }} \
-            dsmr-parser-test:${{ matrix.python-version }}
+          docker run --name test-container \
+            dsmr-parser-test
 
       - name: Export coverage from container
         run: |
-          docker cp test-${{ matrix.python-version }}:/app/coverage.xml coverage.xml
-          docker rm test-${{ matrix.python-version }}
+          docker cp test-test-container:/app/coverage.xml coverage.xml
+          docker rm test-test-container
 
       - name: Code coverage upload
         uses: codecov/codecov-action@v5
