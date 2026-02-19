@@ -37,7 +37,7 @@ jobs:
           restore-keys: pip-${{ matrix.python-version }}-
 
       - name: Install dependencies
-        run: pip install tox
+        run: pip install tox setuptools
 
       - name: Run tests
         run: tox

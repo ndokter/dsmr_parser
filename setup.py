@@ -10,6 +10,7 @@ setup(
     version='1.4.3',
     packages=find_packages(exclude=('test', 'test.*')),
     install_requires=[
+        'setuptools',
         'pyserial>=3,<4',
         'pyserial-asyncio-fast>=0.11',
         'pytz',
