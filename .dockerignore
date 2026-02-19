@@ -1,0 +1,13 @@
+.git
+.github
+.tox
+__pycache__
+*.pyc
+*.egg-info
+*.egg
+.pytest_cache
+.coverage
+htmlcov
+dist
+build
+

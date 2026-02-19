@@ -1,0 +1,20 @@
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install tox and setuptools first
+RUN pip install --no-cache-dir tox setuptools
+
+# Copy project files
+COPY setup.py tox.ini ./
+COPY dsmr_parser/ ./dsmr_parser/
+COPY test/ ./test/
+
+CMD ["tox"]
+
