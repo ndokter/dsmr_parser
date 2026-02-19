@@ -7,8 +7,6 @@
 /.project
 /.pydevproject
 /.coverage
-/compose.yml
-/compose.override.yml
 build/
 dist/
 venv/

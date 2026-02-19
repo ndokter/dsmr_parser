@@ -25,7 +25,7 @@ jobs:
         run: |
           docker build \
             --build-arg PYTHON_VERSION=${{ matrix.python-version }} \
-            -f container/Containerfile.dev \
+            -f .github/container/Containerfile-CI \
             -t dsmr-parser-test:${{ matrix.python-version }} \
             .
 

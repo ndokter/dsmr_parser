@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=
 FROM python:${PYTHON_VERSION}-slim
 
 WORKDIR /app
@@ -17,4 +17,3 @@ COPY dsmr_parser/ ./dsmr_parser/
 COPY test/ ./test/
 
 CMD ["tox"]
-
