@@ -21,25 +21,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: Build container image
+        run: |
+          docker build \
+            --build-arg PYTHON_VERSION=${{ matrix.python-version }} \
+            -f container/Containerfile.dev \
+            -t dsmr-parser-test:${{ matrix.python-version }} \
+            .
 
-      - name: Cached PIP dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.tox/python/.pytest_cache
-          key: pip-${{ matrix.python-version }}-${{ hashFiles('setup.py', 'tox.ini') }}
-          restore-keys: pip-${{ matrix.python-version }}-
+      - name: Run tests in container
+        run: |
+          docker run --name test-${{ matrix.python-version }} \
+            dsmr-parser-test:${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: pip install tox setuptools
-
-      - name: Run tests
-        run: tox
+      - name: Export coverage from container
+        run: |
+          docker cp test-${{ matrix.python-version }}:/app/coverage.xml coverage.xml
+          docker rm test-${{ matrix.python-version }}
 
       - name: Code coverage upload
         uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
