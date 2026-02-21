@@ -17,30 +17,32 @@ jobs:
           - '3.10'
           - '3.11'
           - '3.12'
+          - '3.13'
+          - '3.14'
 
     name: Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: Build container image
+        run: |
+          docker build \
+            --build-arg PYTHON_VERSION=${{ matrix.python-version }} \
+            -f .github/container/Containerfile-CI \
+            -t dsmr-parser-test \
+            .
 
-      - name: Cached PIP dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.tox/python/.pytest_cache
-          key: pip-${{ matrix.python-version }}-${{ hashFiles('setup.py', 'tox.ini') }}
-          restore-keys: pip-${{ matrix.python-version }}-
+      - name: Run tests in container
+        run: |
+          docker run --name test-container \
+            dsmr-parser-test
 
-      - name: Install dependencies
-        run: pip install tox
-
-      - name: Run tests
-        run: tox
+      - name: Export coverage from container
+        run: |
+          docker cp test-container:/app/coverage.xml coverage.xml
+          docker rm test-container
 
       - name: Code coverage upload
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage.xml
