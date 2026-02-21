@@ -3,6 +3,7 @@ from decimal import Decimal
 from datetime import datetime, timezone
 import json
 
+
 class Telegram(dict):
     """
     Container for parsed telegram data.
