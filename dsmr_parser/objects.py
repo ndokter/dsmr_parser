@@ -1,10 +1,7 @@
 from decimal import Decimal
 
-import datetime
+from datetime import datetime, timezone
 import json
-
-import pytz
-
 
 class Telegram(dict):
     """
@@ -141,8 +138,8 @@ class MBusObject(DSMRObject):
 
     def __str__(self):
         timestamp = self.datetime
-        if isinstance(timestamp, datetime.datetime):
-            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp, datetime):
+            timestamp = timestamp.astimezone(timezone.utc).isoformat()
         output = "{}\t[{}] at {}".format(
             str(self.value),
             str(self.unit),
@@ -152,11 +149,11 @@ class MBusObject(DSMRObject):
 
     def to_json(self):
         timestamp = self.datetime
-        if isinstance(timestamp, datetime.datetime):
-            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp, datetime):
+            timestamp = timestamp.astimezone(timezone.utc).isoformat()
         value = self.value
-        if isinstance(value, datetime.datetime):
-            value = value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(value, datetime):
+            value = value.astimezone(timezone.utc).isoformat()
         if isinstance(value, Decimal):
             value = float(value)
         output = {
@@ -187,14 +184,14 @@ class MBusObjectPeak(DSMRObject):
 
     def __str__(self):
         timestamp = self.datetime
-        if isinstance(timestamp, datetime.datetime):
-            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp, datetime):
+            timestamp = timestamp.astimezone(timezone.utc).isoformat()
         timestamp_occurred = self.occurred
-        if isinstance(timestamp_occurred, datetime.datetime):
-            timestamp_occurred = timestamp_occurred.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp_occurred, datetime):
+            timestamp_occurred = timestamp_occurred.astimezone(timezone.utc).isoformat()
         value = self.value
-        if isinstance(value, datetime.datetime):
-            value = value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(value, datetime):
+            value = value.astimezone(timezone.utc).isoformat()
         if isinstance(value, Decimal):
             value = float(value)
         output = "{}\t[{}] at {} occurred {}"\
@@ -203,14 +200,14 @@ class MBusObjectPeak(DSMRObject):
 
     def to_json(self):
         timestamp = self.datetime
-        if isinstance(timestamp, datetime.datetime):
-            timestamp = timestamp.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp, datetime):
+            timestamp = timestamp.astimezone(timezone.utc).isoformat()
         timestamp_occurred = self.occurred
-        if isinstance(timestamp_occurred, datetime.datetime):
-            timestamp_occurred = timestamp_occurred.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(timestamp_occurred, datetime):
+            timestamp_occurred = timestamp_occurred.astimezone(timezone.utc).isoformat()
         value = self.value
-        if isinstance(value, datetime.datetime):
-            value = value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(value, datetime):
+            value = value.astimezone(timezone.utc).isoformat()
         if isinstance(value, Decimal):
             value = float(value)
         output = {
@@ -234,15 +231,15 @@ class CosemObject(DSMRObject):
 
     def __str__(self):
         print_value = self.value
-        if isinstance(self.value, datetime.datetime):
-            print_value = self.value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(self.value, datetime):
+            print_value = self.value.astimezone(timezone.utc).isoformat()
         output = "{}\t[{}]".format(str(print_value), str(self.unit))
         return output
 
     def to_json(self):
         json_value = self.value
-        if isinstance(self.value, datetime.datetime):
-            json_value = self.value.astimezone().astimezone(pytz.utc).isoformat()
+        if isinstance(self.value, datetime):
+            json_value = self.value.astimezone(timezone.utc).isoformat()
         if isinstance(self.value, Decimal):
             json_value = float(self.value)
         output = {
@@ -303,8 +300,8 @@ class ProfileGenericObject(DSMRObject):
         output += "\t buffer type: {}".format(self.buffer_type)
         for buffer_value in self.buffer:
             timestamp = buffer_value.datetime
-            if isinstance(timestamp, datetime.datetime):
-                timestamp = str(timestamp.astimezone().astimezone(pytz.utc).isoformat())
+            if isinstance(timestamp, datetime):
+                timestamp = str(timestamp.astimezone(timezone.utc).isoformat())
             output += "\n\t event occured at: {}".format(timestamp)
             output += "\t for: {} [{}]".format(buffer_value.value, buffer_value.unit)
         return output
