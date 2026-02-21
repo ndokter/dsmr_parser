@@ -1,6 +1,13 @@
 Change Log
 ----------
 
+**1.5.0** (2026-02-21)
+
+- CI GitHub Actions rework/fixed (`PR #175 <https://github.com/ndokter/dsmr_parser/pull/175>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)
+- Replaced deprecated pytz with datetime's timezone (`PR #174 <https://github.com/ndokter/dsmr_parser/pull/174>`_ by `HiDiHo01 <https://github.com/HiDiHo01>`_)
+- Accept CRC values that are unpadded (missing trailing zeroes) (`PR #173 <https://github.com/ndokter/dsmr_parser/pull/173>`_ by `willemstuursma <https://github.com/willemstuursma>`_)
+- Don't thow an error when string can't be decoded to ascii (`PR #170 <https://github.com/ndokter/dsmr_parser/pull/170>`_ by `ekaats <https://github.com/ekaats>`_)
+
 **1.4.3** (2025-02-08)
 
 - Don't throw an error when string can't be decoded to ascii (`PR #170 <https://github.com/ndokter/dsmr_parser/pull/170>`_ by `ekaats <https://github.com/ekaats>`_)
