@@ -1,9 +1,8 @@
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 import datetime
 import unittest
-
-import pytz
 
 from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
@@ -27,7 +26,7 @@ class TelegramParserV5EONHUTest(unittest.TestCase):
         assert telegram.P1_MESSAGE_TIMESTAMP.unit is None
         assert isinstance(telegram.P1_MESSAGE_TIMESTAMP.value, datetime.datetime)
         assert telegram.P1_MESSAGE_TIMESTAMP.value == \
-            pytz.timezone("Europe/Budapest").localize(datetime.datetime(2023, 7, 24, 15, 7, 30))
+            datetime.datetime(2023, 7, 24, 15, 7, 30, tzinfo=ZoneInfo("Europe/Budapest"))
 
         # EON_HU_COSEM_LOGICAL_DEVICE_NAME (0-0:42.0.0)
         assert isinstance(telegram.COSEM_LOGICAL_DEVICE_NAME, CosemObject)

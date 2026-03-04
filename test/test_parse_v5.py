@@ -3,8 +3,6 @@ from decimal import Decimal
 import datetime
 import unittest
 
-import pytz
-
 from dsmr_parser import telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
 from dsmr_parser.objects import CosemObject, MBusObject
@@ -33,7 +31,7 @@ class TelegramParserV5Test(unittest.TestCase):
         assert telegram.P1_MESSAGE_TIMESTAMP.unit is None
         assert isinstance(telegram.P1_MESSAGE_TIMESTAMP.value, datetime.datetime)
         assert telegram.P1_MESSAGE_TIMESTAMP.value == \
-            datetime.datetime(2017, 1, 2, 18, 20, 2, tzinfo=pytz.UTC)
+            datetime.datetime(2017, 1, 2, 18, 20, 2, tzinfo=datetime.timezone.utc)
 
         # ELECTRICITY_USED_TARIFF_1 (1-0:1.8.1)
         assert isinstance(telegram.ELECTRICITY_USED_TARIFF_1, CosemObject)

@@ -1,6 +1,11 @@
 Change Log
 ----------
 
+**1.6.0** (2026-03-04)
+
+- Drop support for python 3.8
+- Replaced pytz completely and replaced with datetime's timezone
+
 **1.5.0** (2026-02-21)
 
 - CI GitHub Actions rework/fixed (`PR #175 <https://github.com/ndokter/dsmr_parser/pull/175>`_ by `dennissiemensma <https://github.com/dennissiemensma>`_)

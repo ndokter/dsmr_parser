@@ -1,7 +1,6 @@
 import json
 import unittest
 import datetime
-import pytz
 
 from dsmr_parser import telegram_specifications, obis_references
 
@@ -46,7 +45,7 @@ class TelegramTest(unittest.TestCase):
                                   CosemObject,
                                   unit_val=None,
                                   value_type=datetime.datetime,
-                                  value_val=datetime.datetime(2016, 11, 13, 19, 57, 57, tzinfo=pytz.UTC))
+                                  value_val=datetime.datetime(2016, 11, 13, 19, 57, 57, tzinfo=datetime.timezone.utc))
 
         # ELECTRICITY_USED_TARIFF_1 (1-0:1.8.1)
         self.verify_telegram_item(telegram,
