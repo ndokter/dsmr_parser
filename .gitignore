@@ -3,6 +3,8 @@
 .tox
 .cache
 .venv
+coverage.xml
+.history
 *.egg-info
 /.project
 /.pydevproject
