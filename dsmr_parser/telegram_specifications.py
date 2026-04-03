@@ -685,6 +685,126 @@ LUXEMBOURG_SMARTY['objects'].extend([
     }
 ])
 
+# MSN: Luxembourg Smarty meter (encrypted variant).
+#
+# Per the official Luxmetering E-Meter P1 Specification v1.1.3 (section 3.2.5):
+# - Encryption: AES-128-GCM (DLMS security suite 0)
+# - AAD (17 bytes): 0x30 || 00112233445566778899AABBCCDDEEFF
+#   The 16-byte authentication key is fixed and identical for all Smarty meters.
+#   Users only need to provide the per-meter encryption key (obtained from DSO).
+# - IV: system-title (8 bytes) || frame counter (4 bytes)
+# - GCM tag length: 12 bytes
+#
+# The MSN spec extends LUXEMBOURG_SMARTY with the full set of OBIS objects
+# defined in Table 3.1 of the official specification.
+MSN = deepcopy(LUXEMBOURG_SMARTY)
+MSN['general_global_cipher'] = True
+# Fixed authentication key for all Luxmetering Smarty meters (public, per spec 3.2.5)
+MSN['authentication_key'] = '00112233445566778899AABBCCDDEEFF'
+MSN['objects'].extend([
+    {
+        'obis_reference': obis.ELECTRICITY_REACTIVE_IMPORTED_TOTAL,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'ELECTRICITY_REACTIVE_IMPORTED_TOTAL'
+    },
+    {
+        'obis_reference': obis.ELECTRICITY_REACTIVE_EXPORTED_TOTAL,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'ELECTRICITY_REACTIVE_EXPORTED_TOTAL'
+    },
+    {
+        'obis_reference': obis.CURRENT_REACTIVE_IMPORTED,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'CURRENT_REACTIVE_IMPORTED'
+    },
+    {
+        'obis_reference': obis.CURRENT_REACTIVE_EXPORTED,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'CURRENT_REACTIVE_EXPORTED'
+    },
+    {
+        'obis_reference': obis.ACTUAL_TRESHOLD_ELECTRICITY,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'ACTUAL_TRESHOLD_ELECTRICITY'
+    },
+    {
+        # Two signed integer values: max imported current, max exported current
+        'obis_reference': obis.MSN_CT_RATIO,
+        'value_parser': CosemParser(ValueParser(int), ValueParser(int)),
+        'value_name': 'MSN_CT_RATIO'
+    },
+    {
+        'obis_reference': obis.MSN_INSTANTANEOUS_APPARENT_POWER_POSITIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'MSN_INSTANTANEOUS_APPARENT_POWER_POSITIVE'
+    },
+    {
+        'obis_reference': obis.MSN_INSTANTANEOUS_APPARENT_POWER_NEGATIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'MSN_INSTANTANEOUS_APPARENT_POWER_NEGATIVE'
+    },
+    {
+        'obis_reference': obis.ACTUAL_SWITCH_POSITION,
+        'value_parser': CosemParser(ValueParser(int)),
+        'value_name': 'ACTUAL_SWITCH_POSITION'
+    },
+    {
+        'obis_reference': obis.MSN_MBUS_SWITCH_POSITION,
+        'value_parser': CosemParser(ValueParser(int)),
+        'value_name': 'MSN_MBUS_SWITCH_POSITION'
+    },
+    {
+        'obis_reference': obis.MSN_TEXT_MESSAGE_2,
+        'value_parser': CosemParser(ValueParser(str)),
+        'value_name': 'MSN_TEXT_MESSAGE_2'
+    },
+    {
+        'obis_reference': obis.MSN_TEXT_MESSAGE_3,
+        'value_parser': CosemParser(ValueParser(str)),
+        'value_name': 'MSN_TEXT_MESSAGE_3'
+    },
+    {
+        'obis_reference': obis.MSN_TEXT_MESSAGE_4,
+        'value_parser': CosemParser(ValueParser(str)),
+        'value_name': 'MSN_TEXT_MESSAGE_4'
+    },
+    {
+        'obis_reference': obis.MSN_TEXT_MESSAGE_5,
+        'value_parser': CosemParser(ValueParser(str)),
+        'value_name': 'MSN_TEXT_MESSAGE_5'
+    },
+    {
+        'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L1_POSITIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L1_POSITIVE'
+    },
+    {
+        'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L2_POSITIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L2_POSITIVE'
+    },
+    {
+        'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L3_POSITIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L3_POSITIVE'
+    },
+    {
+        'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L1_NEGATIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L1_NEGATIVE'
+    },
+    {
+        'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L2_NEGATIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L2_NEGATIVE'
+    },
+    {
+        'obis_reference': obis.INSTANTANEOUS_REACTIVE_POWER_L3_NEGATIVE,
+        'value_parser': CosemParser(ValueParser(Decimal)),
+        'value_name': 'INSTANTANEOUS_REACTIVE_POWER_L3_NEGATIVE'
+    },
+])
+
 # Source: https://www.energiforetagen.se/globalassets/energiforetagen/det-erbjuder-vi/kurser-och-konferenser/elnat/
 #         branschrekommendation-lokalt-granssnitt-v2_0-201912.pdf
 SWEDEN = {

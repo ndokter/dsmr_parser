@@ -111,6 +111,16 @@ BELGIUM_MAXIMUM_DEMAND_13_MONTHS = r'^\d-\d:98\.1\.0.+?\r\n'
 
 LUXEMBOURG_EQUIPMENT_IDENTIFIER = r'^\d-\d:42\.0\.0.+?\r\n'  # Logical device name
 
+# MSN (Luxembourg Smarty encrypted meter) specific references
+MSN_INSTANTANEOUS_APPARENT_POWER_POSITIVE = r'^\d-\d:9\.7\.0.+?\r\n'   # S+ (kVA)
+MSN_INSTANTANEOUS_APPARENT_POWER_NEGATIVE = r'^\d-\d:10\.7\.0.+?\r\n'  # S- (kVA)
+MSN_CT_RATIO = r'^1-1:31\.4\.0.+?\r\n'          # Current transformer ratio (import/export threshold)
+MSN_MBUS_SWITCH_POSITION = r'^\d-[1-9]:96\.3\.10.+?\r\n'  # MBus device breaker state
+MSN_TEXT_MESSAGE_2 = r'^\d-\d:96\.13\.2.+?\r\n'
+MSN_TEXT_MESSAGE_3 = r'^\d-\d:96\.13\.3.+?\r\n'
+MSN_TEXT_MESSAGE_4 = r'^\d-\d:96\.13\.4.+?\r\n'
+MSN_TEXT_MESSAGE_5 = r'^\d-\d:96\.13\.5.+?\r\n'
+
 Q3D_EQUIPMENT_IDENTIFIER = r'^\d-\d:0\.0\.0.+?\r\n'  # Logical device name
 Q3D_EQUIPMENT_STATE = r'^\d-\d:96\.5\.5.+?\r\n'  # Device state (hexadecimal)
 Q3D_EQUIPMENT_SERIALNUMBER = r'^\d-\d:96\.1\.255.+?\r\n'  # Device Serialnumber

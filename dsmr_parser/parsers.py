@@ -50,7 +50,13 @@ class TelegramParser(object):
         if "general_global_cipher" in self.telegram_specification:
             if self.telegram_specification["general_global_cipher"]:
                 enc_key = unhexlify(encryption_key)
-                auth_key = unhexlify(authentication_key)
+                # Use the spec's embedded authentication key if the caller did not
+                # supply one. Some meters (e.g. Luxembourg Smarty/MSN) use a fixed
+                # public authentication key defined in the official specification.
+                effective_auth_key = authentication_key or self.telegram_specification.get(
+                    "authentication_key", ""
+                )
+                auth_key = unhexlify(effective_auth_key)
                 telegram_data = unhexlify(telegram_data)
                 apdu = XDlmsApduFactory.apdu_from_bytes(apdu_bytes=telegram_data)
                 if apdu.security_control.security_suite != 0:

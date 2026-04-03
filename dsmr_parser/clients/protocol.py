@@ -56,6 +56,12 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
     elif dsmr_version == '5EONHU':
         specification = telegram_specifications.EON_HUNGARY
         serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == 'MSn':
+        specification = telegram_specifications.MSN
+        serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == 'SAGEMCOM_T210_D_R':
+        specification = telegram_specifications.SAGEMCOM_T210_D_R
+        serial_settings = SERIAL_SETTINGS_V5
     else:
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
@@ -66,10 +72,12 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
     return protocol, serial_settings
 
 
-def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
+def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None,
+                       encryption_key="", authentication_key=""):
     """Creates a DSMR asyncio protocol coroutine using serial port."""
     protocol, serial_settings = create_dsmr_protocol(
-        dsmr_version, telegram_callback, loop=None)
+        dsmr_version, telegram_callback, loop=None,
+        encryption_key=encryption_key, authentication_key=authentication_key)
     serial_settings['url'] = port
 
     conn = create_serial_connection(loop, protocol, **serial_settings)
@@ -78,13 +86,15 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None):
 
 def create_tcp_dsmr_reader(host, port, dsmr_version,
                            telegram_callback, loop=None,
-                           keep_alive_interval=None):
+                           keep_alive_interval=None,
+                           encryption_key="", authentication_key=""):
     """Creates a DSMR asyncio protocol coroutine using TCP connection."""
     if not loop:
         loop = asyncio.get_event_loop()
     protocol, _ = create_dsmr_protocol(
         dsmr_version, telegram_callback, loop=loop,
-        keep_alive_interval=keep_alive_interval)
+        keep_alive_interval=keep_alive_interval,
+        encryption_key=encryption_key, authentication_key=authentication_key)
     conn = loop.create_connection(protocol, host, port)
     return conn
 
@@ -96,7 +106,8 @@ class DSMRProtocol(asyncio.Protocol):
     telegram_callback = None
 
     def __init__(self, loop, telegram_parser,
-                 telegram_callback=None, keep_alive_interval=None):
+                 telegram_callback=None, keep_alive_interval=None,
+                 encryption_key="", authentication_key=""):
         """Initialize class."""
         self.loop = loop
         self.log = logging.getLogger(__name__)
@@ -109,6 +120,8 @@ class DSMRProtocol(asyncio.Protocol):
         self._closed = asyncio.Event()
         self._keep_alive_interval = keep_alive_interval
         self._active = True
+        self._encryption_key = encryption_key
+        self._authentication_key = authentication_key
 
     def connection_made(self, transport):
         """Just logging for now."""
@@ -156,7 +169,11 @@ class DSMRProtocol(asyncio.Protocol):
         self.log.debug('got telegram: %s', telegram)
 
         try:
-            parsed_telegram = self.telegram_parser.parse(telegram)
+            parsed_telegram = self.telegram_parser.parse(
+                telegram,
+                encryption_key=self._encryption_key,
+                authentication_key=self._authentication_key,
+            )
         except InvalidChecksumError as e:
             self.log.info(str(e))
         except ParseError:
