@@ -10,8 +10,7 @@ setup(
     version='1.6.0',
     packages=find_packages(exclude=('test', 'test.*')),
     install_requires=[
-        'pyserial>=3,<4',
-        'pyserial-asyncio-fast>=0.11',
+        'serialx',
         'Tailer==0.4.1',
         'dlms_cosem==21.3.2'
     ],

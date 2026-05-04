@@ -1,7 +1,6 @@
 import logging
 
-import serial
-import serial_asyncio_fast
+import serialx
 
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
@@ -12,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class SerialReader(object):
-    PORT_KEY = 'port'
+    PORT_KEY = 'url'
 
     def __init__(self, device, serial_settings, telegram_specification):
         self.serial_settings = serial_settings
@@ -29,9 +28,9 @@ class SerialReader(object):
 
         :rtype: generator
         """
-        with serial.Serial(**self.serial_settings) as serial_handle:
+        with serialx.serial_for_url(**self.serial_settings) as serial_handle:
             while True:
-                data = serial_handle.read(max(1, min(1024, serial_handle.in_waiting)))
+                data = serial_handle.read(max(1, min(1024, serial_handle.num_unread_bytes())))
                 try:
                     decoded_data = data.decode('ascii')
                 except Exception:
@@ -53,7 +52,7 @@ class SerialReader(object):
 
         :rtype: generator
         """
-        with serial.Serial(**self.serial_settings) as serial_handle:
+        with serialx.serial_for_url(**self.serial_settings) as serial_handle:
             while True:
                 data = serial_handle.readline()
                 try:
@@ -73,7 +72,7 @@ class SerialReader(object):
 
 
 class AsyncSerialReader(SerialReader):
-    """Serial reader using asyncio pyserial."""
+    """Serial reader using asyncio serialx."""
 
     PORT_KEY = 'url'
 
@@ -88,7 +87,7 @@ class AsyncSerialReader(SerialReader):
         :rtype: None
         """
         # create Serial StreamReader
-        conn = serial_asyncio_fast.open_serial_connection(**self.serial_settings)
+        conn = serialx.open_serial_connection(**self.serial_settings)
         reader, _ = await conn
 
         while True:
@@ -123,7 +122,7 @@ class AsyncSerialReader(SerialReader):
         """
 
         # create Serial StreamReader
-        conn = serial_asyncio_fast.open_serial_connection(**self.serial_settings)
+        conn = serialx.open_serial_connection(**self.serial_settings)
         reader, _ = await conn
 
         while True:

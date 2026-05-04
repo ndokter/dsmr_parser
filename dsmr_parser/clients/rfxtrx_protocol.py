@@ -2,7 +2,7 @@
 
 import asyncio
 
-from serial_asyncio_fast import create_serial_connection
+from serialx import create_serial_connection
 from .protocol import DSMRProtocol, _create_dsmr_protocol
 
 
