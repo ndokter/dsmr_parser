@@ -17,8 +17,8 @@ setup(
     entry_points={
         'console_scripts': ['dsmr_console=dsmr_parser.__main__:console']
     },
+    python_requires='>=3.10',
     classifiers=[
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
