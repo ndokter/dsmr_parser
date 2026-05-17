@@ -10,7 +10,7 @@ setup(
     version='1.6.0',
     packages=find_packages(exclude=('test', 'test.*')),
     install_requires=[
-        'serialx==1.8.*',
+        'serialx>=1.8,<2',
         'Tailer==0.4.1',
         'dlms_cosem==21.3.2'
     ],
