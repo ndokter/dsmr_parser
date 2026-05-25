@@ -20,7 +20,7 @@ jobs:
 
     name: Python ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build container image
         run: |
@@ -41,6 +41,6 @@ jobs:
           docker rm test-container
 
       - name: Code coverage upload
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: coverage.xml
