@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'serialx>=1.8,<2',
         'Tailer==0.4.1',
-        'dlms_cosem==21.3.2'
+        'dlms_cosem>=21.3.2'
     ],
     entry_points={
         'console_scripts': ['dsmr_console=dsmr_parser.__main__:console']
