@@ -3,12 +3,11 @@ from copy import deepcopy
 
 import unittest
 
-from dlms_cosem.exceptions import DecryptionError
 from dlms_cosem.protocol.xdlms import GeneralGlobalCipher
 from dlms_cosem.security import SecurityControlField, encrypt
 
 from dsmr_parser import telegram_specifications
-from dsmr_parser.exceptions import ParseError
+from dsmr_parser.exceptions import DecryptionError, ParseError
 from dsmr_parser.parsers import TelegramParser
 from test.example_telegrams import TELEGRAM_SAGEMCOM_T210_D_R
 
@@ -69,6 +68,8 @@ class TelegramParserEncryptedTest(unittest.TestCase):
         generated[150] = 0x00
         generated = generated.hex()
 
+        # Decryption failures are re-raised as a fatal DecryptionError so
+        # callers tear down the connection instead of skipping telegrams.
         with self.assertRaises(DecryptionError):
             parser.parse(generated, self.DUMMY_ENCRYPTION_KEY, self.DUMMY_AUTHENTICATION_KEY)
 

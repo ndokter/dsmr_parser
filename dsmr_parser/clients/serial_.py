@@ -2,7 +2,7 @@ import logging
 
 import serialx
 
-from dsmr_parser.clients.telegram_buffer import TelegramBuffer
+from dsmr_parser.clients.telegram_buffer import TelegramBuffer, EncryptedTelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.parsers import TelegramParser
 
@@ -13,13 +13,32 @@ logger = logging.getLogger(__name__)
 class SerialReader(object):
     PORT_KEY = 'url'
 
-    def __init__(self, device, serial_settings, telegram_specification):
+    def __init__(self, device, serial_settings, telegram_specification,
+                 encryption_key="", authentication_key=""):
         self.serial_settings = serial_settings
         self.serial_settings[self.PORT_KEY] = device
 
         self.telegram_parser = TelegramParser(telegram_specification)
-        self.telegram_buffer = TelegramBuffer()
         self.telegram_specification = telegram_specification
+        self._encryption_key = encryption_key
+        self._authentication_key = authentication_key
+        self._encrypted = bool(telegram_specification.get("general_global_cipher"))
+        self.telegram_buffer = \
+            EncryptedTelegramBuffer() if self._encrypted else TelegramBuffer()
+
+    def _buffer_incoming(self, data):
+        """
+        Append raw transport bytes to the buffer and return the complete
+        telegrams ready to be parsed. Encrypted telegrams are binary DLMS
+        frames and must not be decoded; plain telegrams are ascii.
+        :param bytes data:
+        :rtype generator:
+        """
+        if self._encrypted:
+            self.telegram_buffer.append(data)
+        else:
+            self.telegram_buffer.append(data.decode('ascii'))
+        return self.telegram_buffer.get_all()
 
     def read(self):
         """
@@ -32,19 +51,19 @@ class SerialReader(object):
             while True:
                 data = serial_handle.read(max(1, min(1024, serial_handle.num_unread_bytes())))
                 try:
-                    decoded_data = data.decode('ascii')
+                    telegrams = self._buffer_incoming(data)
                 except Exception:
                     logger.warning('Failed to decode telegram data: %s', data)
-                else:
-                    self.telegram_buffer.append(decoded_data)
+                    continue
 
-                    for telegram in self.telegram_buffer.get_all():
-                        try:
-                            yield self.telegram_parser.parse(telegram)
-                        except InvalidChecksumError as e:
-                            logger.info(str(e))
-                        except ParseError as e:
-                            logger.error('Failed to parse telegram: %s', e)
+                for telegram in telegrams:
+                    try:
+                        yield self.telegram_parser.parse(
+                            telegram, self._encryption_key, self._authentication_key)
+                    except InvalidChecksumError as e:
+                        logger.info(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
 
     def read_as_object(self):
         """
@@ -56,19 +75,19 @@ class SerialReader(object):
             while True:
                 data = serial_handle.readline()
                 try:
-                    decoded_data = data.decode('ascii')
+                    telegrams = self._buffer_incoming(data)
                 except Exception:
                     logger.warning('Failed to decode telegram data: %s', data)
-                else:
-                    self.telegram_buffer.append(decoded_data)
+                    continue
 
-                    for telegram in self.telegram_buffer.get_all():
-                        try:
-                            yield self.telegram_parser.parse(telegram)
-                        except InvalidChecksumError as e:
-                            logger.warning(str(e))
-                        except ParseError as e:
-                            logger.error('Failed to parse telegram: %s', e)
+                for telegram in telegrams:
+                    try:
+                        yield self.telegram_parser.parse(
+                            telegram, self._encryption_key, self._authentication_key)
+                    except InvalidChecksumError as e:
+                        logger.warning(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)
 
 
 class AsyncSerialReader(SerialReader):
@@ -95,20 +114,20 @@ class AsyncSerialReader(SerialReader):
             # data has arrived.
             data = await reader.readline()
             try:
-                decoded_data = data.decode('ascii')
+                telegrams = self._buffer_incoming(data)
             except Exception:
                 logger.warning('Failed to decode telegram data: %s', data)
-            else:
-                self.telegram_buffer.append(decoded_data)
+                continue
 
-                for telegram in self.telegram_buffer.get_all():
-                    try:
-                        # Push new parsed telegram onto queue.
-                        queue.put_nowait(
-                            self.telegram_parser.parse(telegram)
-                        )
-                    except ParseError as e:
-                        logger.warning('Failed to parse telegram: %s', e)
+            for telegram in telegrams:
+                try:
+                    # Push new parsed telegram onto queue.
+                    queue.put_nowait(
+                        self.telegram_parser.parse(
+                            telegram, self._encryption_key, self._authentication_key)
+                    )
+                except ParseError as e:
+                    logger.warning('Failed to parse telegram: %s', e)
 
     async def read_as_object(self, queue):
         """
@@ -131,18 +150,18 @@ class AsyncSerialReader(SerialReader):
             # data has arrived.
             data = await reader.readline()
             try:
-                decoded_data = data.decode('ascii')
+                telegrams = self._buffer_incoming(data)
             except Exception:
                 logger.warning('Failed to decode telegram data: %s', data)
-            else:
-                self.telegram_buffer.append(decoded_data)
+                continue
 
-                for telegram in self.telegram_buffer.get_all():
-                    try:
-                        queue.put_nowait(
-                            self.telegram_parser.parse(telegram)
-                        )
-                    except InvalidChecksumError as e:
-                        logger.warning(str(e))
-                    except ParseError as e:
-                        logger.error('Failed to parse telegram: %s', e)
+            for telegram in telegrams:
+                try:
+                    queue.put_nowait(
+                        self.telegram_parser.parse(
+                            telegram, self._encryption_key, self._authentication_key)
+                    )
+                except InvalidChecksumError as e:
+                    logger.warning(str(e))
+                except ParseError as e:
+                    logger.error('Failed to parse telegram: %s', e)

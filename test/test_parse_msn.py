@@ -12,13 +12,12 @@ from decimal import Decimal
 
 import unittest
 
-from dlms_cosem.exceptions import DecryptionError
 from dlms_cosem.protocol.xdlms import GeneralGlobalCipher
 from dlms_cosem.security import SecurityControlField, encrypt
 
 from dsmr_parser import obis_references as obis
 from dsmr_parser import telegram_specifications
-from dsmr_parser.exceptions import ParseError
+from dsmr_parser.exceptions import ParseError, DecryptionError
 from dsmr_parser.parsers import TelegramParser
 from test.example_telegrams import TELEGRAM_LUXEMBOURG_SMARTY
 

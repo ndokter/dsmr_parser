@@ -1,7 +1,7 @@
 import logging
 import socket
 
-from dsmr_parser.clients.telegram_buffer import TelegramBuffer
+from dsmr_parser.clients.telegram_buffer import TelegramBuffer, EncryptedTelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError
 from dsmr_parser.parsers import TelegramParser
 
@@ -13,13 +13,39 @@ class SocketReader(object):
 
     BUFFER_SIZE = 256
 
-    def __init__(self, host, port, telegram_specification):
+    def __init__(self, host, port, telegram_specification,
+                 encryption_key="", authentication_key=""):
         self.host = host
         self.port = port
 
         self.telegram_parser = TelegramParser(telegram_specification)
-        self.telegram_buffer = TelegramBuffer()
         self.telegram_specification = telegram_specification
+        self._encryption_key = encryption_key
+        self._authentication_key = authentication_key
+        self._encrypted = bool(telegram_specification.get("general_global_cipher"))
+        self.telegram_buffer = \
+            EncryptedTelegramBuffer() if self._encrypted else TelegramBuffer()
+
+    def _buffer_incoming(self, data):
+        """
+        Append raw bytes received from the socket to the buffer and return the
+        complete telegrams ready to be parsed. Encrypted telegrams are binary
+        DLMS frames and are buffered as raw bytes; plain telegrams are split
+        into ascii lines (tolerating garbage as before).
+        :param bytes data:
+        :rtype generator:
+        """
+        if self._encrypted:
+            self.telegram_buffer.append(data)
+        else:
+            for line in data.splitlines(keepends=True):
+                try:
+                    self.telegram_buffer.append(line.decode('ascii'))
+                except UnicodeDecodeError:
+                    # Some garbage came through the channel
+                    # E.g.: Happens at EON_HUNGARY, but only once at the start.
+                    logger.error('Failed to parse telegram due to unicode decode error')
+        return self.telegram_buffer.get_all()
 
     def read(self):
         """
@@ -28,41 +54,25 @@ class SocketReader(object):
 
         :rtype: generator
         """
-        buffer = b""
-
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_handle:
             socket_handle.settimeout(60)
             socket_handle.connect((self.host, self.port))
 
             while True:
                 try:
-                    buffer += socket_handle.recv(self.BUFFER_SIZE)
+                    data = socket_handle.recv(self.BUFFER_SIZE)
                 except socket.timeout:
                     logger.error("Socket timeout occurred, exiting")
                     break
 
-                lines = buffer.splitlines(keepends=True)
-
-                if len(lines) == 0:
-                    continue
-
-                for data in lines:
+                for telegram in self._buffer_incoming(data):
                     try:
-                        self.telegram_buffer.append(data.decode('ascii'))
-                    except UnicodeDecodeError:
-                        # Some garbage came through the channel
-                        # E.g.: Happens at EON_HUNGARY, but only once at the start of the socket.
-                        logger.error('Failed to parse telegram due to unicode decode error')
-
-                for telegram in self.telegram_buffer.get_all():
-                    try:
-                        yield self.telegram_parser.parse(telegram)
+                        yield self.telegram_parser.parse(
+                            telegram, self._encryption_key, self._authentication_key)
                     except InvalidChecksumError as e:
                         logger.info(str(e))
                     except ParseError as e:
                         logger.error('Failed to parse telegram: %s', e)
-
-                buffer = b""
 
     def read_as_object(self):
         """
@@ -70,29 +80,18 @@ class SocketReader(object):
 
         :rtype: generator
         """
-        buffer = b""
-
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_handle:
 
             socket_handle.connect((self.host, self.port))
 
             while True:
-                buffer += socket_handle.recv(self.BUFFER_SIZE)
+                data = socket_handle.recv(self.BUFFER_SIZE)
 
-                lines = buffer.splitlines(keepends=True)
-
-                if len(lines) == 0:
-                    continue
-
-                for data in lines:
-                    self.telegram_buffer.append(data.decode('ascii'))
-
-                    for telegram in self.telegram_buffer.get_all():
-                        try:
-                            yield self.telegram_parser.parse(telegram)
-                        except InvalidChecksumError as e:
-                            logger.warning(str(e))
-                        except ParseError as e:
-                            logger.error('Failed to parse telegram: %s', e)
-
-                buffer = b""
+                for telegram in self._buffer_incoming(data):
+                    try:
+                        yield self.telegram_parser.parse(
+                            telegram, self._encryption_key, self._authentication_key)
+                    except InvalidChecksumError as e:
+                        logger.warning(str(e))
+                    except ParseError as e:
+                        logger.error('Failed to parse telegram: %s', e)

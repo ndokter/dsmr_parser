@@ -7,8 +7,8 @@ import logging
 from serialx import create_serial_connection
 
 from dsmr_parser import telegram_specifications
-from dsmr_parser.clients.telegram_buffer import TelegramBuffer
-from dsmr_parser.exceptions import ParseError, InvalidChecksumError
+from dsmr_parser.clients.telegram_buffer import TelegramBuffer, EncryptedTelegramBuffer
+from dsmr_parser.exceptions import ParseError, InvalidChecksumError, DecryptionError
 from dsmr_parser.parsers import TelegramParser
 from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
     SERIAL_SETTINGS_V4, SERIAL_SETTINGS_V5
@@ -114,14 +114,21 @@ class DSMRProtocol(asyncio.Protocol):
         self.telegram_parser = telegram_parser
         # callback to call on complete telegram
         self.telegram_callback = telegram_callback
+        # keys used to decrypt encrypted (general-global-cipher) telegrams
+        self._encryption_key = encryption_key
+        self._authentication_key = authentication_key
+        self._encrypted = bool(
+            telegram_parser.telegram_specification.get("general_global_cipher"))
+        # set when a telegram could not be decrypted; a fatal, unrecoverable
+        # condition (wrong key) that tears down the connection
+        self.decryption_error: DecryptionError | None = None
         # buffer to keep incomplete incoming data
-        self.telegram_buffer = TelegramBuffer()
+        self.telegram_buffer = \
+            EncryptedTelegramBuffer() if self._encrypted else TelegramBuffer()
         # keep a lock until the connection is closed
         self._closed = asyncio.Event()
         self._keep_alive_interval = keep_alive_interval
         self._active = True
-        self._encryption_key = encryption_key
-        self._authentication_key = authentication_key
 
     def connection_made(self, transport):
         """Just logging for now."""
@@ -133,10 +140,17 @@ class DSMRProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         """Add incoming data to buffer."""
+        self._active = True
+
+        if self._encrypted:
+            # Encrypted telegrams are binary DLMS frames; buffer the raw bytes.
+            self.telegram_buffer.append(data)
+            for telegram in self.telegram_buffer.get_all():
+                self.handle_telegram(telegram)
+            return
 
         # accept latin-1 (8-bit) on the line, to allow for non-ascii transport or padding
         data = data.decode("latin1")
-        self._active = True
         self.log.debug('received data: %s', data)
         self.telegram_buffer.append(data)
 
@@ -174,6 +188,14 @@ class DSMRProtocol(asyncio.Protocol):
                 encryption_key=self._encryption_key,
                 authentication_key=self._authentication_key,
             )
+        except DecryptionError as e:
+            # Unrecoverable: with a configured key every telegram will fail the
+            # same way. Record it and tear down the connection instead of
+            # spinning on broken telegrams.
+            self.log.error("Failed to decrypt telegram, check the keys: %s", e)
+            self.decryption_error = e
+            if self.transport:
+                self.transport.close()
         except InvalidChecksumError as e:
             self.log.info(str(e))
         except ParseError:
