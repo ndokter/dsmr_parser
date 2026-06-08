@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.8.0** (2026-06-08)
+
+- Add encrypted telegram support for MSn (Luxembourg Smarty) and SAGEMCOM_T210_D_R (`PR #178 <https://github.com/ndokter/dsmr_parser/pull/178>`_ by `Arvoreen75 <https://github.com/Arvoreen75>`_)
+
 **1.7.0** (2026-05-17)
 
 - Drop support for python 3.9
