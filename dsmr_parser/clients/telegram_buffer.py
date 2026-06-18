@@ -23,6 +23,11 @@ class TelegramBuffer(object):
         Remove complete telegrams from buffer and yield them.
         :rtype generator:
         """
+
+        # Don't waste time parsing until the checksum has arrived
+        if "!" not in self._buffer:
+            return
+
         for telegram in _FIND_TELEGRAMS_REGEX.findall(self._buffer):
             self._remove(telegram)
             yield telegram
