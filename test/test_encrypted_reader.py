@@ -159,6 +159,3 @@ class ReaderBufferSelectionTest(unittest.TestCase):
         telegrams = list(reader._buffer_incoming(_frame()))
         self.assertEqual(telegrams, [_frame().hex()])
 
-
-if __name__ == "__main__":
-    unittest.main()
