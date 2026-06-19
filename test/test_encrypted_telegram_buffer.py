@@ -74,6 +74,3 @@ class EncryptedTelegramBufferTest(unittest.TestCase):
 
         self.assertEqual(list(buffer.get_all()), [])
 
-
-if __name__ == "__main__":
-    unittest.main()
