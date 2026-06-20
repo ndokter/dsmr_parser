@@ -73,4 +73,3 @@ class EncryptedTelegramBufferTest(unittest.TestCase):
         buffer.append(b"\xdb\x08")  # only tag + system title length
 
         self.assertEqual(list(buffer.get_all()), [])
-

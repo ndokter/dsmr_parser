@@ -158,4 +158,3 @@ class ReaderBufferSelectionTest(unittest.TestCase):
         # Socket data is binary and must not be line-split for encrypted frames.
         telegrams = list(reader._buffer_incoming(_frame()))
         self.assertEqual(telegrams, [_frame().hex()])
-
