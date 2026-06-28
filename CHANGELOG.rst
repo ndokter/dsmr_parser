@@ -1,13 +1,14 @@
 Change Log
 ----------
+**1.11.0** (2026-06-28)
+
+- ``create_tcp_dsmr_reader`` is now a thin wrapper around ``create_dsmr_reader`` (using a ``socket://`` URL); both establish the exact same TCP connection. ``create_dsmr_reader`` gained a ``keep_alive_interval`` argument so the keep-alive watchdog can be used on either entry point. Default behaviour is unchanged. (`PR #186 <https://github.com/ndokter/dsmr_parser/pull/186>`_ by `balloob <https://github.com/balloob>`_)
+- The event loop is now resolved with ``asyncio.get_running_loop()`` instead of the deprecated ``asyncio.get_event_loop()``. Both readers must be called from within a running event loop unless an explicit ``loop`` is passed.
+- Opt-in: decrypt encrypted telegrams without verifying the GCM tag (`PR #185 <https://github.com/ndokter/dsmr_parser/pull/185>`_ by `balloob <https://github.com/balloob>`_)
+
 **1.10.0** (2026-06-24)
 
 - Binary framing for encrypted telegrams over the serial/network readers (`PR #184 <https://github.com/ndokter/dsmr_parser/pull/184>`_ by `balloob <https://github.com/balloob>`_)
-
-**Unreleased**
-
-- ``create_tcp_dsmr_reader`` is now a thin wrapper around ``create_dsmr_reader`` (using a ``socket://`` URL); both establish the exact same TCP connection. ``create_dsmr_reader`` gained a ``keep_alive_interval`` argument so the keep-alive watchdog can be used on either entry point. Default behaviour is unchanged.
-- The event loop is now resolved with ``asyncio.get_running_loop()`` instead of the deprecated ``asyncio.get_event_loop()``. Both readers must be called from within a running event loop unless an explicit ``loop`` is passed.
 
 **1.9.0** (2026-06-19)
 
