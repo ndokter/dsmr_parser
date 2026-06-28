@@ -73,10 +73,23 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
 
 
 def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None,
+                       keep_alive_interval=None,
                        encryption_key="", authentication_key=""):
-    """Creates a DSMR asyncio protocol coroutine using serial port."""
+    """Creates a DSMR asyncio protocol coroutine using serial port.
+
+    The ``port`` may be a local serial device (e.g. ``/dev/ttyUSB0``) or a
+    network URL handled by serialx (e.g. ``socket://host:port``). Pass
+    ``keep_alive_interval`` to enable the keep-alive watchdog, which detects
+    and recovers from half-open network connections that would otherwise stall
+    silently.
+
+    Must be called from within a running event loop unless ``loop`` is given.
+    """
+    if loop is None:
+        loop = asyncio.get_running_loop()
     protocol, serial_settings = create_dsmr_protocol(
-        dsmr_version, telegram_callback, loop=None,
+        dsmr_version, telegram_callback, loop=loop,
+        keep_alive_interval=keep_alive_interval,
         encryption_key=encryption_key, authentication_key=authentication_key)
     serial_settings['url'] = port
 
@@ -88,15 +101,15 @@ def create_tcp_dsmr_reader(host, port, dsmr_version,
                            telegram_callback, loop=None,
                            keep_alive_interval=None,
                            encryption_key="", authentication_key=""):
-    """Creates a DSMR asyncio protocol coroutine using TCP connection."""
-    if not loop:
-        loop = asyncio.get_event_loop()
-    protocol, _ = create_dsmr_protocol(
-        dsmr_version, telegram_callback, loop=loop,
-        keep_alive_interval=keep_alive_interval,
+    """Creates a DSMR asyncio protocol coroutine using a TCP connection.
+
+    This is a thin wrapper around :func:`create_dsmr_reader` using a
+    ``socket://`` URL; both establish the exact same TCP connection.
+    """
+    return create_dsmr_reader(
+        f'socket://{host}:{port}', dsmr_version, telegram_callback,
+        loop=loop, keep_alive_interval=keep_alive_interval,
         encryption_key=encryption_key, authentication_key=authentication_key)
-    conn = loop.create_connection(protocol, host, port)
-    return conn
 
 
 class DSMRProtocol(asyncio.Protocol):

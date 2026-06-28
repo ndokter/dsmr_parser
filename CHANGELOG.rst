@@ -4,11 +4,16 @@ Change Log
 
 - Binary framing for encrypted telegrams over the serial/network readers (`PR #184 <https://github.com/ndokter/dsmr_parser/pull/184>`_ by `balloob <https://github.com/balloob>`_)
 
+**Unreleased**
+
+- ``create_tcp_dsmr_reader`` is now a thin wrapper around ``create_dsmr_reader`` (using a ``socket://`` URL); both establish the exact same TCP connection. ``create_dsmr_reader`` gained a ``keep_alive_interval`` argument so the keep-alive watchdog can be used on either entry point. Default behaviour is unchanged.
+- The event loop is now resolved with ``asyncio.get_running_loop()`` instead of the deprecated ``asyncio.get_event_loop()``. Both readers must be called from within a running event loop unless an explicit ``loop`` is passed.
+
 **1.9.0** (2026-06-19)
 
 - Only try to parse incoming data when checksum has arrived (`PR #187 <https://github.com/ndokter/dsmr_parser/pull/187>`_ by `puddly <https://github.com/puddly>`_)
 
-  **1.8.0** (2026-06-08)
+**1.8.0** (2026-06-08)
 
 - Add encrypted telegram support for MSn (Luxembourg Smarty) and SAGEMCOM_T210_D_R (`PR #178 <https://github.com/ndokter/dsmr_parser/pull/178>`_ by `Arvoreen75 <https://github.com/Arvoreen75>`_) and  `skrutzler <https://github.com/skrutzler>`_)
 
