@@ -1,5 +1,11 @@
 Change Log
 ----------
+
+**1.11.1** (2026-07-09)
+
+- Set low latency to false to avoid CPU spike (`PR #189 <https://github.com/ndokter/dsmr_parser/pull/189>`_ by `jasperslits <https://github.com/jasperslits>`_)
+
+
 **1.11.0** (2026-06-28)
 
 - ``create_tcp_dsmr_reader`` is now a thin wrapper around ``create_dsmr_reader`` (using a ``socket://`` URL); both establish the exact same TCP connection. ``create_dsmr_reader`` gained a ``keep_alive_interval`` argument so the keep-alive watchdog can be used on either entry point. Default behaviour is unchanged. (`PR #186 <https://github.com/ndokter/dsmr_parser/pull/186>`_ by `balloob <https://github.com/balloob>`_)
