@@ -92,7 +92,7 @@ def create_dsmr_reader(port, dsmr_version, telegram_callback, loop=None,
         keep_alive_interval=keep_alive_interval,
         encryption_key=encryption_key, authentication_key=authentication_key)
     serial_settings['url'] = port
-
+    serial_settings['low_latency'] = False
     conn = create_serial_connection(loop, protocol, **serial_settings)
     return conn
 
