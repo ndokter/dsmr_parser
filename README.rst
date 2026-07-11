@@ -216,6 +216,8 @@ A Telegram has attributes for all the parsed values according to the given teleg
 
 Note: Telegram extends dictionary, which done for backwards compatibility. The use of keys (e.g. `telegram[obis_references.CURRENT_ELECTRICITY_USAGE]`) is deprecated.
 
+The raw telegram text is available as ``telegram.unparsed_telegram_data``. For encrypted telegramd this is the decrypted ASCII form.
+
 Below are some examples on how to get the meter data. Alternatively check out the following unit test for a complete example: TelegramParserV5Test.test_parse
 
 .. code-block:: python
@@ -224,11 +226,9 @@ Below are some examples on how to get the meter data. Alternatively check out th
     # See dsmr_parser.obis_name_mapping for all readable telegram values.
     # The available values differ per DSMR version and meter.
     print(telegram)
-    # P1_MESSAGE_HEADER: 	        42 [None]
     # P1_MESSAGE_TIMESTAMP: 	    2016-11-13 19:57:57+00:00 [None]
-    # EQUIPMENT_IDENTIFIER: 	    3960221976967177082151037881335713 [None]
     # ELECTRICITY_USED_TARIFF_1:    1581.123 [kWh]
-    # etc.
+    # etc..
 
     # Example to get current electricity usage
     print(telegram.CURRENT_ELECTRICITY_USAGE)  # <dsmr_parser.objects.CosemObject at 0x7f5e98ae5ac8>
@@ -304,7 +304,7 @@ Create a virtualenv and activate it followed by the installation of the dsmr-par
     source venv/bin/activate
     pip install -e .
 
-Install tox and run it:
+Use tox to run checks and tests:
 
 .. code-block:: bash
 

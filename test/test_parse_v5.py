@@ -229,6 +229,9 @@ class TelegramParserV5Test(unittest.TestCase):
         assert isinstance(telegram.MBUS_METER_READING.value, Decimal)
         assert gas_meter_device.MBUS_METER_READING.value == Decimal('0.107')
 
+        # The raw telegram text must be exposed on the parsed Telegram.
+        assert telegram.unparsed_telegram_data == TELEGRAM_V5
+
     def test_checksum_valid(self):
         # No exception is raised.
         TelegramParser.validate_checksum(TELEGRAM_V5)

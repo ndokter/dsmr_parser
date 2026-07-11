@@ -56,6 +56,8 @@ class ProtocolTest(unittest.TestCase):
         assert float(telegram[obis.GAS_METER_READING].value) == 1.001
         assert telegram[obis.GAS_METER_READING].unit == 'm3'
 
+        assert telegram.unparsed_telegram_data == TELEGRAM_V2_2
+
     def test_receive_packet(self):
         """Protocol packet reception."""
 

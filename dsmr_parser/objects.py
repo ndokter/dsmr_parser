@@ -21,6 +21,7 @@ class Telegram(dict):
     def __init__(self, *args, **kwargs):
         self._item_names = []
         self._mbus_devices = []
+        self.unparsed_telegram_data = None
         super().__init__(*args, **kwargs)
 
     def add(self, obis_reference, dsmr_object, obis_name):

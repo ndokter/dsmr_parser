@@ -113,6 +113,11 @@ class TelegramParserMSNTest(unittest.TestCase):
         # Gas meter reading (optional — only present if an MBus slave is installed)
         self.assertEqual(result[obis.MBUS_METER_READING].value, Decimal('14239.771'))
 
+        # The decrypted ASCII telegram text must be exposed.
+        self.assertIsInstance(result.unparsed_telegram_data, str)
+        self.assertTrue(result.unparsed_telegram_data.startswith('/'))
+        self.assertIn('0-0:42.0.0', result.unparsed_telegram_data)
+
     def test_parse_without_gas_meter(self):
         """MSN telegram without MBus slave (no gas meter) should parse successfully.
 

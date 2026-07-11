@@ -60,6 +60,11 @@ class TelegramParserEncryptedTest(unittest.TestCase):
                               self.DUMMY_AUTHENTICATION_KEY)
         self.assertEqual(len(result), 18)
 
+        # The decrypted ASCII telegram text must be exposed.
+        self.assertIsInstance(result.unparsed_telegram_data, str)
+        self.assertTrue(result.unparsed_telegram_data.startswith('/'))
+        self.assertIn('1-0:1.8.0', result.unparsed_telegram_data)
+
     def test_damaged_frame(self):
         # If the frame is damaged decrypting fails (crc is technically not needed)
         parser = TelegramParser(telegram_specifications.SAGEMCOM_T210_D_R)

@@ -1,10 +1,13 @@
 Change Log
 ----------
 
+**1.12.0** (2026-07-11)
+
+- Expose raw telegram text on ``Telegram.unparsed_telegram_data`` (`PR #188 <https://github.com/ndokter/dsmr_parser/pull/188>`_ by `ndokter <https://github.com/ndokter>`_)
+
 **1.11.1** (2026-07-09)
 
 - Set low latency to false to avoid CPU spike (`PR #189 <https://github.com/ndokter/dsmr_parser/pull/189>`_ by `jasperslits <https://github.com/jasperslits>`_)
-
 
 **1.11.0** (2026-06-28)
 
