@@ -19,3 +19,4 @@ class FileReaderTest(unittest.TestCase):
                 telegrams.append(telegram)
 
             self.assertEqual(len(telegrams), 1)
+        self.assertEqual(telegrams[0].unparsed_telegram_data, TELEGRAM_V5)

@@ -168,6 +168,7 @@ class TelegramParser(object):
                         obis_name=object["value_name"]
                     )
 
+        telegram.unparsed_telegram_data = telegram_data
         return telegram
 
     @staticmethod
