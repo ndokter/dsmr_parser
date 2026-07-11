@@ -216,7 +216,7 @@ A Telegram has attributes for all the parsed values according to the given teleg
 
 Note: Telegram extends dictionary, which done for backwards compatibility. The use of keys (e.g. `telegram[obis_references.CURRENT_ELECTRICITY_USAGE]`) is deprecated.
 
-The raw telegram text is available as ``telegram.unparsed_telegram_data``. For encrypted telegramd this is the decrypted ASCII form.
+The raw telegram text is available as ``telegram.unparsed_telegram_data``. For encrypted telegrams, this is the decrypted ASCII form.
 
 Below are some examples on how to get the meter data. Alternatively check out the following unit test for a complete example: TelegramParserV5Test.test_parse
 
