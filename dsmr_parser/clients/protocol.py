@@ -62,6 +62,9 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
     elif dsmr_version == 'SAGEMCOM_T210_D_R':
         specification = telegram_specifications.SAGEMCOM_T210_D_R
         serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == '5ESOLT':
+        specification = telegram_specifications.V5_ESO_LT
+        serial_settings = SERIAL_SETTINGS_V5
     else:
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
