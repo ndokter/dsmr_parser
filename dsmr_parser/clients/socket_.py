@@ -65,6 +65,10 @@ class SocketReader(object):
                     logger.error("Socket timeout occurred, exiting")
                     break
 
+                if len(data) == 0:
+                    logger.error("Socket connection closed, exiting")
+                    break
+
                 for telegram in self._buffer_incoming(data):
                     try:
                         yield self.telegram_parser.parse(
