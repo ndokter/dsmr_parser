@@ -47,6 +47,9 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
     elif dsmr_version == "5S":
         specification = telegram_specifications.SWEDEN
         serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == '5SWISS':
+        specification = telegram_specifications.SWISS
+        serial_settings = SERIAL_SETTINGS_V5
     elif dsmr_version == "Q3D":
         specification = telegram_specifications.Q3D
         serial_settings = SERIAL_SETTINGS_V5
