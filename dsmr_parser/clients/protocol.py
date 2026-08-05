@@ -25,7 +25,7 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
 
-    specification, serial_settings = DSMR_PROTOCOL_MAPPING[dsmr_version]
+    specification, serial_settings = DSMR_VERSIONS[dsmr_version]
     protocol = partial(protocol, loop, TelegramParser(specification),
                        telegram_callback=telegram_callback, **kwargs)
 
