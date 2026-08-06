@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.11.2** (2026-08-01)
+
+- Detect closed socket connection (`PR #194 <https://github.com/ndokter/dsmr_parser/pull/194>`_ by `brambo123 <https://github.com/brambo123>`_)
+
 **1.11.1** (2026-07-09)
 
 - Set low latency to false to avoid CPU spike (`PR #189 <https://github.com/ndokter/dsmr_parser/pull/189>`_ by `jasperslits <https://github.com/jasperslits>`_)
