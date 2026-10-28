@@ -1,6 +1,10 @@
 Change Log
 ----------
 
+**1.11.3** (2026-10-28)
+
+- Fix parsing of the Belgian maximum demand (``1-0:1.6.0``) when the meter sends the value before the timestamp, e.g. ``(006.4*kW)(261023051500)`` on the Iskra IE.5 (`PR #201 <https://github.com/ndokter/dsmr_parser/pull/201>`_ by `ndokter <https://github.com/ndokter>`_)
+
 **1.11.2** (2026-08-01)
 
 - Detect closed socket connection (`PR #194 <https://github.com/ndokter/dsmr_parser/pull/194>`_ by `brambo123 <https://github.com/brambo123>`_)
