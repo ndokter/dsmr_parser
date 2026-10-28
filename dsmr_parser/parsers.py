@@ -292,7 +292,20 @@ class MBusParser(DSMRObjectParser):
     2) Time Stamp (TST) of capture time of measurement value
     3) Measurement value 1 (most recent entry of buffer attribute without unit)
     4) Unit of measurement values (Unit of capture objects attribute)
+
+    Some meters (e.g. Iskra IE.5) send the value before the timestamp:
+    '1-0:1.6.0(006.4*kW)(261023051500)'. That order is swapped back here.
     """
+
+    def _parse_values(self, values):
+        # Swap to (timestamp)(value) when the value came first:
+        #   ['200509134558S', '02.589*kW'] -> unchanged
+        #   ['006.4*kW', '261023051500'] -> ['261023051500', '006.4*kW']
+        if len(values) == 2 and values[0] and '*' in values[0] \
+                and (values[1] is None or '*' not in values[1]):
+            values = [values[1], values[0]]
+
+        return super()._parse_values(values)
 
     def parse(self, line):
         return MBusObject(
