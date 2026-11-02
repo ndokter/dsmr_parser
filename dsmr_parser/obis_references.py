@@ -103,8 +103,8 @@ ELECTRICITY_IMPORTED_TOTAL = r'^\d-\d:1\.8\.0.+?\r\n'  # Total imported energy r
 ELECTRICITY_EXPORTED_TOTAL = r'^\d-\d:2\.8\.0.+?\r\n'  # Total exported energy register (P-)
 
 # International non generalized additions (country specific) / risk for necessary refactoring
-BELGIUM_VERSION_INFORMATION = r'^\d-\d:96\.1\.4.+?\r\n'
-BELGIUM_EQUIPMENT_IDENTIFIER = r'^\d-0:96\.1\.1.+?\r\n'
+BELGIUM_VERSION_INFORMATION = r'^\d-\d:96\.((14\.0)|(1\.4)).+?\r\n'
+BELGIUM_EQUIPMENT_IDENTIFIER = r'^\d-0:96\.1\.[0-1].+?\r\n'
 BELGIUM_CURRENT_AVERAGE_DEMAND = r'^\d-\d:1\.4\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_MONTH = r'^\d-\d:1\.6\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_13_MONTHS = r'^\d-\d:98\.1\.0.+?\r\n'
