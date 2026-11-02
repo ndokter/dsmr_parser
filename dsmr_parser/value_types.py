@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from functools import partial
+from typing import Callable
 from zoneinfo import ZoneInfo
 
 
 _SYSTEM_TZ = ZoneInfo("Europe/Amsterdam")
 
 
-def timestamp(value: str) -> datetime | None:
+def timestamp(value: str, tz: ZoneInfo = _SYSTEM_TZ) -> datetime | None:
     """
     Parse a DSMR-style timestamp string and convert it to UTC.
 
@@ -30,6 +32,7 @@ def timestamp(value: str) -> datetime | None:
 
     Args:
         value: Timestamp string in DSMR format.
+        tz: Time zone the meter clock runs in (default: Europe/Amsterdam).
 
     Returns:
         A timezone-aware datetime in UTC if parsing succeeds,
@@ -59,6 +62,14 @@ def timestamp(value: str) -> datetime | None:
         if dst_flag == "W":
             fold = 1
 
-    localized_datetime = naive_dt.replace(tzinfo=_SYSTEM_TZ, fold=fold)
+    localized_datetime = naive_dt.replace(tzinfo=tz, fold=fold)
 
     return localized_datetime.astimezone(timezone.utc)
+
+
+def timestamp_in(tz_name: str) -> Callable[[str], datetime | None]:
+    """
+    Return a timestamp parser for meters whose clock runs in a time zone
+    other than the default, e.g. timestamp_in('Europe/Dublin').
+    """
+    return partial(timestamp, tz=ZoneInfo(tz_name))

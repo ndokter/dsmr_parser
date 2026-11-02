@@ -56,6 +56,9 @@ def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, 
     elif dsmr_version == '5EONHU':
         specification = telegram_specifications.EON_HUNGARY
         serial_settings = SERIAL_SETTINGS_V5
+    elif dsmr_version == 'ESB_IE':
+        specification = telegram_specifications.ESB_IRELAND
+        serial_settings = SERIAL_SETTINGS_V5
     elif dsmr_version == 'MSn':
         specification = telegram_specifications.MSN
         serial_settings = SERIAL_SETTINGS_V5
