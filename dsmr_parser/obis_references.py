@@ -105,6 +105,7 @@ ELECTRICITY_EXPORTED_TOTAL = r'^\d-\d:2\.8\.0.+?\r\n'  # Total exported energy r
 # International non generalized additions (country specific) / risk for necessary refactoring
 BELGIUM_VERSION_INFORMATION = r'^\d-\d:96\.1\.4.+?\r\n'
 BELGIUM_EQUIPMENT_IDENTIFIER = r'^\d-0:96\.1\.1.+?\r\n'
+BELGIUM_BREAKER_STATE = r'^0-0:96\.3\.10\([0-9]*\)\r\n'
 BELGIUM_CURRENT_AVERAGE_DEMAND = r'^\d-\d:1\.4\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_MONTH = r'^\d-\d:1\.6\.0.+?\r\n'
 BELGIUM_MAXIMUM_DEMAND_13_MONTHS = r'^\d-\d:98\.1\.0.+?\r\n'

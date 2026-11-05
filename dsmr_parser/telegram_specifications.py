@@ -620,7 +620,9 @@ BELGIUM_FLUVIUS = {
             'value_name': 'INSTANTANEOUS_CURRENT_L3'
         },
         {
+            # Keep the legacy dictionary key while matching only the main breaker.
             'obis_reference': obis.ACTUAL_SWITCH_POSITION,
+            'obis_pattern': obis.BELGIUM_BREAKER_STATE,
             'value_parser': CosemParser(ValueParser(int)),
             'value_name': 'ACTUAL_SWITCH_POSITION'
         },

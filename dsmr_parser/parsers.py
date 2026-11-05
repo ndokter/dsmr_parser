@@ -55,7 +55,9 @@ class TelegramParser(object):
         self.telegram_specification = telegram_specification
         # Regexes are compiled once to improve performance
         self.telegram_specification_regexes = {
-            object["obis_reference"]: re.compile(object["obis_reference"], re.DOTALL | re.MULTILINE)
+            object["obis_reference"]: re.compile(
+                object.get("obis_pattern", object["obis_reference"]), re.DOTALL | re.MULTILINE
+            )
             for object in self.telegram_specification['objects']
         }
 
