@@ -23,12 +23,12 @@ class Telegram(dict):
         self._mbus_devices = []
         super().__init__(*args, **kwargs)
 
-    def add(self, obis_reference, dsmr_object, obis_name):
+    def add(self, obis_reference, dsmr_object, obis_name, *, group_mbus=True):
         # Update name mapping used to get value by attribute. Example: telegram.P1_MESSAGE_HEADER
         setattr(self, obis_name, dsmr_object)
 
         # TODO isinstance check: MaxDemandParser (BELGIUM_MAXIMUM_DEMAND_13_MONTHS) returns a list
-        if isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
+        if group_mbus and isinstance(dsmr_object, DSMRObject) and dsmr_object.is_mbus_reading:
             self._add_mbus(obis_reference, dsmr_object, obis_name)
         elif obis_name not in self._item_names:  # TODO repeating obis references
             self._item_names.append(obis_name)

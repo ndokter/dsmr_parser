@@ -3,7 +3,7 @@ import unittest
 
 from decimal import Decimal
 
-from dsmr_parser import telegram_specifications
+from dsmr_parser import obis_references, telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError
 from dsmr_parser.objects import CosemObject, MBusObject
 from dsmr_parser.parsers import TelegramParser
@@ -32,6 +32,12 @@ class TelegramParserIskraIE5BelgiumTest(unittest.TestCase):
         assert max_demand.datetime == datetime.datetime(
             2026, 10, 23, 3, 15, 0, tzinfo=datetime.timezone.utc
         )
+
+    def test_breaker_state_with_virtual_relay_lines(self):
+        breaker = self.result.ACTUAL_SWITCH_POSITION
+        assert breaker.value == 1
+        assert breaker.obis_id_code == (0, 0)
+        assert self.result[obis_references.ACTUAL_SWITCH_POSITION] is breaker
 
     def test_other_values(self):
         r = self.result
