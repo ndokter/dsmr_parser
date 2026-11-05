@@ -502,6 +502,11 @@ BELGIUM_FLUVIUS = {
             'value_name': 'BELGIUM_EQUIPMENT_IDENTIFIER'
         },
         {
+            'obis_reference': obis.BELGIUM_ELECTRICITY_EAN,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'BELGIUM_ELECTRICITY_EAN'
+        },
+        {
             'obis_reference': obis.P1_MESSAGE_TIMESTAMP,
             'value_parser': CosemParser(ValueParser(timestamp)),
             'value_name': 'P1_MESSAGE_TIMESTAMP'
@@ -620,6 +625,11 @@ BELGIUM_FLUVIUS = {
             'value_name': 'INSTANTANEOUS_CURRENT_L3'
         },
         {
+            'obis_reference': obis.BELGIUM_GRID_CONFIGURATION,
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': 'BELGIUM_GRID_CONFIGURATION'
+        },
+        {
             # Keep the legacy dictionary key while matching only the main breaker.
             'obis_reference': obis.ACTUAL_SWITCH_POSITION,
             'obis_pattern': obis.BELGIUM_BREAKER_STATE,
@@ -637,6 +647,11 @@ BELGIUM_FLUVIUS = {
             'value_name': 'FUSE_THRESHOLD_L1'
         },
         {
+            'obis_reference': obis.BELGIUM_TEXT_MESSAGE_CODE,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'TEXT_MESSAGE_CODE'
+        },
+        {
             'obis_reference': obis.TEXT_MESSAGE,
             'value_parser': CosemParser(ValueParser(str)),
             'value_name': 'TEXT_MESSAGE'
@@ -652,6 +667,11 @@ BELGIUM_FLUVIUS = {
             'value_name': 'MBUS_EQUIPMENT_IDENTIFIER'
         },
         {
+            'obis_reference': obis.BELGIUM_MBUS_EAN,
+            'value_parser': CosemParser(ValueParser(str)),
+            'value_name': 'MBUS_EAN'
+        },
+        {
             'obis_reference': obis.MBUS_VALVE_POSITION,
             'value_parser': CosemParser(ValueParser(int)),
             'value_name': 'MBUS_VALVE_POSITION'
@@ -664,6 +684,15 @@ BELGIUM_FLUVIUS = {
             ),
             'value_name': 'MBUS_METER_READING'
         },
+    ] + [
+        {
+            'obis_reference': obis.BELGIUM_VIRTUAL_RELAY_STATE.format(channel=channel),
+            'value_parser': CosemParser(ValueParser(int)),
+            'value_name': f'BELGIUM_VIRTUAL_RELAY_{channel}_STATE',
+            # Relay numbers and M-Bus channel numbers are independent.
+            'group_mbus': False
+        }
+        for channel in range(1, 5)
     ]
 }
 

@@ -167,7 +167,8 @@ class TelegramParser(object):
                     telegram.add(
                         obis_reference=object["obis_reference"],
                         dsmr_object=dsmr_object,
-                        obis_name=object["value_name"]
+                        obis_name=object["value_name"],
+                        group_mbus=object.get("group_mbus", True)
                     )
 
         return telegram

@@ -6,15 +6,124 @@ import unittest
 
 from zoneinfo import ZoneInfo
 
-from dsmr_parser import telegram_specifications
+from dsmr_parser import obis_references, telegram_specifications
 from dsmr_parser.exceptions import InvalidChecksumError, ParseError
 from dsmr_parser.objects import CosemObject, MBusObject, MBusObjectPeak
 from dsmr_parser.parsers import TelegramParser
-from test.example_telegrams import TELEGRAM_FLUVIUS_V171, TELEGRAM_FLUVIUS_V171_ALT
+from test.example_telegrams import TELEGRAM_FLUVIUS_V171, TELEGRAM_FLUVIUS_V171_ALT, TELEGRAM_FLUVIUS_V211
 
 
 class TelegramParserFluviusTest(unittest.TestCase):
     """ Test parsing of a DSMR Fluvius telegram. """
+
+    def parse_fields(self, *lines):
+        parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
+        payload = '/TEST\r\n\r\n' + '\r\n'.join(lines) + '\r\n!'
+        return parser.parse(f'{payload}{parser.crc16(payload):04X}\r\n', throw_ex=True)
+
+    def test_breaker_and_virtual_relays(self):
+        breaker = '0-0:96.3.10(2)'
+        relays = (
+            '0-1:96.3.10(0)',
+            '0-2:96.3.10(1)',
+            '0-3:96.3.10(0)',
+            '0-4:96.3.10(1)',
+        )
+        for lines in ((breaker, *relays), (*relays, breaker)):
+            with self.subTest(lines=lines):
+                telegram = self.parse_fields(*lines)
+                assert telegram.ACTUAL_SWITCH_POSITION.value == 2
+                assert telegram[obis_references.ACTUAL_SWITCH_POSITION] is telegram.ACTUAL_SWITCH_POSITION
+                assert telegram.BELGIUM_VIRTUAL_RELAY_1_STATE.value == 0
+                assert telegram.BELGIUM_VIRTUAL_RELAY_2_STATE.value == 1
+                assert telegram.BELGIUM_VIRTUAL_RELAY_3_STATE.value == 0
+                assert telegram.BELGIUM_VIRTUAL_RELAY_4_STATE.value == 1
+                assert not hasattr(telegram, 'MBUS_DEVICES')
+                assert json.loads(telegram.to_json())['BELGIUM_VIRTUAL_RELAY_4_STATE']['value'] == 1
+
+        telegram = self.parse_fields(*relays, '0-5:96.3.10(1)')
+        assert not hasattr(telegram, 'ACTUAL_SWITCH_POSITION')
+        assert obis_references.ACTUAL_SWITCH_POSITION not in telegram
+        assert not hasattr(telegram, 'BELGIUM_VIRTUAL_RELAY_5_STATE')
+
+    def test_grid_configuration_and_legacy_message_code(self):
+        for configuration in (230, 400):
+            with self.subTest(configuration=configuration):
+                telegram = self.parse_fields('0-0:96.13.1(004A)', f'1-0:94.32.1({configuration})')
+                assert telegram.BELGIUM_GRID_CONFIGURATION.value == configuration
+                assert telegram.BELGIUM_GRID_CONFIGURATION.unit is None
+                assert telegram.TEXT_MESSAGE_CODE.value == '004A'
+
+    def test_eans_and_mbus_channel_reuse(self):
+        electricity_ean = '054144001234567890'
+        gas_ean = '303030303030303030303030303030303030'
+        water_ean = '393837363534333231303938373635343332'
+        telegram = self.parse_fields(
+            '0-1:24.1.0(003)',
+            '0-1:24.2.3(231102121002W)(00092.287*m3)',
+            '0-1:24.4.0(1)',
+            '0-1:96.3.10(0)',
+            f'0-1:96.1.2({gas_ean})',
+            '0-8:24.1.0(007)',
+            '0-8:24.2.1(231102121532W)(00008.579*m3)',
+            f'0-8:96.1.2({water_ean})',
+            f'0-0:96.1.2({electricity_ean})',
+        )
+        assert telegram.BELGIUM_ELECTRICITY_EAN.value == electricity_ean
+        assert telegram.BELGIUM_VIRTUAL_RELAY_1_STATE.value == 0
+        assert not hasattr(telegram, 'ACTUAL_SWITCH_POSITION')
+        gas = telegram.get_mbus_device_by_channel(1)
+        water = telegram.get_mbus_device_by_channel(8)
+        assert gas.MBUS_EAN.value == gas_ean
+        assert gas.MBUS_VALVE_POSITION.value == 1
+        assert gas.MBUS_METER_READING.value == Decimal('92.287')
+        assert not hasattr(gas, 'BELGIUM_VIRTUAL_RELAY_1_STATE')
+        assert water.MBUS_EAN.value == water_ean
+        assert water.MBUS_METER_READING.value == Decimal('8.579')
+
+    def test_unrecognized_optional_values_do_not_discard_telegram(self):
+        telegram = self.parse_fields(
+            '1-0:94.32.1(NA)',
+            '0-0:96.3.10(FF)',
+            '0-1:96.3.10(FF)',
+            '0-0:96.1.2(00**0)',
+            '0-2:96.1.2(00**0)',
+            '0-0:96.13.1(00**0)',
+            '1-0:1.8.1(000001.234*kWh)',
+        )
+        assert telegram.ELECTRICITY_USED_TARIFF_1.value == Decimal('1.234')
+        assert not hasattr(telegram, 'BELGIUM_GRID_CONFIGURATION')
+        assert not hasattr(telegram, 'ACTUAL_SWITCH_POSITION')
+        assert not hasattr(telegram, 'BELGIUM_VIRTUAL_RELAY_1_STATE')
+        assert not hasattr(telegram, 'BELGIUM_ELECTRICITY_EAN')
+        assert not hasattr(telegram, 'MBUS_DEVICES')
+        assert not hasattr(telegram, 'TEXT_MESSAGE_CODE')
+
+    def test_parse_fluvius_v211(self):
+        parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
+        telegram = parser.parse(TELEGRAM_FLUVIUS_V211, throw_ex=True)
+
+        assert telegram.BELGIUM_VERSION_INFORMATION.value == '50221'
+        assert telegram.BELGIUM_GRID_CONFIGURATION.value == 400
+        assert telegram.BELGIUM_ELECTRICITY_EAN.value == '000000000000000001'.encode().hex()
+        assert telegram.ACTUAL_SWITCH_POSITION.value == 1
+        for channel in range(1, 5):
+            assert getattr(telegram, f'BELGIUM_VIRTUAL_RELAY_{channel}_STATE').value == 0
+        assert telegram.TEXT_MESSAGE.value is None
+        assert telegram.ELECTRICITY_USED_TARIFF_1.value == Decimal('1.234')
+
+        assert len(telegram.MBUS_DEVICES) == 1
+        gas = telegram.get_mbus_device_by_channel(1)
+        assert gas.MBUS_EAN.value == '000000000000000002'.encode().hex()
+        assert gas.MBUS_VALVE_POSITION.value == 1
+        assert gas.MBUS_METER_READING.value == Decimal('1.234')
+
+        history = telegram.BELGIUM_MAXIMUM_DEMAND_13_MONTHS
+        assert len(history) == 13
+        assert history[0].occurred is None
+        assert history[0].value == Decimal('0')
+        assert all(peak.occurred is not None for peak in history[1:])
+        assert history[-1].value == Decimal('12')
 
     def test_parse(self):
         parser = TelegramParser(telegram_specifications.BELGIUM_FLUVIUS)
