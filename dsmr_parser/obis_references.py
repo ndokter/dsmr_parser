@@ -140,3 +140,12 @@ EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q1 = r'^\d-\d:5\.7\.0.+?\r\n'
 EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q2 = r'^\d-\d:6\.7\.0.+?\r\n'
 EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q3 = r'^\d-\d:7\.7\.0.+?\r\n'
 EON_HU_INSTANTANEOUS_REACTIVE_POWER_Q4 = r'^\d-\d:8\.7\.0.+?\r\n'
+
+# Switzerland
+SWISS_EQUIPMENT_IDENTIFIER = r'^\d-\d:0\.0\.0.+?\r\n'
+SWISS_VERSION_INFORMATION = r'^\d-\d:96\.1\.4.+?\r\n'
+SWISS_PUBLIC_KEY = r'^\d-\d:96\.1\.2.+?\r\n'
+SWISS_TEXT_MESSAGE_2 = r'^\d-\d:96\.13\.1.+?\r\n'
+SWISS_MAXIMUM_DEMAND_MONTH = r'^\d-\d:1\.6\.0.+?\r\n'
+SWISS_MAXIMUM_DEMAND_MONTHS_COUNT = r'^\d-\d:98\.1\.0.+?\r\n'
+SWISS_CURRENT_AVERAGE_DEMAND = r'^\d-\d:1\.4\.0.+?\r\n'
