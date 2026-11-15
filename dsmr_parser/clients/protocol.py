@@ -6,12 +6,10 @@ import logging
 
 from serialx import create_serial_connection
 
-from dsmr_parser import telegram_specifications
+from dsmr_parser.dsmr_versions import DSMR_VERSIONS
 from dsmr_parser.clients.telegram_buffer import TelegramBuffer, EncryptedTelegramBuffer
 from dsmr_parser.exceptions import ParseError, InvalidChecksumError, DecryptionError
 from dsmr_parser.parsers import TelegramParser
-from dsmr_parser.clients.settings import SERIAL_SETTINGS_V2_2, \
-    SERIAL_SETTINGS_V4, SERIAL_SETTINGS_V5
 
 
 def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
@@ -21,51 +19,13 @@ def create_dsmr_protocol(dsmr_version, telegram_callback, loop=None, **kwargs):
     return protocol
 
 
-# pylama noqa - because of "complex" (too long) if-elif-else.
-# Match - case might be a solution but it is not available in <3.10
 def _create_dsmr_protocol(dsmr_version, telegram_callback, protocol, loop=None, **kwargs):  # noqa
     """Creates a DSMR asyncio protocol."""
-
-    if dsmr_version == '2.2':
-        specification = telegram_specifications.V2_2
-        serial_settings = SERIAL_SETTINGS_V2_2
-    elif dsmr_version == '4':
-        specification = telegram_specifications.V4
-        serial_settings = SERIAL_SETTINGS_V4
-    elif dsmr_version == '4+':
-        specification = telegram_specifications.V5
-        serial_settings = SERIAL_SETTINGS_V4
-    elif dsmr_version == '5':
-        specification = telegram_specifications.V5
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == '5B':
-        specification = telegram_specifications.BELGIUM_FLUVIUS
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == "5L":
-        specification = telegram_specifications.LUXEMBOURG_SMARTY
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == "5S":
-        specification = telegram_specifications.SWEDEN
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == "Q3D":
-        specification = telegram_specifications.Q3D
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == 'ISKRA_IE':
-        specification = telegram_specifications.ISKRA_IE
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == '5EONHU':
-        specification = telegram_specifications.EON_HUNGARY
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == 'MSn':
-        specification = telegram_specifications.MSN
-        serial_settings = SERIAL_SETTINGS_V5
-    elif dsmr_version == 'SAGEMCOM_T210_D_R':
-        specification = telegram_specifications.SAGEMCOM_T210_D_R
-        serial_settings = SERIAL_SETTINGS_V5
-    else:
+    if dsmr_version not in DSMR_VERSIONS:
         raise NotImplementedError("No telegram parser found for version: %s",
                                   dsmr_version)
 
+    specification, serial_settings = DSMR_VERSIONS[dsmr_version]
     protocol = partial(protocol, loop, TelegramParser(specification),
                        telegram_callback=telegram_callback, **kwargs)
 

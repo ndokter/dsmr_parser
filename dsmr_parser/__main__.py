@@ -3,7 +3,7 @@ import argparse
 import asyncio
 import logging
 
-from dsmr_parser.clients import create_dsmr_reader, create_tcp_dsmr_reader
+from dsmr_parser.clients import create_dsmr_reader, create_tcp_dsmr_reader, DSMR_VERSIONS
 
 
 def console():
@@ -16,8 +16,8 @@ def console():
                         help='alternatively connect using TCP host.')
     parser.add_argument('--port', default=None,
                         help='TCP port to use for connection')
-    parser.add_argument('--version', default='2.2', choices=['2.2', '4', '5', '5B', '5L', '5S', 'Q3D'],
-                        help='DSMR version (2.2, 4, 5, 5B, 5L, 5S, Q3D)')
+    parser.add_argument('--version', default='2.2', choices=list(DSMR_VERSIONS.keys()),
+                        help='DSMR version')
     parser.add_argument('--verbose', '-v', action='count')
 
     args = parser.parse_args()
