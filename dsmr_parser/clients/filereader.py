@@ -115,8 +115,8 @@ class FileInputReader(object):
         with fileinput.input(mode='rb') as file_handle:
             while True:
                 data = file_handle.readline()
-                str = data.decode()
-                self.telegram_buffer.append(str)
+                text = data.decode()
+                self.telegram_buffer.append(text)
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
@@ -161,8 +161,8 @@ class FileTailReader(object):
         """
         with open(self._file, "rb") as file_handle:
             for data in tailer.follow(file_handle):
-                str = data.decode()
-                self.telegram_buffer.append(str)
+                text = data.decode()
+                self.telegram_buffer.append(text)
 
                 for telegram in self.telegram_buffer.get_all():
                     try:
